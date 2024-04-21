@@ -128,31 +128,31 @@ if(isset($_POST['update_product'])){
          <?php
          $select_products = mysqli_query($conn, "SELECT * FROM `products`") or die('query failed');
          if (mysqli_num_rows($select_products) > 0) {
-            while ($fetch_products = mysqli_fetch_assoc($select_products)) {
+            while ($fetch_products = mysqli_fetch_assoc($select_products)) {  
          ?>
                <form action="" method="post" class="box">
-                  <input type="hidden" name="product_price" value="<?php echo $fetch_products['price']; ?>" class="price">
-                  <input type="hidden" name="product_image" value="<?php echo $fetch_products['image']; ?>">
+                  <input type="hidden" name="product_price" value="<?php echo $fetch_products['Price']; ?>" class="price">
+                  <input type="hidden" name="product_image" value="<?php echo $fetch_products['Image']; ?>">
 
                   <div class="image">
-                     <img src="uploaded_img/<?php echo $fetch_products['image']; ?>" alt="">
+                     <img src="uploaded_img/<?php echo $fetch_products['Image']; ?>" alt="">
                   </div>
                   <div class="details">
                      <div class="name">
                         <img src="./public/card/name.svg" alt="name_icon">
-                        <?php echo $fetch_products['name']; ?>
+                        <?php echo $fetch_products['Name']; ?>
                      </div>
-                     <input type="hidden" name="product_name" value="<?php echo $fetch_products['name']; ?>">
+                     <input type="hidden" name="product_name" value="<?php echo $fetch_products['Name']; ?>">
                      <div class="qty-pri">
                         <input type="number" min="1" name="product_quantity" value="1" class="qty">
                         <div class="price">
-                           <span style="font-size:0.7em">$</span><?php echo $fetch_products['price']; ?>
+                           <span style="font-size:0.7em">$</span><?php echo $fetch_products['Price']; ?>
                         </div>
                      </div>
                      <div class="action">
                      <!-- <div class="name"><?php echo $fetch_products['name']; ?></div> -->
-                     <a href="admin_products.php?update=<?php echo $fetch_products['id']; ?>" class="option-btn">update</a>
-                     <a href="admin_products.php?delete=<?php echo $fetch_products['id']; ?>" class="delete-btn" onclick="return confirm('delete this product?');">delete</a>
+                     <a href="admin_products.php?update=<?php echo $fetch_products['Id']; ?>" class="option-btn">update</a>
+                     <a href="admin_products.php?delete=<?php echo $fetch_products['Id']; ?>" class="delete-btn" onclick="return confirm('delete this product?');">delete</a>
                      </div>
                   </div>
                   
@@ -176,9 +176,9 @@ if(isset($_POST['update_product'])){
             while($fetch_update = mysqli_fetch_assoc($update_query)){
    ?>
    <form action="" method="post" enctype="multipart/form-data">
-      <input type="hidden" name="update_p_id" value="<?php echo $fetch_update['id']; ?>">
-      <input type="hidden" name="update_old_image" value="<?php echo $fetch_update['image']; ?>">
-      <img src="uploaded_img/<?php echo $fetch_update['image']; ?>" alt="">
+      <input type="hidden" name="update_p_id" value="<?php echo $fetch_update['Id']; ?>">
+      <input type="hidden" name="update_old_image" value="<?php echo $fetch_update['Image']; ?>">
+      <img src="uploaded_img/<?php echo $fetch_update['Image']; ?>" alt="">
       <input type="text" name="update_name" value="<?php echo $fetch_update['name']; ?>" class="box" required placeholder="enter product name">
       <input type="number" name="update_price" value="<?php echo $fetch_update['price']; ?>" min="0" class="box" required placeholder="enter product price">
       <input type="file" class="box" name="update_image" accept="image/jpg, image/jpeg, image/png">

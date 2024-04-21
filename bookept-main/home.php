@@ -72,22 +72,22 @@ if (isset($_POST['add_to_cart'])) {
             while ($fetch_products = mysqli_fetch_assoc($select_products)) {
          ?>
                <form action="" method="post" class="box">
-                  <input type="hidden" name="product_price" value="<?php echo $fetch_products['price']; ?>" class="price">
-                  <input type="hidden" name="product_image" value="<?php echo $fetch_products['image']; ?>">
+                  <input type="hidden" name="product_price" value="<?php echo $fetch_products['Price']; ?>" class="price">
+                  <input type="hidden" name="product_image" value="<?php echo $fetch_products['Image']; ?>">
 
                   <div class="image">
-                     <img src="uploaded_img/<?php echo $fetch_products['image']; ?>" alt="">
+                     <img src="uploaded_img/<?php echo $fetch_products['Image']; ?>" alt="">
                   </div>
                   <div class="details">
-                     <div class="name">
+                     <div class="name" style="font-size: 18px;">
                         <img src="./public/card/name.svg" alt="name_icon">
-                        <?php echo $fetch_products['name']; ?>
+                        <?php echo $fetch_products['Name']; ?>
                      </div>
-                     <input type="hidden" name="product_name" value="<?php echo $fetch_products['name']; ?>">
+                     <input type="hidden" name="product_name" value="<?php echo $fetch_products['Name']; ?>" >
                      <div class="qty-pri">
                         <input type="number" min="1" name="product_quantity" value="1" class="qty">
                         <div class="price">
-                           <span style="font-size:0.7em">$</span><?php echo $fetch_products['price']; ?>
+                           <span style="font-size:0.7em">$</span><?php echo $fetch_products['Price']; ?>
                         </div>
                      </div>
                      <div class="action">
@@ -122,13 +122,13 @@ if (isset($_POST['add_to_cart'])) {
             <p>24/7 customer care team ready to answer all your questions.</p>
             <p>Contact us for the best service support!</p>
          </div>
-         <div class="service-feature">
+         <!-- <div class="service-feature">
             <p><img src="./public/service/tick.svg" alt="tick">24/7</p>
             <p><img src="./public/service/tick.svg" alt="tick">Fast</p>
             <p><img src="./public/service/tick.svg" alt="tick">Friendly</p>
             <p><img src="./public/service/tick.svg" alt="tick">Enthusiasm</p>
             <p><img src="./public/service/tick.svg" alt="tick">Professional</p>
-         </div>
+         </div> -->
          <div>
             <a href="contact.php" class="option-btn">contact us</a>
          </div>
