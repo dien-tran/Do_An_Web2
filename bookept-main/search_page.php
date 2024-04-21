@@ -73,14 +73,14 @@ if(isset($_POST['add_to_cart'])){
          if(mysqli_num_rows($select_products) > 0){
          while($fetch_product = mysqli_fetch_assoc($select_products)){
    ?>
-   <form action="" method="post" class="box">
-      <img src="uploaded_img/<?php echo $fetch_product['image']; ?>" alt="" class="image">
-      <div class="name"><?php echo $fetch_product['name']; ?></div>
-      <div class="price">$<?php echo $fetch_product['price']; ?>/-</div>
+   <form action="" method="post" class="box" style="padding-left: 20px;">
+      <img src="uploaded_img/<?php echo $fetch_product['Image']; ?>" alt="" class="image" style="align: center;">
+      <div class="name" style="font-size: 15px;;"><?php echo $fetch_product['Name']; ?></div>
+      <div class="price" style="font-size: 15px;">$<?php echo $fetch_product['Price']; ?>/-</div>
       <input type="number"  class="qty" name="product_quantity" min="1" value="1">
-      <input type="hidden" name="product_name" value="<?php echo $fetch_product['name']; ?>">
-      <input type="hidden" name="product_price" value="<?php echo $fetch_product['price']; ?>">
-      <input type="hidden" name="product_image" value="<?php echo $fetch_product['image']; ?>">
+      <input type="hidden" name="product_name" value="<?php echo $fetch_product['Name']; ?>">
+      <input type="hidden" name="product_price" value="<?php echo $fetch_product['Price']; ?>">
+      <input type="hidden" name="product_image" value="<?php echo $fetch_product['Image']; ?>">
       <input type="submit" class="btn" value="add to cart" name="add_to_cart">
    </form>
    <?php
