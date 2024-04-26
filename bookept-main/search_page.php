@@ -57,8 +57,99 @@ if(isset($_POST['add_to_cart'])){
    <p> <a href="home.php">home</a> / search </p>
 </div>
 
-<section class="search-form">
-   <form action="" method="post">
+<section class="search-form" >
+   <form action="" method="post" >
+   <?php
+
+   // Thực hiện truy vấn SQL để lấy dữ liệu từ cột 'CateName'
+   $sql_category = "SELECT CateName FROM category"; // Thay 'table_name' bằng tên bảng thực tế của bạn
+   $result_category = mysqli_query($conn, $sql_category);
+
+   // Kiểm tra xem có kết quả trả về không
+   if (mysqli_num_rows($result_category) > 0) {
+      // Bắt đầu select box
+      echo "<select name='category_name' id='category_name'>";
+      echo "<option value='' selected >Type</option>"; // Option mặc định
+
+      // Lặp qua kết quả và tạo các option
+      while ($row = mysqli_fetch_assoc($result_category)) {
+         echo "<option value='" . $row['CateName'] . "'>" . $row['CateName'] . "</option>";
+      }
+
+      // Kết thúc select box
+      echo "</select>";
+   } else {
+      echo "Không có dữ liệu";
+   }
+
+   $sql_product = "SELECT MainAuthor FROM products"; // Thay 'table_name' bằng tên bảng thực tế của bạn
+   $result_product = mysqli_query($conn, $sql_product);
+
+   // Kiểm tra xem có kết quả trả về không
+   if (mysqli_num_rows($result_product) > 0) {
+      // Bắt đầu select box
+      echo "<select name='author' id='author'>";
+      echo "<option value='' selected >Author</option>"; // Option mặc định
+
+      // Lặp qua kết quả và tạo các option
+      while ($row = mysqli_fetch_assoc($result_product)) {
+         echo "<option value='" . $row['MainAuthor'] . "'>" . $row['MainAuthor'] . "</option>";
+      }
+      echo "</select>";
+
+
+      $sql_product = "SELECT Publisher FROM products"; // Thay 'table_name' bằng tên bảng thực tế của bạn
+      $result_product = mysqli_query($conn, $sql_product);
+      echo "<select name='publisher' id='publisher'>";
+      echo "<option value='' selected >Publisher</option>"; // Option mặc định
+
+      // Lặp qua kết quả và tạo các option
+      while ($row = mysqli_fetch_assoc($result_product)) {
+         echo "<option value='" . $row['Publisher'] . "'>" . $row['Publisher'] . "</option>";
+      }
+      echo "</select>";
+
+
+      $sql_product = "SELECT PublicationYear FROM products"; // Thay 'table_name' bằng tên bảng thực tế của bạn
+      $result_product = mysqli_query($conn, $sql_product);
+      echo "<select name='year' id='year'>";
+      echo "<option value='' selected >Publication Year</option>"; // Option mặc định
+
+      // Lặp qua kết quả và tạo các option
+      while ($row = mysqli_fetch_assoc($result_product)) {
+         echo "<option value='" . $row['PublicationYear'] . "'>" . $row['PublicationYear'] . "</option>";
+      }
+      // Kết thúc select box
+      echo "</select>";
+
+      $sql_product = "SELECT Language FROM products"; // Thay 'table_name' bằng tên bảng thực tế của bạn
+      $result_product = mysqli_query($conn, $sql_product);
+      echo "<select name='language' id='language-select'>";
+      echo "<option value='' selected >Language</option>"; // Option mặc định
+
+      // Lặp qua kết quả và tạo các option
+      while ($row = mysqli_fetch_assoc($result_product)) {
+         echo "<option value='" . $row['Language'] . "'>" . $row['Language'] . "</option>";
+      }
+      // Kết thúc select box
+      echo "</select>";
+
+      $sql_product = "SELECT CoverType FROM products"; // Thay 'table_name' bằng tên bảng thực tế của bạn
+      $result_product = mysqli_query($conn, $sql_product);
+      echo "<select name='cover' id='cover'>";
+      echo "<option value='' selected >Cover Type</option>"; // Option mặc định
+
+      // Lặp qua kết quả và tạo các option
+      while ($row = mysqli_fetch_assoc($result_product)) {
+         echo "<option value='" . $row['CoverType'] . "'>" . $row['CoverType'] . "</option>";
+      }
+      // Kết thúc select box
+      echo "</select>";
+   } else {
+      echo "Không có dữ liệu";
+   }
+   ?>
+ 
       <input type="text" name="search" placeholder="search products..." class="box">
       <input type="submit" name="submit" value="search" class="btn">
    </form>
