@@ -1,39 +1,3 @@
-<?php
-
-include 'config.php';
-session_start();
-
-if (isset($_POST['submit'])) {
-
-   $email = mysqli_real_escape_string($conn, $_POST['email']);
-   $pass = mysqli_real_escape_string($conn, md5($_POST['password']));
-
-   $select_users = mysqli_query($conn, "SELECT * FROM `users` WHERE email = '$email' AND password = '$pass'") or die('query failed');
-
-   if (mysqli_num_rows($select_users) > 0) {
-
-      $row = mysqli_fetch_assoc($select_users);
-
-      if ($row['user_type'] == 'admin') {
-
-         $_SESSION['admin_name'] = $row['name'];
-         $_SESSION['admin_email'] = $row['email'];
-         $_SESSION['admin_id'] = $row['id'];
-         header('location:admin_page.php');
-      } elseif ($row['user_type'] == 'user') {
-
-         $_SESSION['user_name'] = $row['name'];
-         $_SESSION['user_email'] = $row['email'];
-         $_SESSION['user_id'] = $row['id'];
-         header('location:home.php');
-      }
-   } else {
-      $message[] = 'incorrect email or password!';
-   }
-}
-
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -45,30 +9,14 @@ if (isset($_POST['submit'])) {
    <meta name="description" content="Knowledge space for nerds. Search online books by subject and add them to your favorite cart">
    <meta name="keywords" content="php, sql, mysql, html, css, javascript, book">
    <link rel="shortcut icon" href="./public/favicon.ico" type="image/x-icon">
-
-   <!-- font awesome cdn link  -->
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-   <!-- custom css file link  -->
    <link rel="stylesheet" href="styles/main.css">
-   <link rel="stylesheet" href="./styles//customers/login.css">
+   <link rel="stylesheet" href="./styles/login.css">
+
 </head>
 
 <body>
-   <?php
-   if (isset($message)) {
-      foreach ($message as $message) {
-         echo '
-      <div class="message">
-         <span>' . $message . '</span>
-         <i class="fas fa-times" onclick="this.parentElement.remove();"></i>
-      </div>
-      ';
-      }
-   }
-   ?>
-
-<div class="form-container">
+   <div class="form-container">
       <form class="login_form" action="" method="post">
          <div class="form-inner">
             <h2>Login now</h2>
@@ -91,6 +39,58 @@ if (isset($_POST['submit'])) {
          </div>
       </form>
    </div>
+   <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+
+
+
+
+
 </body>
 
 </html>
+
+<?php
+include "config.php"; // chứa các cấu hình, thông tin kết nối cơ sở dữ liệu SQL
+session_start();
+//bắt đầu hoặc khôi phục một phiên làm việc cho người dùng.
+//lưu trữ thông tin về người dùng trong suốt thời gian họ tương tác với trang web VD :giỏ hàng,...
+//=>Sau khi phiên làm việc được bắt đầu
+//<=> bạn có thể sử dụng biến $_SESSION để lưu trữ và truy xuất thông tin của người dùng trong suốt phiên làm việc.
+if (isset($_POST['submit'])) // kiểm tra giá trị tồn tại và có ko null
+{
+   $email = mysqli_real_escape_string($conn, $_POST['email']);
+   $pass = mysqli_real_escape_string($conn, md5($_POST['password']));
+   // $conn :là biến được định nghĩa bên config.php . mục đích kết nối csdl MySQL, thực hiện quá trình lọc
+   //mysqli_real_escape_string : lọc các kí tự đặc biệt ra để tránh bị hack
+   $select_users = mysqli_query($conn, "SELECT * FROM `users` WHERE email = '$email' AND password = '$pass'") or die('query failed');    // kiểm tra tài khoản đã tồn lại hay chưa 
+   if (mysqli_num_rows($select_users) > 0) // kiểm tra dòng SQL của user đó có lớn hơn 0 ? nếu lớn hơn ko là tồn tại
+   //bảng "user" ả email và password đều trùng khớp với thông tin mà người dùng đã nhập.
+   {
+
+      $check = mysqli_fetch_assoc($select_users); // lấy dòng có giá trị trùng với giá trị user
+      if ($check['user_type'] == 'admin') {
+         $_SESSION['admin_id'] = $check['id'];
+         $_SESSION['admin_name'] = $check['name'];
+         $_SESSION['admin_email'] = $check['email'];
+         $_SESSION['admin_passwword'] = $check['passwword'];
+         //$_session: dùng để lưu thông tin lại trên server, vì v ngay khi người dùng(admin or user) out ra vào lại thì tk vẫn còn
+         header('location:admin_page.php'); //Chuyển hướng người dùng đến trang admin_page.php.
+      }
+      if ($check['user_type'] == 'user') {
+         $_SESSION['user_id'] = $check['id'];
+         $_SESSION['user_name'] = $check['name'];
+         $_SESSION['user_email'] = $check['email'];
+         $_SESSION['user_passwword'] = $check['passwword'];
+         header('location:home.php');
+      }
+   }
+
+   /* ?> ---<?php ?> để tạo ra một đoạn mã JavaScript,nó sẽ được PHP xử lý trước khi được gửi về cho trình duyệt. 
+                      Kết quả là trình duyệt sẽ nhận được một chuỗi HTML chứa đoạn mã JavaScript, không phải là một trang HTML hoàn chỉnh.
+        //     <script>
+        //         alert("Email hoặc mật khẩu không chính xác!");
+        //     </script>
+         <?php */ else {
+      echo "<script>alert('Email or password is incorrect!');</script>";
+   }
+} ?>

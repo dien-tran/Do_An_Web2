@@ -65,40 +65,66 @@ if (isset($_POST['submit'])) {
    }
    ?>
 
-<div class="form-container">
-      <form class="register_form" action="" method="post">
-      <div class="form-inner">
-         <h2>Register now</h2>
-         <div class="input-group">
+   <div class="form-container ">
+      <div class="container">
+         <form class="form" action="" method="post">
+            <h2>REGISTER</h2>
+            <div class="input-form"> <!--name -->
                <div class="icon">
                   <img src="./public/form/user.svg" alt="user">
                </div>
-               <input type="text" name="name" placeholder="enter your name" required class="box">
-         </div>
-         <div class="input-group">
-               <div class="icon">
-                  <i class="fa-regular fa-envelope"></i>
+               <div class="fill">
+                  <input type="text" name="name" placeholder="enter your name" required class="box">
                </div>
-               <input type="email" name="email" placeholder="enter your email" required class="box">
-         </div>
-         <div class="input-group">
-               <input type="password" name="password" placeholder="enter your password" required class="box">
-         </div>
-         <div class="input-group">
-               <input type="password" name="cpassword" placeholder="confirm your password" required class="box">
-         </div>
-         <div class="input-group">
-         <select name="user_type" class="box">
-            <option value="user">user</option>
-            <option value="admin">admin</option>
-         </select>
-         </div>
-         <div class="btn-group">
-         <input type="submit" name="submit" value="register now" class="btn">
-         </div>
-         <p>Already have an account? <a href="login.php">login now</a></p>
+            </div>
+
+            <div class="input-form"><!-- email -->
+               <div class="icon">
+                  <img src="./public/form/letter-svgrepo-com.svg" alt="gmail">
+               </div>
+               <div class="fill">
+                  <input type="email" name="email" placeholder="enter your email" required class="box">
+               </div>
+            </div>
+
+            <div class="input-form"> <!--pass1 -->
+               <div class="icon">
+                  <img src="./public//form/finger_print.svg" alt="finger_print"> <!-- dấu pass-->
+               </div>
+               <div class="fill">
+                  <input type="password" name="password" placeholder="enter your password" required class="box">
+               </div>
+            </div>
+
+            <div class="input-form"> <!--pass2 -->
+               <div class="icon">
+                  <img src="./public//form/finger_print.svg" alt="finger_print"> <!-- dấu pass-->
+               </div>
+               <div class="fill">
+                  <input type="password" name="password2" placeholder="confirm your password" required class="box">
+               </div>
+            </div>
+
+            <div class="input-form"> <!--number -->
+               <div class="icon">
+                  <img src="./public//form/phone-office-svgrepo-com.svg" alt="phone_icon"> <!-- dấu pass-->
+               </div>
+               <div class="fill">
+                  <input type="tel" name="phone" placeholder="Number phone" required class="box">
+               </div>
+            </div>
+
+
+
+            <div class="btn-group">
+               <button class="btn" type="submit" name="submit" value="Register">Register</button>
+            </div>
+            <div class="register">
+               <p>Already have an account? <a href="login.php">login now</a></p>
+            </div>
+
+         </form>
       </div>
-      </form>
    </div>
 
 </body>
