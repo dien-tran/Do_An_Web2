@@ -75,9 +75,11 @@ if (isset($_POST['add_to_cart'])) {
                   <input type="hidden" name="product_price" value="<?php echo $fetch_products['Price']; ?>" class="price">
                   <input type="hidden" name="product_image" value="<?php echo $fetch_products['Image']; ?>">
 
+                  <a href="products_details.php?product_id=<?php echo $fetch_products['Id']; ?>">
                   <div class="image">
                      <img src="uploaded_img/<?php echo $fetch_products['Image']; ?>" alt="">
                   </div>
+                  </a>
                   <div class="details">
                      <div class="name" style="font-size: 18px;">
                         <img src="./public/card/name.svg" alt="name_icon">
