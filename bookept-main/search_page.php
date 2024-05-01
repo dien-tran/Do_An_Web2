@@ -47,6 +47,13 @@ if(isset($_POST['add_to_cart'])){
    <!-- custom css file link  -->
    <link rel="stylesheet" href="styles/main.css">
 
+   <style> 
+   select {
+      padding: 8px;
+      border: 1px solid black;
+      border-radius: 5px;
+   }
+   </style>
 </head>
 <body>
    
@@ -57,8 +64,99 @@ if(isset($_POST['add_to_cart'])){
    <p> <a href="home.php">home</a> / search </p>
 </div>
 
-<section class="search-form">
-   <form action="" method="post">
+<section class="search-form" >
+   <form action="" method="post" >
+   <?php
+
+   // Thực hiện truy vấn SQL để lấy dữ liệu từ cột 'CateName'
+   $sql_category = "SELECT CateName FROM category"; // Thay 'table_name' bằng tên bảng thực tế của bạn
+   $result_category = mysqli_query($conn, $sql_category);
+
+   // Kiểm tra xem có kết quả trả về không
+   if (mysqli_num_rows($result_category) > 0) {
+      // Bắt đầu select box
+      echo "<select name='category_name' id='category_name'>";
+      echo "<option value='' selected >Type</option>"; // Option mặc định
+
+      // Lặp qua kết quả và tạo các option
+      while ($row = mysqli_fetch_assoc($result_category)) {
+         echo "<option value='" . $row['CateName'] . "'>" . $row['CateName'] . "</option>";
+      }
+
+      // Kết thúc select box
+      echo "</select>";
+   } else {
+      echo "Không có dữ liệu";
+   }
+
+   $sql_product = "SELECT MainAuthor FROM products"; // Thay 'table_name' bằng tên bảng thực tế của bạn
+   $result_product = mysqli_query($conn, $sql_product);
+
+   // Kiểm tra xem có kết quả trả về không
+   if (mysqli_num_rows($result_product) > 0) {
+      // Bắt đầu select box
+      echo "<select name='author' id='author'>";
+      echo "<option value='' selected >Author</option>"; // Option mặc định
+
+      // Lặp qua kết quả và tạo các option
+      while ($row = mysqli_fetch_assoc($result_product)) {
+         echo "<option value='" . $row['MainAuthor'] . "'>" . $row['MainAuthor'] . "</option>";
+      }
+      echo "</select>";
+
+
+      $sql_product = "SELECT Publisher FROM products"; // Thay 'table_name' bằng tên bảng thực tế của bạn
+      $result_product = mysqli_query($conn, $sql_product);
+      echo "<select name='publisher' id='publisher'>";
+      echo "<option value='' selected >Publisher</option>"; // Option mặc định
+
+      // Lặp qua kết quả và tạo các option
+      while ($row = mysqli_fetch_assoc($result_product)) {
+         echo "<option value='" . $row['Publisher'] . "'>" . $row['Publisher'] . "</option>";
+      }
+      echo "</select>";
+
+
+      $sql_product = "SELECT PublicationYear FROM products"; // Thay 'table_name' bằng tên bảng thực tế của bạn
+      $result_product = mysqli_query($conn, $sql_product);
+      echo "<select name='year' id='year'>";
+      echo "<option value='' selected >Publication Year</option>"; // Option mặc định
+
+      // Lặp qua kết quả và tạo các option
+      while ($row = mysqli_fetch_assoc($result_product)) {
+         echo "<option value='" . $row['PublicationYear'] . "'>" . $row['PublicationYear'] . "</option>";
+      }
+      // Kết thúc select box
+      echo "</select>";
+
+      $sql_product = "SELECT Language FROM products"; // Thay 'table_name' bằng tên bảng thực tế của bạn
+      $result_product = mysqli_query($conn, $sql_product);
+      echo "<select name='language' id='language-select'>";
+      echo "<option value='' selected >Language</option>"; // Option mặc định
+
+      // Lặp qua kết quả và tạo các option
+      while ($row = mysqli_fetch_assoc($result_product)) {
+         echo "<option value='" . $row['Language'] . "'>" . $row['Language'] . "</option>";
+      }
+      // Kết thúc select box
+      echo "</select>";
+
+      $sql_product = "SELECT CoverType FROM products"; // Thay 'table_name' bằng tên bảng thực tế của bạn
+      $result_product = mysqli_query($conn, $sql_product);
+      echo "<select name='cover' id='cover'>";
+      echo "<option value='' selected >Cover Type</option>"; // Option mặc định
+
+      // Lặp qua kết quả và tạo các option
+      while ($row = mysqli_fetch_assoc($result_product)) {
+         echo "<option value='" . $row['CoverType'] . "'>" . $row['CoverType'] . "</option>";
+      }
+      // Kết thúc select box
+      echo "</select>";
+   } else {
+      echo "Không có dữ liệu";
+   }
+   ?>
+ 
       <input type="text" name="search" placeholder="search products..." class="box">
       <input type="submit" name="submit" value="search" class="btn">
    </form>
@@ -67,11 +165,51 @@ if(isset($_POST['add_to_cart'])){
 <section class="products" style="padding-top: 0;">
    <div class="box-container">
    <?php
-      if(isset($_POST['submit'])){
-         $search_item = $_POST['search'];
-         $select_products = mysqli_query($conn, "SELECT * FROM `products` WHERE name LIKE '%{$search_item}%'") or die('query failed');
-         if(mysqli_num_rows($select_products) > 0){
-         while($fetch_product = mysqli_fetch_assoc($select_products)){
+      if(isset($_POST['submit'])){ 
+      $sql = "SELECT * FROM products WHERE 1=1";
+
+      if(!empty($_POST['category_name'])) {
+         $category_name = mysqli_real_escape_string($conn, $_POST['category_name']);
+         
+         $sql_category_id = "SELECT CateId FROM category WHERE CateName = '$category_name'";
+         $result_category_id = mysqli_query($conn, $sql_category_id);
+         
+         if(mysqli_num_rows($result_category_id) > 0) {
+   
+             $row_category_id = mysqli_fetch_assoc($result_category_id);
+             $category_id = $row_category_id['CateId'];
+         
+             
+             $sql = "SELECT * FROM products WHERE CategoryId = '$category_id'";
+         }
+      }
+      if(!empty($_POST['author'])) {
+            $author = mysqli_real_escape_string($conn, $_POST['author']);
+            $sql .= " AND MainAuthor = '$author'";
+      }
+      if(!empty($_POST['publisher'])) {
+            $publisher = mysqli_real_escape_string($conn, $_POST['publisher']);
+            $sql .= " AND Publisher = '$publisher'";
+      }
+      if(!empty($_POST['year'])) {
+            $year = mysqli_real_escape_string($conn, $_POST['year']);
+            $sql .= " AND PublicationYear = '$year'";
+      }
+      if(!empty($_POST['language'])) {
+            $language = mysqli_real_escape_string($conn, $_POST['language']);
+            $sql .= " AND Language = '$language'";
+      }
+      if(!empty($_POST['cover'])) {
+            $cover = mysqli_real_escape_string($conn, $_POST['cover']);
+            $sql .= " AND CoverType = '$cover'";
+      }
+      if(!empty($_POST['search'])) {
+         $search_item = mysqli_real_escape_string($conn,$_POST['search']);
+         $sql = "SELECT * FROM `products` WHERE name LIKE '%{$search_item}%'";
+      }
+      $select_products = mysqli_query($conn, $sql);
+      if(mysqli_num_rows($select_products) > 0){
+      while($fetch_product = mysqli_fetch_assoc($select_products)){   
    ?>
    <form action="" method="post" class="box" style="padding-left: 20px;">
       <img src="uploaded_img/<?php echo $fetch_product['Image']; ?>" alt="" class="image" style="align: center;">
