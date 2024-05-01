@@ -19,12 +19,12 @@
             <img src="./public/favicon.ico" alt="">
             <h2>Bookept</h2>
         </div>
-        <div class="link">
+        <!-- <div class="link">
             <a href="admin_page.php">
                 <h3>Admin page</h3>
             </a>
             <img src="./public/index/github.svg" alt="github">
-        </div>
+        </div> -->
     </nav>
     <main>
         <div class="content">

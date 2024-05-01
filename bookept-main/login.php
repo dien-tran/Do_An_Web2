@@ -74,7 +74,7 @@ if (isset($_POST['submit'])) // kiểm tra giá trị tồn tại và có ko nul
          $_SESSION['admin_email'] = $check['email'];
          $_SESSION['admin_passwword'] = $check['passwword'];
          //$_session: dùng để lưu thông tin lại trên server, vì v ngay khi người dùng(admin or user) out ra vào lại thì tk vẫn còn
-         header('location:admin_page.php'); //Chuyển hướng người dùng đến trang admin_page.php.
+         header('location:admin.php'); //Chuyển hướng người dùng đến trang admin_page.php.
       }
       if ($check['user_type'] == 'user') {
          $_SESSION['user_id'] = $check['id'];

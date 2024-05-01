@@ -1,28 +1,40 @@
 <?php
-
 include 'config.php';
+session_start();
 
-if (isset($_POST['submit'])) {
+if (isset($_POST['submit'])) 
+{
 
    $name = mysqli_real_escape_string($conn, $_POST['name']);
    $email = mysqli_real_escape_string($conn, $_POST['email']);
    $pass = mysqli_real_escape_string($conn, md5($_POST['password']));
-   $cpass = mysqli_real_escape_string($conn, md5($_POST['cpassword']));
-   $user_type = $_POST['user_type'];
+   $password2 = mysqli_real_escape_string($conn, md5($_POST['password2']));
+   $phone_number = mysqli_real_escape_string($conn,$_POST['phone_number'] );
+   // $user_type = $_POST['user_type'];
 
    $select_users = mysqli_query($conn, "SELECT * FROM `users` WHERE email = '$email' AND password = '$pass'") or die('query failed');
 
-   if (mysqli_num_rows($select_users) > 0) {
+   if (mysqli_num_rows($select_users) > 0) 
+   {
       $message[] = 'user already exist!';
-   } else {
-      if ($pass != $cpass) {
-         $message[] = 'confirm password not matched!';
+   } 
+   else if ($pass != $password2) 
+   {
+      $message[] = 'confirm password not matched!';
+   } 
+   else {
+      $user_type = isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'admin' ? 'admin' : 'user';
+      $insert_query = "INSERT INTO `users` (name, email, password, user_type, phone_number) VALUES ('$name', '$email', '$password', '$user_type', '$phone_number')";
+      if (mysqli_query($conn, $insert_query)) {
+          $message = 'Registered successfully!';
+          if ($user_type === 'admin') {
+              header('Location: admin.php');
+              exit();
+          } 
       } else {
-         mysqli_query($conn, "INSERT INTO `users`(name, email, password, user_type) VALUES('$name', '$email', '$cpass', '$user_type')") or die('query failed');
-         $message[] = 'registered successfully!';
-         header('location:login.php');
+          $message = 'Registration failed!';
       }
-   }
+  }
 }
 
 ?>
@@ -110,7 +122,7 @@ if (isset($_POST['submit'])) {
                   <img src="./public//form/phone-office-svgrepo-com.svg" alt="phone_icon"> <!-- dấu pass-->
                </div>
                <div class="fill">
-                  <input type="tel" name="phone" placeholder="Number phone" required class="box">
+                  <input type="tel" name="phone_number" placeholder="Number phone" required class="box">
                </div>
             </div>
 
