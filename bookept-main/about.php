@@ -52,13 +52,14 @@ if (!isset($user_id)) {
             <h3>why choose us?</h3>
             <h6>A choice that makes the difference</h6>
             <p>&bull; Professional organization, while always adding value and active in solving customer problems.</p>
-            <p>&bull; Lorem ipsum dolor, sit amet consectetur adipisicing elit. Impedit quos enim minima ipsa dicta officia corporis ratione saepe sed adipisci?</p>
+            <p>&bull; Dive into our extensive collection of books curated for every reader, from classics to contemporary bestsellers. </p>
+            <p>&bull; Immerse yourself in a world of knowledge and imagination, where every page offers an adventure waiting to be discovered. </p>
             <a href="contact.php" class="btn">contact us</a>
          </div>
       </div>
    </section>
 
-   <div class="about-benefit">
+   <!-- <div class="about-benefit">
       <div>
          <img src="https://www.aimgroupinternational.com/build/assets/why-choose-us/dedicated-teams.png" alt="dedicated-teams_img">
          <p>Dedicated teams</p>
@@ -79,7 +80,7 @@ if (!isset($user_id)) {
          <img src="https://www.aimgroupinternational.com/build/assets/why-choose-us/respect-clients.png" alt="respect-clients_img">
          <p>Respect customers</p>
       </div>
-   </div>
+   </div> -->
 
    <section class="about">
       <div class="flex">
@@ -95,7 +96,7 @@ if (!isset($user_id)) {
       </div>
    </section>
 
-   <div class="about-benefit">
+   <!-- <div class="about-benefit">
       <div>
          <img src="https://www.aimgroupinternational.com/build/assets/why-choose-us/research-analysis.png" alt="research-analysis_img">
          <p>Reasearch & Analysis</p>
@@ -120,7 +121,7 @@ if (!isset($user_id)) {
          <img src="https://www.aimgroupinternational.com/build/assets/why-choose-us/ease-work.png" alt="ease-work_img">
          <p>Transparency and ease</p>
       </div>
-   </div>
+   </div> -->
 
    <section class="about">
       <div class="flex">
@@ -141,7 +142,7 @@ if (!isset($user_id)) {
          <div class="box">
             <div class="review-infor">
                <img src="https://scontent.fsgn2-5.fna.fbcdn.net/v/t1.6435-9/83979562_1585954714895087_6401964817036345344_n.jpg?_nc_cat=102&ccb=1-6&_nc_sid=174925&_nc_ohc=p7UrNJk3O4sAX-kVq4E&_nc_ht=scontent.fsgn2-5.fna&oh=00_AT8DVxDK0qXrUYVetgE1Kc1NJ4NHewozqcFt_g0eBvsu1A&oe=62ABE3D8" alt="review_img_1">
-               <h3>Huu Nhat</h3>
+               <h3>Danh Vo</h3>
                <div class="stars">
                   <i class="fas fa-star"></i>
                   <i class="fas fa-star"></i>
@@ -156,7 +157,7 @@ if (!isset($user_id)) {
          <div class="box">
             <div class="review-infor">
                <img src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-6/270012528_3144488045830078_518552516310324421_n.jpg?_nc_cat=110&ccb=1-6&_nc_sid=174925&_nc_ohc=SX8_BepqJZoAX-l8IIk&_nc_ht=scontent.fsgn2-6.fna&oh=00_AT9EpmidHI0EJRqtjNDGKO8SSpUplJKau7ZaUApP5JR7FA&oe=62897475" alt="review_img_2">
-               <h3>Thanh Tung</h3>
+               <h3>Anh Ngo</h3>
                <div class="stars">
                   <i class="fas fa-star"></i>
                   <i class="fas fa-star"></i>
@@ -186,7 +187,7 @@ if (!isset($user_id)) {
          <div class="box">
             <div class="review-infor">
             <img src="./public/about/review-4.png" alt="review_img_4">
-               <h3>Dinh Thinh</h3>
+               <h3>Phú Thành</h3>
                <div class="stars">
                   <i class="fas fa-star"></i>
                   <i class="fas fa-star"></i>
@@ -201,7 +202,7 @@ if (!isset($user_id)) {
          <div class="box">
             <div class="review-infor">
             <img src="./public/about/review-5.png" alt="review_img_5">
-               <h3>Thanh Son</h3>
+               <h3>Vinh Nguyễn</h3>
                <div class="stars">
                   <i class="fas fa-star"></i>
                   <i class="fas fa-star"></i>
@@ -216,7 +217,7 @@ if (!isset($user_id)) {
          <div class="box">
             <div class="review-infor">
             <img src="./public/about/review-6.png" alt="review_img_6">
-               <h3>Tran Phong</h3>
+               <h3>Phát Trịnh</h3>
                <div class="stars">
                   <i class="fas fa-star"></i>
                   <i class="fas fa-star"></i>
@@ -231,7 +232,7 @@ if (!isset($user_id)) {
    </section>
 
    <section class="authors">
-      <h1 class="title">greate authors</h1>
+      <h1 class="title">greate founder</h1>
       <div class="box-container">
          <div class="box">
             <img src="./public/about/author-1.jpg" alt="">
@@ -241,7 +242,7 @@ if (!isset($user_id)) {
                <a href="#" class="fab fa-instagram"></a>
                <a href="#" class="fab fa-linkedin"></a>
             </div>
-            <h3>Thuong Truong</h3>
+            <h3>Điền Trần</h3>
          </div>
 
          <div class="box">
@@ -252,7 +253,7 @@ if (!isset($user_id)) {
                <a href="#" class="fab fa-instagram"></a>
                <a href="#" class="fab fa-linkedin"></a>
             </div>
-            <h3>john deo</h3>
+            <h3>Lộc Đỗ</h3>
          </div>
 
          <div class="box">
@@ -263,7 +264,7 @@ if (!isset($user_id)) {
                <a href="#" class="fab fa-instagram"></a>
                <a href="#" class="fab fa-linkedin"></a>
             </div>
-            <h3>john deo</h3>
+            <h3>Hồng Thắm</h3>
          </div>
       </div>
    </section>
