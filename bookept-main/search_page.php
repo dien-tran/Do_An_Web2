@@ -47,6 +47,13 @@ if(isset($_POST['add_to_cart'])){
    <!-- custom css file link  -->
    <link rel="stylesheet" href="styles/main.css">
 
+   <style> 
+   select {
+      padding: 8px;
+      border: 1px solid black;
+      border-radius: 5px;
+   }
+   </style>
 </head>
 <body>
    
@@ -158,11 +165,51 @@ if(isset($_POST['add_to_cart'])){
 <section class="products" style="padding-top: 0;">
    <div class="box-container">
    <?php
-      if(isset($_POST['submit'])){
-         $search_item = $_POST['search'];
-         $select_products = mysqli_query($conn, "SELECT * FROM `products` WHERE name LIKE '%{$search_item}%'") or die('query failed');
-         if(mysqli_num_rows($select_products) > 0){
-         while($fetch_product = mysqli_fetch_assoc($select_products)){
+      if(isset($_POST['submit'])){ 
+      $sql = "SELECT * FROM products WHERE 1=1";
+
+      if(!empty($_POST['category_name'])) {
+         $category_name = mysqli_real_escape_string($conn, $_POST['category_name']);
+         
+         $sql_category_id = "SELECT CateId FROM category WHERE CateName = '$category_name'";
+         $result_category_id = mysqli_query($conn, $sql_category_id);
+         
+         if(mysqli_num_rows($result_category_id) > 0) {
+   
+             $row_category_id = mysqli_fetch_assoc($result_category_id);
+             $category_id = $row_category_id['CateId'];
+         
+             
+             $sql = "SELECT * FROM products WHERE CategoryId = '$category_id'";
+         }
+      }
+      if(!empty($_POST['author'])) {
+            $author = mysqli_real_escape_string($conn, $_POST['author']);
+            $sql .= " AND MainAuthor = '$author'";
+      }
+      if(!empty($_POST['publisher'])) {
+            $publisher = mysqli_real_escape_string($conn, $_POST['publisher']);
+            $sql .= " AND Publisher = '$publisher'";
+      }
+      if(!empty($_POST['year'])) {
+            $year = mysqli_real_escape_string($conn, $_POST['year']);
+            $sql .= " AND PublicationYear = '$year'";
+      }
+      if(!empty($_POST['language'])) {
+            $language = mysqli_real_escape_string($conn, $_POST['language']);
+            $sql .= " AND Language = '$language'";
+      }
+      if(!empty($_POST['cover'])) {
+            $cover = mysqli_real_escape_string($conn, $_POST['cover']);
+            $sql .= " AND CoverType = '$cover'";
+      }
+      if(!empty($_POST['search'])) {
+         $search_item = mysqli_real_escape_string($conn,$_POST['search']);
+         $sql = "SELECT * FROM `products` WHERE name LIKE '%{$search_item}%'";
+      }
+      $select_products = mysqli_query($conn, $sql);
+      if(mysqli_num_rows($select_products) > 0){
+      while($fetch_product = mysqli_fetch_assoc($select_products)){   
    ?>
    <form action="" method="post" class="box" style="padding-left: 20px;">
       <img src="uploaded_img/<?php echo $fetch_product['Image']; ?>" alt="" class="image" style="align: center;">
