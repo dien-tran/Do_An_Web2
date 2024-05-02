@@ -35,7 +35,8 @@
             <div class="btn-group">
                <button class="btn btn--primary" type="submit" name="submit" value="login now">Sign in</button>
             </div>
-            <p>Don't have account? <a class="btn--text" href="register.php">register now</a></p>
+            <br>
+            <p>Don't have account? <a class="btn--text" href="register.php" style="color:#c000ff">Register now</a></p>
          </div>
       </form>
    </div>
