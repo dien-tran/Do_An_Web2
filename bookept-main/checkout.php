@@ -165,7 +165,7 @@ if (isset($_POST['order_btn'])) {
             // Cập nhật thông tin người dùng nếu email đã tồn tại
             $sql_update_user = "UPDATE users SET  phone = '$number',  house_number = '$house_number', road = '$road', city = '$city', district = '$district', ward = '$ward' WHERE email = '$email'";
             if(mysqli_query($conn, $sql_update_user)) {
-               echo "<strong style='font-size:15px;'>Thông tin người dùng đã được cập nhật thành công !</strong>";
+               echo "<strong style='font-size:14px;'>Thông tin người dùng đã được cập nhật thành công !</strong>";
             } else {
                   echo "Lỗi: " . mysqli_error($conn);
             }
