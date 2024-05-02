@@ -2,39 +2,33 @@
 include 'config.php';
 session_start();
 
-if (isset($_POST['submit'])) 
-{
+if (isset($_POST['submit'])) {
 
    $name = mysqli_real_escape_string($conn, $_POST['name']);
    $email = mysqli_real_escape_string($conn, $_POST['email']);
    $pass = mysqli_real_escape_string($conn, md5($_POST['password']));
    $password2 = mysqli_real_escape_string($conn, md5($_POST['password2']));
-   $phone_number = mysqli_real_escape_string($conn,$_POST['phone_number'] );
+   $phone_number = mysqli_real_escape_string($conn, $_POST['phone_number']);
    // $user_type = $_POST['user_type'];
 
-   $select_users = mysqli_query($conn, "SELECT * FROM `users` WHERE email = '$email' AND password = '$pass'") or die('query failed');
+   $select_users = mysqli_query($conn, "SELECT * FROM `users` WHERE email = '$email' ") or die('query failed');
 
-   if (mysqli_num_rows($select_users) > 0) 
-   {
+   if (mysqli_num_rows($select_users) > 0) {
       $message[] = 'user already exist!';
-   } 
-   else if ($pass != $password2) 
-   {
-      $message[] = 'confirm password not matched!';
-   } 
-   else {
+   } else {
       $user_type = isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'admin' ? 'admin' : 'user';
-      $insert_query = "INSERT INTO `users` (name, email, password, user_type, phone_number) VALUES ('$name', '$email', '$password', '$user_type', '$phone_number')";
+      $insert_query = "INSERT INTO `users` (name, email, password, user_type, phone_number) VALUES ('$name', '$email', '$pass', 'user', '$phone_number')";
       if (mysqli_query($conn, $insert_query)) {
-          $message = 'Registered successfully!';
-          if ($user_type === 'admin') {
-              header('Location: admin.php');
-              exit();
-          } 
+         if ($pass != $password2) {
+            $message[] = 'confirm password not matched!';
+         } else {
+               header('location: admin.php');
+               exit();
+         }
       } else {
-          $message = 'Registration failed!';
+         $message = 'Registration failed!';
       }
-  }
+   }
 }
 
 ?>
@@ -61,21 +55,23 @@ if (isset($_POST['submit']))
 </head>
 
 <body>
-
-
-
-   <?php
-   if (isset($message)) {
-      foreach ($message as $message) {
-         echo '
-      <div class="message">
-         <span>' . $message . '</span>
-         <i class="fas fa-times" onclick="this.parentElement.remove();"></i>
-      </div>
-      ';
+   <?php 
+      if(isset($message))
+      {
+         foreach($message as $msg)
+         {
+            echo '
+            <div class="message">
+            <span>' . $msg . '</span>
+            <i clss="fas fa-times" onclick="this.parentElement.remove();"></i>
+            ';
+         }
       }
-   }
    ?>
+
+
+
+
 
    <div class="form-container ">
       <div class="container">

@@ -64,26 +64,37 @@ if (isset($_POST['submit'])) // kiểm tra giá trị tồn tại và có ko nul
    //mysqli_real_escape_string : lọc các kí tự đặc biệt ra để tránh bị hack
    $select_users = mysqli_query($conn, "SELECT * FROM `users` WHERE email = '$email' AND password = '$pass'") or die('query failed');    // kiểm tra tài khoản đã tồn lại hay chưa 
    if (mysqli_num_rows($select_users) > 0) // kiểm tra dòng SQL của user đó có lớn hơn 0 ? nếu lớn hơn ko là tồn tại
-   //bảng "user" ả email và password đều trùng khớp với thông tin mà người dùng đã nhập.
+   //bảng "user" cả email và password đều trùng khớp với thông tin mà người dùng đã nhập.
    {
 
-      $check = mysqli_fetch_assoc($select_users); // lấy dòng có giá trị trùng với giá trị user
-      if ($check['user_type'] == 'admin') {
-         $_SESSION['admin_id'] = $check['id'];
-         $_SESSION['admin_name'] = $check['name'];
-         $_SESSION['admin_email'] = $check['email'];
-         $_SESSION['admin_passwword'] = $check['passwword'];
-         //$_session: dùng để lưu thông tin lại trên server, vì v ngay khi người dùng(admin or user) out ra vào lại thì tk vẫn còn
-         header('location:admin.php'); //Chuyển hướng người dùng đến trang admin_page.php.
-      }
-      if ($check['user_type'] == 'user') {
-         $_SESSION['user_id'] = $check['id'];
-         $_SESSION['user_name'] = $check['name'];
-         $_SESSION['user_email'] = $check['email'];
-         $_SESSION['user_passwword'] = $check['passwword'];
-         header('location:home.php');
-      }
-   }
+   
+               $check = mysqli_fetch_assoc($select_users); // lấy dòng có giá trị trùng với giá trị user
+               if ($check['user_type'] == 'admin') 
+               {
+                  $_SESSION['admin_id'] = $check['id'];
+                  $_SESSION['admin_name'] = $check['name']; 
+                  $_SESSION['admin_email'] = $check['email'];
+                  $_SESSION['admin_passwword'] = $check['passwword'];
+                  //$_session: dùng để lưu thông tin lại trên server, vì v ngay khi người dùng(admin or user) out ra vào lại thì tk vẫn còn
+                  header('location:admin.php'); //Chuyển hướng người dùng đến trang admin_page.php.
+               }
+               if ($check['user_type'] == 'user' && $check['status']=='1') 
+               {
+                  $_SESSION['user_id'] = $check['id'];
+                  $_SESSION['user_name'] = $check['name'];
+                  $_SESSION['user_email'] = $check['email'];
+                  $_SESSION['user_passwword'] = $check['passwword'];
+                  header('location:home.php');
+               }
+               else if ($check['user_type'] == 'user' && $check['status']=='0')
+               {
+                  echo "<script>alert(' Tài khoản đã bị khóa . Vui lòng gọi cho tổng đài !');</script>";
+
+               }
+            }
+            
+      
+   
 
    /* ?> ---<?php ?> để tạo ra một đoạn mã JavaScript,nó sẽ được PHP xử lý trước khi được gửi về cho trình duyệt. 
                       Kết quả là trình duyệt sẽ nhận được một chuỗi HTML chứa đoạn mã JavaScript, không phải là một trang HTML hoàn chỉnh.
