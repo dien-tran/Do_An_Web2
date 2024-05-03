@@ -28,6 +28,18 @@ if(isset($_POST['add_to_cart'])){
 
 };
 
+
+$products_per_page = 8;
+
+// Tính số trang dựa trên tổng số sản phẩm và số sản phẩm mỗi trang
+$total_products = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `products`"));
+$total_pages = ceil($total_products / $products_per_page);
+
+// Lấy trang hiện tại từ tham số truyền vào hoặc mặc định là trang 1
+$current_page = isset($_GET['page']) ? $_GET['page'] : 1;
+
+// Tính offset (bắt đầu lấy từ vị trí nào trong cơ sở dữ liệu)
+$offset = ($current_page - 1) * $products_per_page;
 ?>
 
 <!DOCTYPE html>
@@ -54,6 +66,44 @@ if(isset($_POST['add_to_cart'])){
       border-radius: 5px;
    }
    </style>
+    <style>
+    .pagination-justify-content-center {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        font-size: 15px;
+    }
+
+    .pagination-justify-content-center .page-item {
+        display: inline-block;
+        margin-right: 5px;
+        background-color: #ddd; /* Màu nền xám */
+        padding: 15px 30px; /* Kích thước padding */
+        border-radius: 10px;
+    }
+
+    .pagination-justify-content-center .page-item.disabled .page-link {
+        color: #6c757d;
+        pointer-events: none;
+        background-color: #ddd; /* Màu nền xám */
+    }
+
+    .pagination-justify-content-center .page-item.active .page-link {
+        /* color: #613d8a; màu nút khi được bấm */
+        color: red  ;
+    }
+
+    .pagination-justify-content-center .page-link {
+        color: black; 
+    }
+
+    .pagination-justify-content-center .page-link:hover {
+        color: purple; /* Màu chữ khi hover */
+        text-decoration: none;
+
+    }
+</style>
 </head>
 <body>
    
@@ -76,7 +126,7 @@ if(isset($_POST['add_to_cart'])){
    if (mysqli_num_rows($result_category) > 0) {
       // Bắt đầu select box
       echo "<select name='category_name' id='category_name'>";
-      echo "<option value='' selected >Type</option>"; // Option mặc định
+      echo "<option value='' selected disabled >Type</option>"; // Option mặc định
 
       // Lặp qua kết quả và tạo các option
       while ($row = mysqli_fetch_assoc($result_category)) {
@@ -96,7 +146,7 @@ if(isset($_POST['add_to_cart'])){
    if (mysqli_num_rows($result_product) > 0) {
       // Bắt đầu select box
       echo "<select name='author' id='author'>";
-      echo "<option value='' selected >Author</option>"; // Option mặc định
+      echo "<option value='' selected disabled >Author</option>"; // Option mặc định
 
       // Lặp qua kết quả và tạo các option
       while ($row = mysqli_fetch_assoc($result_product)) {
@@ -108,7 +158,7 @@ if(isset($_POST['add_to_cart'])){
       $sql_product = "SELECT Publisher FROM products"; // Thay 'table_name' bằng tên bảng thực tế của bạn
       $result_product = mysqli_query($conn, $sql_product);
       echo "<select name='publisher' id='publisher'>";
-      echo "<option value='' selected >Publisher</option>"; // Option mặc định
+      echo "<option value='' selected disabled >Publisher</option>"; // Option mặc định
 
       // Lặp qua kết quả và tạo các option
       while ($row = mysqli_fetch_assoc($result_product)) {
@@ -120,7 +170,7 @@ if(isset($_POST['add_to_cart'])){
       $sql_product = "SELECT PublicationYear FROM products"; // Thay 'table_name' bằng tên bảng thực tế của bạn
       $result_product = mysqli_query($conn, $sql_product);
       echo "<select name='year' id='year'>";
-      echo "<option value='' selected >Publication Year</option>"; // Option mặc định
+      echo "<option value='' selected disabled >Publication Year</option>"; // Option mặc định
 
       // Lặp qua kết quả và tạo các option
       while ($row = mysqli_fetch_assoc($result_product)) {
@@ -132,7 +182,7 @@ if(isset($_POST['add_to_cart'])){
       $sql_product = "SELECT Language FROM products"; // Thay 'table_name' bằng tên bảng thực tế của bạn
       $result_product = mysqli_query($conn, $sql_product);
       echo "<select name='language' id='language-select'>";
-      echo "<option value='' selected >Language</option>"; // Option mặc định
+      echo "<option value='' selected disabled >Language</option>"; // Option mặc định
 
       // Lặp qua kết quả và tạo các option
       while ($row = mysqli_fetch_assoc($result_product)) {
@@ -144,13 +194,22 @@ if(isset($_POST['add_to_cart'])){
       $sql_product = "SELECT CoverType FROM products"; // Thay 'table_name' bằng tên bảng thực tế của bạn
       $result_product = mysqli_query($conn, $sql_product);
       echo "<select name='cover' id='cover'>";
-      echo "<option value='' selected >Cover Type</option>"; // Option mặc định
+      echo "<option value='' selected disabled >Cover Type</option>"; // Option mặc định
 
       // Lặp qua kết quả và tạo các option
       while ($row = mysqli_fetch_assoc($result_product)) {
          echo "<option value='" . $row['CoverType'] . "'>" . $row['CoverType'] . "</option>";
       }
       // Kết thúc select box
+      echo "</select>";
+
+      $sql_product = "SELECT Price FROM products";
+      $result_product = mysqli_query($conn, $sql_product);
+      echo "<select name='price' id='price'>";
+      echo "<option value='' selected disabled >Price</option>";
+      echo "<option value='<50'  > <$50 </option>";
+      echo "<option value='>50' > >$50 </option>";
+
       echo "</select>";
    } else {
       echo "Không có dữ liệu";
@@ -203,6 +262,19 @@ if(isset($_POST['add_to_cart'])){
             $cover = mysqli_real_escape_string($conn, $_POST['cover']);
             $sql .= " AND CoverType = '$cover'";
       }
+      if(!empty($_POST['price'])) {
+            $selected_price =mysqli_real_escape_string($conn, $_POST['price']);
+            $sql = "SELECT * FROM products";
+
+            // Nếu người dùng chọn giá dưới $50
+            if ($selected_price == '<50') {
+               $sql .= " WHERE Price <= 50";
+            }
+            // Nếu người dùng chọn giá trên $50
+            if ($selected_price == '>50') {
+               $sql .= " WHERE Price > 50";
+            }
+      }
       if(!empty($_POST['search'])) {
          $search_item = mysqli_real_escape_string($conn,$_POST['search']);
          $sql = "SELECT * FROM `products` WHERE name LIKE '%{$search_item}%'";
@@ -234,6 +306,34 @@ if(isset($_POST['add_to_cart'])){
    ?>
    </div>
 </section>
+
+   <!-- Pagination -->
+   <nav aria-label="Page navigation example">
+    <ul class="pagination-justify-content-center">
+    <li class="page-item <?php echo $current_page == 1 ? 'disabled' : ''; ?>">
+                <a class="page-link" href="<?php echo $current_page == 1 ? '#' : '?page=' . 1; ?>"> First </a>
+        </li>
+        <li class="page-item <?php echo $current_page == 1 ? 'disabled' : ''; ?>">
+            <a class="page-link" href="<?php echo $current_page == 1 ? '#' : '?page=' . ($current_page - 1); ?>" tabindex="-1"> < </a>
+        </li>
+        <?php
+        // Hiển thị các trang
+        for ($i = 1; $i <= $total_pages; $i++) {
+            ?>
+            <li class="page-item <?php echo $current_page == $i ? 'active' : ''; ?>">
+                <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+            </li>
+            <?php
+        }
+        ?>
+        <li class="page-item <?php echo $current_page == $total_pages ? 'disabled' : ''; ?>">
+            <a class="page-link" href="<?php echo $current_page == $total_pages ? '#' : '?page=' . ($current_page + 1); ?>"> > </a>
+        </li>
+        <li class="page-item <?php echo $current_page == $total_pages ? 'disabled' : ''; ?>">
+            <a class="page-link" href="<?php echo $current_page == $total_pages ? '#' : '?page=' . ($total_pages); ?>"> Last </a>
+        </li>
+    </ul>
+</nav>
 
 <?php include 'footer.php'; ?>
 
