@@ -1,0 +1,227 @@
+<?php
+include 'config.php';
+session_start();
+$admin_id = $_SESSION['admin_id'];
+
+if (!isset($admin_id)) {
+    header('Location:login.php');
+    exit();
+}
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Lấy dữ liệu từ form
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $phone_number = $_POST['phone_number'];
+    $insert_query = "INSERT INTO users (name, email, password, user_type, phone_number) VALUES ('$name', '$email', '$password', '$user_type', '$phone_number')";
+    header('Location: admin.php');
+    exit();
+}
+//search
+// if (isset($_GET['submit_search'])) 
+// {
+//     $search=$_GET['text_search'];
+//     $sql_tk="SELECT * FROM users WHERE name LIKE '%" . $search . "%'";
+//     $sql_search= mysqli_query($conn,$sql_tk);
+// }
+// else
+// {
+//     $search='';
+//     $sql_tk="SELECT* FROM users limit 5";
+//     $sql_search= mysqli_query($conn,$sql_tk);
+
+// }
+// xóa 
+
+if (isset($_GET['delete'])) // kiểm tra xem có tồn tại tham số 'delete' trong mảng $_GET hay không nếu có gì có id
+{
+    $delete_id = $_GET['delete']; // nếu có thì lấy id 
+    mysqli_query($conn, "DELETE FROM users WHERE id = '$delete_id'") or die('query failed');
+}
+if (isset($_GET['block'])) {
+    $block_id = $_GET['block'];
+    $sql_block = mysqli_query($conn, "SELECT * FROM  users WHERE id=$block_id");
+    if (mysqli_num_rows($sql_block) > 0) {
+        $query = "UPDATE users SET status = 0 WHERE id = $block_id";
+    }
+}
+if (isset($_GET['block'])) {
+    $block_id = $_GET['block'];
+    $sql_block = mysqli_query($conn, "SELECT * FROM  users WHERE id=$block_id");
+    if (mysqli_num_rows($sql_block) > 0) {
+        $query = "UPDATE users SET status = 0 WHERE id = $block_id";
+        if (mysqli_query($conn, $query)) {
+            echo "<script>alert('Người dùng đã được chặn.');</script>";
+        } else {
+            echo "Cập nhật trạng thái thất bại: " . mysqli_error($conn);
+        }
+    }
+}
+if (isset($_GET['unblock'])) {
+    $unblock_id = $_GET['unblock'];
+    $sql_unblock = mysqli_query($conn, "SELECT * FROM  users WHERE id=$unblock_id");
+    if (mysqli_num_rows($sql_unblock) > 0) {
+        $query = "UPDATE users SET status = 1 WHERE id = $unblock_id";
+        if (mysqli_query($conn, $query)) {
+            echo "<script>alert('Người dùng đã gỡ chặn.');</script>";
+        } else {
+            echo "Cập nhật trạng thái thất bại: " . mysqli_error($conn);
+        }
+    }
+}
+
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='image/Logo.png' rel='icon' type='image/x-icon' />
+    <link rel="stylesheet" href="styles/admin/admin.css">
+    <link rel="stylesheet" href="styles/admin/admin-reponsive.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" />
+
+
+    <link rel="stylesheet" href="">
+    <title>Quản lý cửa hàng</title>
+</head>
+
+<body>
+    <header class="header">
+        <button class="menu-icon-btn">
+            <div class="menu-icon">
+                <i class="fa-regular fa-bars"></i>
+            </div>
+        </button>
+    </header>
+    <div class="container">
+        <aside class="sidebar open">
+            <div class="top-sidebar">
+                <a href="index.html" class="channel-logo"><img src="image/Logo.jpg" alt="Channel Logo"></a>
+                <div class="hidden-sidebar your-channel"><img src="" style="height: 30px;" alt="">
+                </div>
+            </div>
+            <div class="middle-sidebar">
+                <ul class="sidebar-list">
+                    <li id="main" class="sidebar-list-item tab-content active">
+                        <a href="admin_main.php" class="sidebar-link">
+                            <div class="sidebar-icon"><i class="fa fa-home"></i></div>
+                            <div class="hidden-sidebar">Trang tổng quan</div>
+                        </a>
+                    </li>
+                    <li class="sidebar-list-item tab-content">
+                        <a href="admin_products.php" class="sidebar-link">
+                            <div class="sidebar-icon]"><i class="fa fa-book"></i></div>
+                            <div class="hidden-sidebar">Sản phẩm</div>
+                        </a>
+                    </li>
+                    <li id="customers" class="sidebar-list-item tab-content">
+                        <a href="admin_users.php" class="sidebar-link">
+                            <div class="sidebar-icon"><i class="fa fa-group"></i></div>
+                            <div class="hidden-sidebar">Khách hàng</div>
+                        </a>
+                    </li>
+                    <li class="sidebar-list-item tab-content">
+                        <a href="admin_orders.php" class="sidebar-link">
+                            <div class="sidebar-icon"><i class="fa fa-shopping-cart"></i></div>
+                            <div class="hidden-sidebar">Đơn hàng</div>
+                        </a>
+                    </li>
+                    <li class="sidebar-list-item tab-content">
+                        <a href="admin_stats.php" class="sidebar-link">
+                            <div class="sidebar-icon"><i class="fa fa-bar-chart"></i></div>
+                            <div class="hidden-sidebar">Thống kê</div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="bottom-sidebar">
+                <ul class="sidebar-list">
+                    <li class="sidebar-list-item user-logout">
+                        <a href="index.html" class="sidebar-link">
+                            <div class="sidebar-icon"><i class="fa fa-home"></i></div>
+                            <div class="hidden-sidebar">Trang chủ</div>
+                        </a>
+                    </li>
+                    <li class="sidebar-list-item user-logout">
+                        <a href="#" class="sidebar-link">
+                            <div class="sidebar-icon"><i class="fa fa-user"></i></div>
+                            <div class="hidden-sidebar" id="name-acc"></div>
+                        </a>
+                    </li>
+                    <li class="sidebar-list-item user-logout">
+                        <a href="#" class="sidebar-link" id="logout-acc">
+                            <div class="sidebar-icon"><i class="fa fa-arrow-right"></i></div>
+                            <div class="hidden-sidebar">Đăng xuất</div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+        <main class="content">
+            <div class="section active">
+                <h1 class="page-title">Trang tổng quát của cửa hàng Goodbookclub</h1>
+                <div class="cards">
+                    <div class="card-single">
+                        <div class="box">
+                            <?php
+                            $select_users = mysqli_query($conn, "SELECT * FROM users WHERE user_type = 'user'") or die('query failed');
+                            $number_of_users = mysqli_num_rows($select_users);
+                            ?>
+                            <h2><?php echo $number_of_users; ?></h2>
+                            <div class="on-box">
+                                <img src="" alt="" style=" width: 200px;">
+                                <h3>Khách hàng</h3>
+                                <p>Sản phẩm là bất cứ cái gì có thể đưa vào thị trường để tạo sự chú ý, mua sắm, sử dụng
+                                    hay tiêu dùng nhằm thỏa mãn một nhu cầu hay ước muốn. Nó có thể là những vật thể,
+                                    dịch vụ, con người, địa điểm, tổ chức hoặc một ý tưởng.</p>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="card-single">
+                        <div class="box">
+                            <div class="on-box">
+                                <img src="" alt="" style=" width: 200px;">
+                                <?php
+                                $select_products = mysqli_query($conn, "SELECT * FROM products") or die('query failed');
+                                $number_of_products = mysqli_num_rows($select_products);
+                                ?>
+                                <h2><?php echo $number_of_products; ?></h2>
+                                <h3>Sản phẩm</h3>
+                                <p>Khách hàng mục tiêu là một nhóm đối tượng khách hàng trong phân khúc thị trường mục
+                                    tiêu mà doanh nghiệp bạn đang hướng tới. </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-single">
+                        <div class="box">
+                            <?php
+                            $total_pendings = 0;
+                            $select_pending = mysqli_query($conn, "SELECT total_price FROM orders WHERE payment_status = 'pending'") or die('query failed');
+                            if (mysqli_num_rows($select_pending) > 0) {
+                                while ($fetch_pendings = mysqli_fetch_assoc($select_pending)) {
+                                    $total_price = $fetch_pendings['total_price'];
+                                    $total_pendings += $total_price;
+                                };
+                            };
+                            ?>
+                            <h2>$<?php echo $total_pendings; ?>/-</h2>
+                            <div class="on-box">
+                                <img src="" alt="" style=" width: 200px;">
+                                <h3>Doanh thu</h3>
+                                <p>Doanh thu của doanh nghiệp là toàn bộ số tiền sẽ thu được do tiêu thụ sản phẩm, cung
+                                    cấp dịch vụ với sản lượng.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="js/admin.js"></script>
+</body>
+</html>
