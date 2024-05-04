@@ -40,7 +40,6 @@ for(let i = 0; i < sidebars.length; i++) {
 }
 
 const closeBtn = document.querySelectorAll('.section');
-console.log(closeBtn[0])
 for(let i=0;i<closeBtn.length;i++){
     closeBtn[i].addEventListener('click',(e) => {
         sidebar.classList.add("open");
@@ -69,9 +68,7 @@ function getMoney() {
     return tongtien;
 }
 
-document.getElementById("amount-user").innerHTML = getAmoumtUser();
-document.getElementById("amount-product").innerHTML = getAmoumtProduct();
-document.getElementById("doanh-thu").innerHTML = vnd(getMoney());
+
 
 // Doi sang dinh dang tien VND
 function vnd(price) {
@@ -91,7 +88,7 @@ function displayList(productAll, perPage, currentPage) {
     let start = (currentPage - 1) * perPage;
     let end = (currentPage - 1) * perPage + perPage;
     let productShow = productAll.slice(start, end);
-    showProductArr(productShow);
+    //showProductArr(productShow);
 }
 
 function setupPagination(productAll, perPage) {
@@ -224,11 +221,6 @@ function changeStatusProduct(id) {
 
 var indexCur;
 function editProduct(id) {
-    let products = localStorage.getItem("products") ? JSON.parse(localStorage.getItem("products")) : [];
-    let index = products.findIndex(item => {
-        return item.id == id;
-    })
-    indexCur = index;
     document.querySelectorAll(".add-product-e").forEach(item => {
         item.style.display = "none";
     })
@@ -237,11 +229,6 @@ function editProduct(id) {
     })
     document.querySelector(".add-product").classList.add("open");
     //
-    document.querySelector(".upload-image-preview").src = products[index].img;
-    document.getElementById("ten-mon").value = products[index].title;
-    document.getElementById("gia-moi").value = products[index].price;
-    document.getElementById("mo-ta").value = products[index].desc;
-    document.getElementById("chon-mon").value = products[index].category;
 }
 
 function getPathImage(path) {
@@ -288,38 +275,38 @@ btnUpdateProductIn.addEventListener("click", (e) => {
 });
 
 let btnAddProductIn = document.getElementById("add-product-button");
-btnAddProductIn.addEventListener("click", (e) => {
-    e.preventDefault();
-    let imgProduct = getPathImage(document.querySelector(".upload-image-preview").src)
-    let tenMon = document.getElementById("ten-mon").value;
-    let price = document.getElementById("gia-moi").value;
-    let moTa = document.getElementById("mo-ta").value;
-    let categoryText = document.getElementById("chon-mon").value;
-    if(tenMon == "" || price == "" || moTa == "") {
-        toast({ title: "Warning", message: "Vui lòng nhập đầy đủ thông tin món!", type: "warning", duration: 3000, });
-    } else {
-        if(isNaN(price)) {
-            toast({ title: "Warning", message: "Giá phải ở dạng số!", type: "warning", duration: 3000, });
-        } else {
-            let products = localStorage.getItem("products") ? JSON.parse(localStorage.getItem("products")) : [];
-            let product = {
-                id: createId(products),
-                title: tenMon,
-                img: imgProduct,
-                category: categoryText,
-                price: price,
-                desc: moTa,
-                status:1
-            };
-            products.unshift(product);
-            localStorage.setItem("products", JSON.stringify(products));
-            toast({ title: "Success", message: "Thêm sản phẩm thành công!", type: "success", duration: 3000});  
-            setDefaultValue();
-            document.querySelector(".add-product").classList.remove("open");
-            showProduct();
-        }
-    }
-});
+// btnAddProductIn.addEventListener("click", (e) => {
+//     e.preventDefault();
+//     let imgProduct = getPathImage(document.querySelector(".upload-image-preview").src)
+//     let tenMon = document.getElementById("ten-mon").value;
+//     let price = document.getElementById("gia-moi").value;
+//     let moTa = document.getElementById("mo-ta").value;
+//     let categoryText = document.getElementById("chon-mon").value;
+//     if(tenMon == "" || price == "" || moTa == "") {
+//         toast({ title: "Warning", message: "Vui lòng nhập đầy đủ thông tin món!", type: "warning", duration: 3000, });
+//     } else {
+//         if(isNaN(price)) {
+//             toast({ title: "Warning", message: "Giá phải ở dạng số!", type: "warning", duration: 3000, });
+//         } else {
+//             let products = localStorage.getItem("products") ? JSON.parse(localStorage.getItem("products")) : [];
+//             let product = {
+//                 id: createId(products),
+//                 title: tenMon,
+//                 img: imgProduct,
+//                 category: categoryText,
+//                 price: price,
+//                 desc: moTa,
+//                 status:1
+//             };
+//             products.unshift(product);
+//             localStorage.setItem("products", JSON.stringify(products));
+//             toast({ title: "Success", message: "Thêm sản phẩm thành công!", type: "success", duration: 3000});  
+//             setDefaultValue();
+//             document.querySelector(".add-product").classList.remove("open");
+//             showProduct();
+//         }
+//     }
+// });
 
 document.querySelector(".modal-close.product-form").addEventListener("click",() => {
     setDefaultValue();
@@ -330,7 +317,6 @@ function setDefaultValue() {
     document.getElementById("ten-mon").value = "";
     document.getElementById("gia-moi").value = "";
     document.getElementById("mo-ta").value = "";
-    document.getElementById("chon-mon").value = "Món chay";
 }
 
 // Open Popup Modal
@@ -349,7 +335,9 @@ btnAddProduct.addEventListener("click", () => {
 let closePopup = document.querySelectorAll(".modal-close");
 let modalPopup = document.querySelectorAll(".modal");
 
+
 for (let i = 0; i < closePopup.length; i++) {
+    console.log(closePopup.length);
     closePopup[i].onclick = () => {
         modalPopup[i].classList.remove("open");
     };
@@ -359,6 +347,18 @@ for (let i = 0; i < closePopup.length; i++) {
 function uploadImage(el) {
     let path = "./image/" + el.value.split("\\")[2];
     document.querySelector(".upload-image-preview").setAttribute("src", path);
+}
+
+function previewImage(event) {
+    var input = event.target;
+    var preview = document.getElementById('imagePreview');
+
+    var reader = new FileReader();
+    reader.onload = function() {
+        preview.src = reader.result;
+        preview.style.display = 'block';
+    };
+    reader.readAsDataURL(input.files[0]);
 }
 
 // Đổi trạng thái đơn hàng
@@ -727,63 +727,63 @@ function signUpFormReset() {
     document.querySelector('.form-message-password').innerHTML = '';
 }
 
-function showUserArr(arr) {
-    let accountHtml = '';
-    if(arr.length == 0) {
-        accountHtml = `<td colspan="5">Không có dữ liệu</td>`
-    } else {
-        arr.forEach((account, index) => {
-            let tinhtrang = account.status == 0 ? `<span class="status-no-complete">Bị khóa</span>` : `<span class="status-complete">Hoạt động</span>`;
-            accountHtml += ` <tr>
-            <td>${index + 1}</td>
-            <td>${account.fullname}</td>
-            <td>${account.phone}</td>
-            <td>${formatDate(account.join)}</td>
-            <td>${tinhtrang}</td>
-            <td class="control control-table">
-            <button class="btn-edit" id="edit-account" onclick='editAccount(${account.phone})' ><i class="fa fa-pencil"></i></button>
-            <button class="btn-delete" id="delete-account" onclick="deleteAcount(${index})"><i class="fa fa-trash"></i></button>
-            </td>
-        </tr>`
-        })
-    }
-    document.getElementById('show-user').innerHTML = accountHtml;
-}
+// function showUserArr(arr) {
+//     let accountHtml = '';
+//     if(arr.length == 0) {
+//         accountHtml = `<td colspan="5">Không có dữ liệu</td>`
+//     } else {
+//         arr.forEach((account, index) => {
+//             let tinhtrang = account.status == 0 ? `<span class="status-no-complete">Bị khóa</span>` : `<span class="status-complete">Hoạt động</span>`;
+//             accountHtml += ` <tr>
+//             <td>${index + 1}</td>
+//             <td>${account.fullname}</td>
+//             <td>${account.phone}</td>
+//             <td>${formatDate(account.join)}</td>
+//             <td>${tinhtrang}</td>
+//             <td class="control control-table">
+//             <button class="btn-edit" id="edit-account" onclick='editAccount(${account.phone})' ><i class="fa fa-pencil"></i></button>
+//             <button class="btn-delete" id="delete-account" onclick="deleteAcount(${index})"><i class="fa fa-trash"></i></button>
+//             </td>
+//         </tr>`
+//         })
+//     }
+//     document.getElementById('show-user').innerHTML = accountHtml;
+// }
 
-function showUser() {
-    let tinhTrang = parseInt(document.getElementById("tinh-trang-user").value);
-    let ct = document.getElementById("form-search-user").value;
-    let timeStart = document.getElementById("time-start-user").value;
-    let timeEnd = document.getElementById("time-end-user").value;
+// function showUser() {
+//     let tinhTrang = parseInt(document.getElementById("tinh-trang-user").value);
+//     let ct = document.getElementById("form-search-user").value;
+//     let timeStart = document.getElementById("time-start-user").value;
+//     let timeEnd = document.getElementById("time-end-user").value;
 
-    if (timeEnd < timeStart && timeEnd != "" && timeStart != "") {
-        alert("Lựa chọn thời gian sai !");
-        return;
-    }
+//     if (timeEnd < timeStart && timeEnd != "" && timeStart != "") {
+//         alert("Lựa chọn thời gian sai !");
+//         return;
+//     }
 
-    let accounts = localStorage.getItem("accounts") ? JSON.parse(localStorage.getItem("accounts")).filter(item => item.userType == 0) : [];
-    let result = tinhTrang == 2 ? accounts : accounts.filter(item => item.status == tinhTrang);
+//     let accounts = localStorage.getItem("accounts") ? JSON.parse(localStorage.getItem("accounts")).filter(item => item.userType == 0) : [];
+//     let result = tinhTrang == 2 ? accounts : accounts.filter(item => item.status == tinhTrang);
 
-    result = ct == "" ? result : result.filter((item) => {
-        return (item.fullname.toLowerCase().includes(ct.toLowerCase()) || item.phone.toString().toLowerCase().includes(ct.toLowerCase()));
-    });
+//     result = ct == "" ? result : result.filter((item) => {
+//         return (item.fullname.toLowerCase().includes(ct.toLowerCase()) || item.phone.toString().toLowerCase().includes(ct.toLowerCase()));
+//     });
 
-    if (timeStart != "" && timeEnd == "") {
-        result = result.filter((item) => {
-            return new Date(item.join) >= new Date(timeStart).setHours(0, 0, 0);
-        });
-    } else if (timeStart == "" && timeEnd != "") {
-        result = result.filter((item) => {
-            return new Date(item.join) <= new Date(timeEnd).setHours(23, 59, 59);
-        });
-    } else if (timeStart != "" && timeEnd != "") {
-        result = result.filter((item) => {
-            return (new Date(item.join) >= new Date(timeStart).setHours(0, 0, 0) && new Date(item.join) <= new Date(timeEnd).setHours(23, 59, 59)
-            );
-        });
-    }
-    showUserArr(result);
-}
+//     if (timeStart != "" && timeEnd == "") {
+//         result = result.filter((item) => {
+//             return new Date(item.join) >= new Date(timeStart).setHours(0, 0, 0);
+//         });
+//     } else if (timeStart == "" && timeEnd != "") {
+//         result = result.filter((item) => {
+//             return new Date(item.join) <= new Date(timeEnd).setHours(23, 59, 59);
+//         });
+//     } else if (timeStart != "" && timeEnd != "") {
+//         result = result.filter((item) => {
+//             return (new Date(item.join) >= new Date(timeStart).setHours(0, 0, 0) && new Date(item.join) <= new Date(timeEnd).setHours(23, 59, 59)
+//             );
+//         });
+//     }
+//     showUserArr(result);
+// }
 
 function cancelSearchUser() {
     let accounts = localStorage.getItem("accounts") ? JSON.parse(localStorage.getItem("accounts")).filter(item => item.userType == 0) : [];
@@ -794,7 +794,7 @@ function cancelSearchUser() {
     document.getElementById("time-end-user").value = "";
 }
 
-window.onload = showUser();
+// window.onload = showUser();
 
 function deleteAcount(phone) {
     let accounts = JSON.parse(localStorage.getItem('accounts'));
@@ -972,6 +972,10 @@ function toast({
     main.appendChild(toast);
     }
 }
-
-
-
+let btnSearchUser = document.getElementById('btn-search-user');
+btnSearchUser.addEventListener("click", () => {
+    let main = document.getElementById("main");
+    main.classList.remove("active");
+    let customers = document.getElementById("customers");
+    customers.classList.add("active");
+})
