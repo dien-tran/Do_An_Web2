@@ -343,52 +343,50 @@ if (isset($_GET['unblock']))
                     </div>
                 </div>
                 <?php
-                        if (isset($_GET['submit_search'])) 
-                        {
-                           
-                            $search = $_GET['text_search'];
-                            $sql_tk = "SELECT * FROM `users` WHERE `name` LIKE '%" . $search . "%'";
-                            $sql_search = mysqli_query($conn, $sql_tk);
-                            if (mysqli_num_rows($sql_search) > 0) {
-                            ?>
-                                <table width="100%">
-                                <thead>
-                                    <tr>
-                                        <td>Họ và tên</td>
-                                        <td>Liên hệ</td>
-                                        <td>Ngày tham gia</td>
-                                    </tr>
-                                </thead>
-                                <tbody id="show-user">
-                            <?php
-                            while ($fetch_users = mysqli_fetch_assoc($sql_search)) 
-                            {
-                                ?>
-                                    <tr>
-                                        <td><?php echo $fetch_users['name']; ?></td>
-                                        <td><?php echo $fetch_users['phone_number']; ?></td>
-                                        <td><?php echo $fetch_users['date_time']; ?></td>
-                                    </tr>
-                                <?php
-                            }
-                            ?>
-                                </tbody>
-                                </table>
-                            <?php
-                           
-                            }
-                            else {
-                                echo "Không tìm thấy thông tin.";
-                            }
-                        }
-                        else
-                        {
-                            $search='';
-                            $sql_tk="SELECT* FROM `users` limit 5";
-                            $sql_search= mysqli_query($conn,$sql_tk);
-                            
-                        }
+if (isset($_GET['submit_search'])) 
+{
+    $search = $_GET['text_search'];
+    if (!empty($search)) {
+        $sql_tk = "SELECT * FROM `users` WHERE `name` LIKE '%" . $search . "%'";
+        $sql_search = mysqli_query($conn, $sql_tk);
+        if (mysqli_num_rows($sql_search) > 0) {
+            ?>
+            <table width="100%">
+                <thead>
+                    <tr>
+                        <td>Họ và tên</td>
+                        <td>Liên hệ</td>
+                        <td>Ngày tham gia</td>
+                    </tr>
+                </thead>
+                <tbody id="show-user">
+                    <?php
+                    while ($fetch_users = mysqli_fetch_assoc($sql_search)) {
+                        ?>
+                        <tr>
+                            <td><?php echo $fetch_users['name']; ?></td>
+                            <td><?php echo $fetch_users['phone_number']; ?></td>
+                            <td><?php echo $fetch_users['date_time']; ?></td>
+                        </tr>
+                        <?php
+                    }
                     ?>
+                </tbody>
+            </table>
+            <?php
+        } else {
+            echo "Không tìm thấy thông tin.";
+        }
+    } else {
+        echo "Vui lòng nhập từ khóa tìm kiếm.";
+    }
+}
+else {
+    $search='';
+    $sql_tk="SELECT * FROM `users` LIMIT 5";
+    $sql_search= mysqli_query($conn,$sql_tk);
+}
+?>
                 <!-- thong tin nguoi dung -->
                 <div class="table">
                     <table width="100%">

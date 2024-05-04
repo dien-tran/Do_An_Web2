@@ -37,6 +37,7 @@ if (isset($message)) {
       <div class="user-box">
          <p><img src="./public/header/account/user.svg" alt="user_icon">user : <span><?php echo $_SESSION['user_name']; ?></span></p>
          <p><img src="./public/header/account/email.svg" alt="email.svg">email : <span><?php echo $_SESSION['user_email']; ?></span></p>
+         <a href="edit_customer.php" class="delete-btn"><img src="./public/header/logout.svg" alt="logout_icon">Edit Information</a>
          <a href="logout.php" class="delete-btn"><img src="./public/header/logout.svg" alt="logout_icon">logout</a>
       </div>
    </div>

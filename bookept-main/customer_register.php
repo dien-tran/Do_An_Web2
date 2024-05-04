@@ -22,7 +22,7 @@ if (isset($_POST['submit'])) {
          if ($pass != $password2) {
             $message[] = 'confirm password not matched!';
          } else {
-               header('location: admin.php');
+               header('location: home.php');
                exit();
          }
       } else {

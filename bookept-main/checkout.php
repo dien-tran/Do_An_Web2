@@ -144,7 +144,7 @@ if (isset($_POST['order_btn'])) {
       $select_cart = mysqli_query($conn, "SELECT * FROM `cart` WHERE user_id = '$user_id'") or die('query failed');
       ?>
 
-      <?php
+<?php
 
 
       if(isset($_POST['order_btn'])) {
