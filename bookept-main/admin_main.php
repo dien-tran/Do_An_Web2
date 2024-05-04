@@ -139,27 +139,15 @@ if (isset($_GET['unblock'])) {
                 </ul>
             </div>
             <div class="bottom-sidebar">
-                <ul class="sidebar-list">
-                    <li class="sidebar-list-item user-logout">
-                        <a href="index.html" class="sidebar-link">
-                            <div class="sidebar-icon"><i class="fa fa-home"></i></div>
-                            <div class="hidden-sidebar">Trang chủ</div>
-                        </a>
-                    </li>
-                    <li class="sidebar-list-item user-logout">
-                        <a href="#" class="sidebar-link">
-                            <div class="sidebar-icon"><i class="fa fa-user"></i></div>
-                            <div class="hidden-sidebar" id="name-acc"></div>
-                        </a>
-                    </li>
-                    <li class="sidebar-list-item user-logout">
-                        <a href="#" class="sidebar-link" id="logout-acc">
-                            <div class="sidebar-icon"><i class="fa fa-arrow-right"></i></div>
-                            <div class="hidden-sidebar">Đăng xuất</div>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+            <ul class="sidebar-list">
+               <li class="sidebar-list-item user-logout">
+                  <a href="#" class="sidebar-link" id="logout-acc">
+                     <div class="sidebar-icon"><i class="fa fa-arrow-right"></i></div>
+                     <div class="hidden-sidebar">Đăng xuất</div>
+                  </a>
+               </li>
+            </ul>
+         </div>
         </aside>
         <main class="content">
             <div class="section active">
