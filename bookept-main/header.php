@@ -19,7 +19,7 @@ if (isset($message)) {
          <a href="home.php"><img src="public/header/home_icon.svg" alt="home_icon">home</a>
          <a href="about.php"><img src="public/header/about_icon.svg" alt="about_icon">about</a>
          <a href="shop.php"><img src="public/header/shop_icon.svg" alt="shop_icon">shop</a>
-         <a href="contact.php"><img src="public/header/contact_icon.svg" alt="contact_icon">contact</a>
+         <!-- <a href="contact.php"><img src="public/header/contact_icon.svg" alt="contact_icon">contact</a> -->
          <a href="orders.php"><img src="public/header/order_icon.svg" alt="order_icon">orders</a>
       </nav>
 
@@ -38,6 +38,7 @@ if (isset($message)) {
          <p><img src="./public/header/account/user.svg" alt="user_icon">user : <span><?php echo $_SESSION['user_name']; ?></span></p>
          <p><img src="./public/header/account/email.svg" alt="email.svg">email : <span><?php echo $_SESSION['user_email']; ?></span></p>
          <a href="edit_customer.php" class="delete-btn"><img src="./public/header/logout.svg" alt="logout_icon">Edit Information</a>
+         <br>
          <a href="logout.php" class="delete-btn"><img src="./public/header/logout.svg" alt="logout_icon">logout</a>
       </div>
    </div>

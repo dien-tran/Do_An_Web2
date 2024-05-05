@@ -1,5 +1,5 @@
 <section class="footer">
-   <div class="box-container">
+   <div class="box-container" style="display:ruby-text;">
       <div class="box">
          <h3><img src="./public/footer/quick.svg" alt="quick_link">Quick links</h3>
          <a href="home.php">Home</a>
@@ -24,7 +24,7 @@
          <a href="orders.php">Customer Consulting</a>
       </div>
 
-      <div class="box">
+      <!-- <div class="box">
          <div class="download">
             <img src="./public/footer/app_store.png" alt="app_store" width="170">
             <img src="./public/footer/google_store.png" alt="google_store" width="170">
@@ -36,7 +36,7 @@
             <img src="./public/footer/copyright.png" alt="copyright" width="70">
          </div>
          <img src="./public/footer/payment_method.png" alt="payment" width="288">
-      </div>
+      </div> -->
 
    </div>
 

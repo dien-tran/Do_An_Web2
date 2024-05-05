@@ -114,7 +114,7 @@ if (isset($_POST['order_btn'])) {
             </div>
             <div class="inputBox">
                <span><i class="fa-solid fa-house"></i> house number :</span>
-               <input type="number" min="0" name="house-num" required placeholder="e.g. home no.">
+               <input type="text" min="0" name="house-num" required placeholder="e.g. home no.">
             </div>
             <div class="inputBox">
                <span><i class="fa-solid fa-location-dot"></i> road :</span>
@@ -163,7 +163,7 @@ if (isset($_POST['order_btn'])) {
 
          if(mysqli_num_rows($result_check_email) > 0) {
             // Cập nhật thông tin người dùng nếu email đã tồn tại
-            $sql_update_user = "UPDATE users SET  phone = '$number',  house_number = '$house_number', road = '$road', city = '$city', district = '$district', ward = '$ward' WHERE email = '$email'";
+            $sql_update_user = "UPDATE users SET  phone_number = '$number',  house_number = '$house_number', road = '$road', city = '$city', district = '$district', ward = '$ward' WHERE email = '$email'";
             if(mysqli_query($conn, $sql_update_user)) {
                echo "<strong style='font-size:14px;'>Thông tin người dùng đã được cập nhật thành công !</strong>";
             } else {

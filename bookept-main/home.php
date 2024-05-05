@@ -124,15 +124,8 @@ if (isset($_POST['add_to_cart'])) {
             <p>24/7 customer care team ready to answer all your questions.</p>
             <p>Contact us for the best service support!</p>
          </div>
-         <!-- <div class="service-feature">
-            <p><img src="./public/service/tick.svg" alt="tick">24/7</p>
-            <p><img src="./public/service/tick.svg" alt="tick">Fast</p>
-            <p><img src="./public/service/tick.svg" alt="tick">Friendly</p>
-            <p><img src="./public/service/tick.svg" alt="tick">Enthusiasm</p>
-            <p><img src="./public/service/tick.svg" alt="tick">Professional</p>
-         </div> -->
          <div>
-            <a href="contact.php" class="option-btn">contact us</a>
+            <a href="https://www.facebook.com/ScytheTheKiller" class="option-btn">contact us</a>
          </div>
       </div>
    </section>
