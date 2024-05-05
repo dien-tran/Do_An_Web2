@@ -85,22 +85,26 @@ if (isset($_POST['order_btn'])) {
       <h3>checkout</h3>
       <p> <a href="home.php">home</a> / checkout </p>
    </div>
-
+   <?php
+        $user_id = $_SESSION['user_id'];
+        $sql=mysqli_query($conn, "SELECT * FROM  `users` WHERE id=$user_id");
+        $check=mysqli_fetch_assoc($sql);
+   ?>
    <section class="checkout-container">
       <form action="" method="post">
          <h3><i class="fa-solid fa-folder-open"></i> place your order</h3>
          <div class="flex">
             <div class="inputBox">
                <span><i class="fa-solid fa-signature"></i> your name :</span>
-               <input type="text" name="name" required placeholder="enter your name">
+               <input type="text" name="name" value="<?php echo $check['name']; ?>">
             </div>
             <div class="inputBox">
                <span><i class="fa-solid fa-hashtag"></i> your number :</span>
-               <input type="text" name="number" required placeholder="enter your number">
+               <input type="text" name="number" value="<?php echo $check['phone_number']; ?>">
             </div>
             <div class="inputBox">
                <span><i class="fa-solid fa-at"></i> your email :</span>
-               <input type="email" name="email" required placeholder="enter your email">
+               <input type="email" name="email" value="<?php echo $check['email']; ?>">
             </div>
             <div class="inputBox">
                <span><i class="fa-solid fa-money-check-dollar"></i> payment method :</span>
@@ -114,23 +118,23 @@ if (isset($_POST['order_btn'])) {
             </div>
             <div class="inputBox">
                <span><i class="fa-solid fa-house"></i> house number :</span>
-               <input type="text" min="0" name="house-num" required placeholder="e.g. home no.">
+               <input type="text" min="0" name="house-num" value="<?php echo $check['house_number']; ?>" >
             </div>
             <div class="inputBox">
                <span><i class="fa-solid fa-location-dot"></i> road :</span>
-               <input type="text" name="road" required placeholder="e.g. road name">
+               <input type="text" name="road" value="<?php echo $check['road']; ?>" >
             </div>
             <div class="inputBox">
                <span><i class="fa-solid fa-city"></i> ward :</span>
-               <input type="text" name="ward" required placeholder="e.g. ward 1">
+               <input type="text" name="ward" value="<?php echo $check['ward']; ?>">
             </div>
             <div class="inputBox">
                <span><i class="fa-brands fa-squarespace"></i> district :</span>
-               <input type="text" name="district" required placeholder="e.g. district 1">
+               <input type="text" name="district" value="<?php echo $check['district']; ?>">
             </div>
             <div class="inputBox">
                <span><i class="fa-solid fa-earth-americas"></i> city :</span>
-               <input type="text" name="city" required placeholder="e.g. Ho Chi Minh">
+               <input type="text" name="city" value="<?php echo $check['city']; ?>">
             </div>
            
          </div>

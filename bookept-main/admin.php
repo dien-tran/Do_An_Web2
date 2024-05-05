@@ -125,7 +125,7 @@ if (isset($_GET['unblock']))
                     <li class="sidebar-list-item tab-content active">
                         <a href="#" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-home"></i></div>
-                            <div class="hidden-sidebar">Trang tổng quan</div>
+                            <div class="hidden-sidebar"> rang tổng quan</div>
                         </a>
                     </li>
                     <li class="sidebar-list-item tab-content">
@@ -361,7 +361,9 @@ if (isset($_GET['submit_search']))
                 </thead>
                 <tbody id="show-user">
                     <?php
-                    while ($fetch_users = mysqli_fetch_assoc($sql_search)) {
+                    while ($fetch_users = mysqli_fetch_assoc($sql_search)) 
+                    {   if($fetch_users['user_type']=="user")
+                        {
                         ?>
                         <tr>
                             <td><?php echo $fetch_users['name']; ?></td>
@@ -369,6 +371,7 @@ if (isset($_GET['submit_search']))
                             <td><?php echo $fetch_users['date_time']; ?></td>
                         </tr>
                         <?php
+                        }
                     }
                     ?>
                 </tbody>
@@ -404,12 +407,14 @@ else {
                             <?php
                                 
                                $select_users = mysqli_query($conn, "SELECT * FROM  `users`");
-                            //    $sql=mysqli_query($conn,"SELECT * FROM `users` INNER JOIN `orders` ON users.id = orders.user_id");
-                               $stt=1;
+                                
+                                $stt=1;
                                 while ($fetch_users =mysqli_fetch_assoc($select_users))
                                 {
-                                     
+                                        if ($fetch_users['user_type']=='user')
+                                        {
                                         ?>
+
                                         <tr>
                                             <td><?php echo $stt ?></td>
                                             <td><?php echo $fetch_users['name']; ?></td>
@@ -437,6 +442,7 @@ else {
                                            
                                         </tr>
                                         <?php
+                                        }
 
                                     $stt++;
                                 }

@@ -55,24 +55,19 @@ if (isset($_POST['submit'])) {
 </head>
 
 <body>
-   <?php 
-      if(isset($message))
-      {
-         foreach($message as $msg)
-         {
-            echo '
-            <div class="message">
-            <span>' . $msg . '</span>
-            <i clss="fas fa-times" onclick="this.parentElement.remove();"></i>
-            ';
-         }
-      }
-   ?>
-
-
-
-
-
+<?php
+if(isset($message) && is_array($message)) // Kiểm tra nếu $message là một mảng
+{
+    foreach($message as $msg)
+    {
+        echo '
+        <div class="message">
+        <span>' . $msg . '</span>
+        <i class="fas fa-times" onclick="this.parentElement.remove();"></i>
+        </div>'; // Thêm </div> ở cuối để đóng div.message
+    }
+}
+?>
    <div class="form-container ">
       <div class="container">
          <form class="form" action="" method="post">
@@ -129,7 +124,7 @@ if (isset($_POST['submit'])) {
             </div>
             <br>
             <div class="register">
-               <p>Already have an account? <a href="login.php" style="color: violet">Login now</a></p>
+               <p>Already have an account? <a href="login_customer.php" style="color: violet">Login now</a></p>
             </div>
 
          </form>
