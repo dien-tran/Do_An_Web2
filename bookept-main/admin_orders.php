@@ -48,25 +48,25 @@ if (!isset($admin_id)) {
          <div class="middle-sidebar">
             <ul class="sidebar-list">
                <li class="sidebar-list-item tab-content">
-                  <a href="#" class="sidebar-link">
+                  <a href="admin_main.php" class="sidebar-link">
                      <div class="sidebar-icon"><i class="fa fa-home"></i></div>
                      <div class="hidden-sidebar">Trang tổng quan</div>
                   </a>
                </li>
                <li class="sidebar-list-item tab-content">
-                  <a href="#" class="sidebar-link">
-                     <div class="sidebar-icon]"><i class="fa fa-book"></i></div>
+                  <a href="admin_products.php" class="sidebar-link">
+                     <div class="sidebar-icon"><i class="fa fa-book"></i></div>
                      <div class="hidden-sidebar">Sản phẩm</div>
                   </a>
                </li>
                <li class="sidebar-list-item tab-content">
-                  <a href="#" class="sidebar-link">
+                  <a href="admin_users.php" class="sidebar-link">
                      <div class="sidebar-icon"><i class="fa fa-group"></i></div>
                      <div class="hidden-sidebar">Khách hàng</div>
                   </a>
                </li>
                <li class="sidebar-list-item tab-content">
-                  <a href="#" class="sidebar-link">
+                  <a href="admin_orders.php" class="sidebar-link">
                      <div class="sidebar-icon"><i class="fa fa-shopping-cart"></i></div>
                      <div class="hidden-sidebar">Đơn hàng</div>
                   </a>
@@ -140,18 +140,25 @@ if (!isset($admin_id)) {
                         while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
                      ?>
                            <tr>
-                              <td>DH-<?php echo $fetch_orders['id']; ?></td>
+                              <td value="<?php echo $fetch_orders['id']?>">DH-<?php echo $fetch_orders['id']; ?></td>
                               <td><?php echo $fetch_orders['name'] ?></td>
                               <td><?php echo $fetch_orders['placed_on'] ?></td>
-                              <td><?php echo $fetch_orders['total_price'] ?></td>
+                              <td><?php echo $fetch_orders['total_price'] ?>$</td>
                               <td><?php echo $fetch_orders['payment_status'] ?></td>
                               <td class="control">
+                                 <button class="btn-detail" id="" onclick="detailOrder(<?php echo $fetch_orders['id'] ?>)"><i class="	fa fa-asterisk"></i> Chi tiết</button>
                            <?php
                         }
                      }
 
                            ?>
-                           <button class="btn-detail" id="" onclick="detailOrder('${item.id}')"><i class="	fa fa-asterisk"></i> Chi tiết</button>
+                           <script>
+                              function detailOrder(id) {
+                                 document.querySelector(".modal.detail-order").classList.add("open");
+                                 
+                              }
+                              
+                           </script>
                               </td>
                            </tr>
                   </tbody>

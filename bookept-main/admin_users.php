@@ -114,7 +114,7 @@ if (isset($_GET['unblock'])) {
                </li>
                <li class="sidebar-list-item tab-content">
                   <a href="admin_products.php" class="sidebar-link">
-                     <div class="sidebar-icon]"><i class="fa fa-book"></i></div>
+                     <div class="sidebar-icon"><i class="fa fa-book"></i></div>
                      <div class="hidden-sidebar">Sản phẩm</div>
                   </a>
                </li>

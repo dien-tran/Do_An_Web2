@@ -167,7 +167,7 @@ $offset = ($current_page - 1) * $products_per_page;
                     </li>
                     <li class="sidebar-list-item tab-content active">
                         <a href="admin_products.php" class="sidebar-link">
-                            <div class="sidebar-icon]"><i class="fa fa-book"></i></div>
+                            <div class="sidebar-icon"><i class="fa fa-book"></i></div>
                             <div class="hidden-sidebar">Sản phẩm</div>
                         </a>
                     </li>
