@@ -217,7 +217,10 @@ $offset = ($current_page - 1) * $products_per_page;
    ?>
  
       <input type="text" name="search" placeholder="search products..." class="box">
+      <form action="#?" method="GET">
       <input type="submit" name="submit" value="search" class="btn">
+      </form>
+      
    </form>
 </section>
 

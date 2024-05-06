@@ -229,15 +229,27 @@ if (isset($_GET['unblock'])) {
                         <tr>
                            <td><?php echo $stt ?></td>
                            <td><?php echo $fetch_users['name']; ?></td>
-                           <td><?php echo $fetch_users['phone']; ?></td>
-                           <!-- <td><?php echo $fetch_users['date_time']; ?></td> -->
+                           <td><?php echo $fetch_users['phone_number']; ?></td>
+                           <td><?php echo $fetch_users['date_time']; ?></td>
                            <td>
-                              <form method="GET">
-                                 <?php
-                                 // Add your functionality here
-                                 ?>
-                              </form>
-                           </td>
+                                                <form method="GET">
+                                                <?php 
+                                                    if ($fetch_users['status'] == 1) 
+                                                    { 
+                                                        ?>
+                                                        <a id="btn-add-user" class="btn-control-large" type="submit" name="delete" href="admin_users.php?delete=<?php echo $fetch_users['id']; ?>" onclick="return confirm('delete this user?');" class="delete-btn">Xóa</a>
+                                                        <a id="btn-add-user" class="btn-control-large" type="submit" name="block" href="admin_users.php?block=<?php echo $fetch_users['id']; ?>" onclick="return confirm('Block this user?');" class="delete-btn">Chặn</a>
+                                                        <?php 
+                                                    } 
+                                                    else 
+                                                    { 
+                                                        ?>
+                                                        <a id="btn-add-user" class="btn-control-large" type="submit" name="delete" href="admin_users.php?delete=<?php echo $fetch_users['id']; ?>" onclick="return confirm('delete this user?');" class="delete-btn">Xóa</a>
+                                                        <a id="btn-add-user" class="btn-control-large" type="submit" name="unblock" href="admin_users.php?unblock=<?php echo $fetch_users['id']; ?>" onclick="return confirm('Unblock this user?');" class="delete-btn">Gỡ chặn</a>
+                                                        <?php 
+                                                    } 
+                                                ?>
+                                            </td>
                         </tr>
                      <?php
                         $stt++;
