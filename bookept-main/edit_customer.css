@@ -1,0 +1,82 @@
+.from_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.container {
+  text-align: center;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+h2 {
+  margin-top: 0;
+}
+
+.input_form {
+  margin-bottom: 10px;
+}
+
+.label {
+  display: block;
+  text-align: left;
+}
+h2
+{
+  font-size: 30px;
+}
+.box {
+  width: 400px; /* Độ rộng của box */
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  height: 40px;
+  font-size: 16px;
+}
+.button_form {
+  margin-top: 20px;
+  text-align: center; /* Canh giữa nút button */
+}
+
+input[type="button"],
+input[type="submit"] {
+  background-color: #8E44AD;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-right: 10px; /* Khoảng cách giữa các nút */
+}
+
+input[type="button"]:hover,
+input[type="submit"]:hover {
+  background-color:#C0392B;
+}
+
+/* Bổ sung CSS cho table */
+table {
+  width: 550px; /* Độ rộng tương tự với box */
+  margin: 0 auto; /* Canh giữa table */
+  border-collapse: collapse; /* Gộp các border lại với nhau */
+}
+
+tr {
+  width: 100%;
+}
+
+td {
+  padding: 8px;
+  vertical-align: middle; /* Canh giữa theo chiều dọc */
+}
+
+td label {
+    display: inline-block;
+    width: 150px; /* Đảm bảo rằng các nhãn có cùng kích thước */
+    text-align: left; /* Căn trái cho nhãn */
+    margin-right: 10px; /* Khoảng cách giữa nhãn và input */
+    vertical-align: middle; /* Canh giữa theo chiều dọc */
+    font-size: 18px; /* Kích thước chữ cho nhãn */
+  }

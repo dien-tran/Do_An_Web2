@@ -366,6 +366,7 @@ body,input,button,textarea,pre {
 .sidebar-icon {
     font-size: 24px;
     flex-shrink: 0;
+    margin-right: 10px;
 }
 
 .sidebar-list .hidden-sidebar {
@@ -391,6 +392,8 @@ body,input,button,textarea,pre {
     position: relative;
     width: 100%;
     color: var(--light-gray);
+    display: flex;
+    align-items: center;
 }
 
 .sidebar-list-item.active {
@@ -1349,4 +1352,7 @@ label a {
     color: #757575;
     font-size: 80px;
     margin-top: 30px;
+}
+.hidden-sidebar {
+    display: inline-block;
 }

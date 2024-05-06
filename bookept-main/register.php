@@ -1,26 +1,32 @@
 <?php
-
 include 'config.php';
+session_start();
 
 if (isset($_POST['submit'])) {
 
    $name = mysqli_real_escape_string($conn, $_POST['name']);
    $email = mysqli_real_escape_string($conn, $_POST['email']);
    $pass = mysqli_real_escape_string($conn, md5($_POST['password']));
-   $cpass = mysqli_real_escape_string($conn, md5($_POST['cpassword']));
-   $user_type = $_POST['user_type'];
+   $password2 = mysqli_real_escape_string($conn, md5($_POST['password2']));
+   $phone_number = mysqli_real_escape_string($conn, $_POST['phone_number']);
+   // $user_type = $_POST['user_type'];
 
-   $select_users = mysqli_query($conn, "SELECT * FROM `users` WHERE email = '$email' AND password = '$pass'") or die('query failed');
+   $select_users = mysqli_query($conn, "SELECT * FROM `users` WHERE email = '$email' ") or die('query failed');
 
    if (mysqli_num_rows($select_users) > 0) {
       $message[] = 'user already exist!';
    } else {
-      if ($pass != $cpass) {
-         $message[] = 'confirm password not matched!';
+      $user_type = isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'admin' ? 'admin' : 'user';
+      $insert_query = "INSERT INTO `users` (name, email, password, user_type, phone_number,status) VALUES ('$name', '$email', '$pass', 'user', '$phone_number','1')";
+      if (mysqli_query($conn, $insert_query)) {
+         if ($pass != $password2) {
+            $message[] = 'confirm password not matched!';
+         } else {
+               header('location: admin.php');
+               exit();
+         }
       } else {
-         mysqli_query($conn, "INSERT INTO `users`(name, email, password, user_type) VALUES('$name', '$email', '$cpass', '$user_type')") or die('query failed');
-         $message[] = 'registered successfully!';
-         header('location:login.php');
+         $message = 'Registration failed!';
       }
    }
 }
@@ -49,21 +55,23 @@ if (isset($_POST['submit'])) {
 </head>
 
 <body>
-
-
-
-   <?php
-   if (isset($message)) {
-      foreach ($message as $message) {
-         echo '
-      <div class="message">
-         <span>' . $message . '</span>
-         <i class="fas fa-times" onclick="this.parentElement.remove();"></i>
-      </div>
-      ';
+   <?php 
+      if(isset($message))
+      {
+         foreach($message as $msg)
+         {
+            echo '
+            <div class="message">
+            <span>' . $msg . '</span>
+            <i clss="fas fa-times" onclick="this.parentElement.remove();"></i>
+            ';
+         }
       }
-   }
    ?>
+
+
+
+
 
    <div class="form-container ">
       <div class="container">
@@ -110,7 +118,7 @@ if (isset($_POST['submit'])) {
                   <img src="./public//form/phone-office-svgrepo-com.svg" alt="phone_icon"> <!-- dấu pass-->
                </div>
                <div class="fill">
-                  <input type="tel" name="phone" placeholder="Number phone" required class="box">
+                  <input type="tel" name="phone_number" placeholder="Number phone" required class="box">
                </div>
             </div>
 
@@ -119,8 +127,9 @@ if (isset($_POST['submit'])) {
             <div class="btn-group">
                <button class="btn" type="submit" name="submit" value="Register">Register</button>
             </div>
+            <br>
             <div class="register">
-               <p>Already have an account? <a href="login.php">login now</a></p>
+               <p>Already have an account? <a href="login.php" style="color: violet">Login now</a></p>
             </div>
 
          </form>

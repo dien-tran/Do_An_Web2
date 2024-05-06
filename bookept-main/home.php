@@ -7,7 +7,7 @@ session_start();
 $user_id = $_SESSION['user_id'];
 
 if (!isset($user_id)) {
-   header('location:login.php');
+   header('location:login_customer.php');
 }
 
 if (isset($_POST['add_to_cart'])) {
@@ -58,7 +58,7 @@ if (isset($_POST['add_to_cart'])) {
    <section class="home">
       <div class="content">
          <h3>Hand Picked Book to your door.</h3>
-         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi, quod? Reiciendis ut porro iste totam.</p>
+         <p>Embark on a literary journey with our online bookstore – where every page holds a new adventure.</p>
          <a href="about.php" class="white-btn">discover more</a>
       </div>
    </section>
@@ -75,9 +75,11 @@ if (isset($_POST['add_to_cart'])) {
                   <input type="hidden" name="product_price" value="<?php echo $fetch_products['Price']; ?>" class="price">
                   <input type="hidden" name="product_image" value="<?php echo $fetch_products['Image']; ?>">
 
+                  <a href="products_details.php?product_id=<?php echo $fetch_products['Id']; ?>">
                   <div class="image">
                      <img src="uploaded_img/<?php echo $fetch_products['Image']; ?>" alt="">
                   </div>
+                  </a>
                   <div class="details">
                      <div class="name" style="font-size: 18px;">
                         <img src="./public/card/name.svg" alt="name_icon">
@@ -122,15 +124,8 @@ if (isset($_POST['add_to_cart'])) {
             <p>24/7 customer care team ready to answer all your questions.</p>
             <p>Contact us for the best service support!</p>
          </div>
-         <!-- <div class="service-feature">
-            <p><img src="./public/service/tick.svg" alt="tick">24/7</p>
-            <p><img src="./public/service/tick.svg" alt="tick">Fast</p>
-            <p><img src="./public/service/tick.svg" alt="tick">Friendly</p>
-            <p><img src="./public/service/tick.svg" alt="tick">Enthusiasm</p>
-            <p><img src="./public/service/tick.svg" alt="tick">Professional</p>
-         </div> -->
          <div>
-            <a href="contact.php" class="option-btn">contact us</a>
+            <a href="https://www.facebook.com/ScytheTheKiller" class="option-btn">contact us</a>
          </div>
       </div>
    </section>

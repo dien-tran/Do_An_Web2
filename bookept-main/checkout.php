@@ -13,10 +13,16 @@ if (!isset($user_id)) {
 if (isset($_POST['order_btn'])) {
 
    $name = mysqli_real_escape_string($conn, $_POST['name']);
-   $number = $_POST['number'];
+   $number = mysqli_real_escape_string($conn, $_POST['number']);
    $email = mysqli_real_escape_string($conn, $_POST['email']);
    $method = mysqli_real_escape_string($conn, $_POST['method']);
-   $address = mysqli_real_escape_string($conn, 'flat no. ' . $_POST['flat'] . ', ' . $_POST['street'] . ', ' . $_POST['city'] . ', ' . $_POST['country'] . ' - ' . $_POST['pin_code']);
+   $house_number = mysqli_real_escape_string($conn, $_POST['house-num']);
+   $road = mysqli_real_escape_string($conn, $_POST['road']);
+   $ward = mysqli_real_escape_string($conn, $_POST['ward']);
+   $district =  mysqli_real_escape_string($conn, $_POST['district']);
+   $city = mysqli_real_escape_string($conn, $_POST['city']);
+   
+   $address = "flat no. $house_number, $road, $ward, $district, $city, $country";
    $placed_on = date('d-M-Y');
 
    $cart_total = 0;
@@ -79,22 +85,26 @@ if (isset($_POST['order_btn'])) {
       <h3>checkout</h3>
       <p> <a href="home.php">home</a> / checkout </p>
    </div>
-
+   <?php
+        $user_id = $_SESSION['user_id'];
+        $sql=mysqli_query($conn, "SELECT * FROM  `users` WHERE id=$user_id");
+        $check=mysqli_fetch_assoc($sql);
+   ?>
    <section class="checkout-container">
       <form action="" method="post">
          <h3><i class="fa-solid fa-folder-open"></i> place your order</h3>
          <div class="flex">
             <div class="inputBox">
                <span><i class="fa-solid fa-signature"></i> your name :</span>
-               <input type="text" name="name" required placeholder="enter your name">
+               <input type="text" name="name" value="<?php echo $check['name']; ?>">
             </div>
             <div class="inputBox">
                <span><i class="fa-solid fa-hashtag"></i> your number :</span>
-               <input type="number" name="number" required placeholder="enter your number">
+               <input type="text" name="number" value="<?php echo $check['phone_number']; ?>">
             </div>
             <div class="inputBox">
                <span><i class="fa-solid fa-at"></i> your email :</span>
-               <input type="email" name="email" required placeholder="enter your email">
+               <input type="email" name="email" value="<?php echo $check['email']; ?>">
             </div>
             <div class="inputBox">
                <span><i class="fa-solid fa-money-check-dollar"></i> payment method :</span>
@@ -108,28 +118,25 @@ if (isset($_POST['order_btn'])) {
             </div>
             <div class="inputBox">
                <span><i class="fa-solid fa-house"></i> house number :</span>
-               <input type="number" min="0" name="flat" required placeholder="e.g. flat no.">
+               <input type="text" min="0" name="house-num" value="<?php echo $check['house_number']; ?>" >
             </div>
             <div class="inputBox">
-               <span><i class="fa-solid fa-location-dot"></i> street :</span>
-               <input type="text" name="street" required placeholder="e.g. street name">
+               <span><i class="fa-solid fa-location-dot"></i> road :</span>
+               <input type="text" name="road" value="<?php echo $check['road']; ?>" >
             </div>
             <div class="inputBox">
-               <span><i class="fa-solid fa-city"></i> city :</span>
-               <input type="text" name="city" required placeholder="e.g. New York">
+               <span><i class="fa-solid fa-city"></i> ward :</span>
+               <input type="text" name="ward" value="<?php echo $check['ward']; ?>">
             </div>
             <div class="inputBox">
-               <span><i class="fa-brands fa-squarespace"></i> state/province :</span>
-               <input type="text" name="state" required placeholder="e.g. Ohio">
+               <span><i class="fa-brands fa-squarespace"></i> district :</span>
+               <input type="text" name="district" value="<?php echo $check['district']; ?>">
             </div>
             <div class="inputBox">
-               <span><i class="fa-solid fa-earth-americas"></i> country :</span>
-               <input type="text" name="country" required placeholder="e.g. United States">
+               <span><i class="fa-solid fa-earth-americas"></i> city :</span>
+               <input type="text" name="city" value="<?php echo $check['city']; ?>">
             </div>
-            <div class="inputBox">
-               <span><i class="fa-solid fa-file-zipper"></i> ZIP code :</span>
-               <input type="number" min="0" name="pin_code" required placeholder="e.g. 1234567">
-            </div>
+           
          </div>
          <div style="display: flex; justify-content:end">
             <input type="submit" value="🚩 order now" class="btn" name="order_btn">
@@ -141,6 +148,34 @@ if (isset($_POST['order_btn'])) {
       $select_cart = mysqli_query($conn, "SELECT * FROM `cart` WHERE user_id = '$user_id'") or die('query failed');
       ?>
 
+<?php
+
+
+      if(isset($_POST['order_btn'])) {
+         // Lấy thông tin từ form
+         $number = mysqli_real_escape_string($conn, $_POST['number']);
+         $email = mysqli_real_escape_string($conn, $_POST['email']);
+         $house_number = mysqli_real_escape_string($conn, $_POST['house-num']);
+         $road = mysqli_real_escape_string($conn, $_POST['road']);
+         $ward = mysqli_real_escape_string($conn, $_POST['ward']);
+         $district = mysqli_real_escape_string($conn, $_POST['district']);
+         $city = mysqli_real_escape_string($conn, $_POST['city']);
+
+         // Kiểm tra xem email đã tồn tại trong bảng users chưa
+         $sql_check_email = "SELECT * FROM users WHERE email = '$email'";
+         $result_check_email = mysqli_query($conn, $sql_check_email);
+
+         if(mysqli_num_rows($result_check_email) > 0) {
+            // Cập nhật thông tin người dùng nếu email đã tồn tại
+            $sql_update_user = "UPDATE users SET  phone_number = '$number',  house_number = '$house_number', road = '$road', city = '$city', district = '$district', ward = '$ward' WHERE email = '$email'";
+            if(mysqli_query($conn, $sql_update_user)) {
+               echo "<strong style='font-size:14px;'>Thông tin người dùng đã được cập nhật thành công !</strong>";
+            } else {
+                  echo "Lỗi: " . mysqli_error($conn);
+            }
+         } 
+      }
+      ?>
       <div class="summary-order">
          <div class="summary-header">
             <h2><i class="fa-solid fa-cart-flatbed"></i> Your cart</h2>

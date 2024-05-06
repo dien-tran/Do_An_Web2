@@ -1,14 +1,91 @@
 <?php
-
 include 'config.php';
-
 session_start();
-
 $admin_id = $_SESSION['admin_id'];
 
 if (!isset($admin_id)) {
-    header('location:login.php');
+    header('Location:login.php');
+    exit();
 }
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Lấy dữ liệu từ form
+    $name = $_POST['name'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+    $phone_number = $_POST['phone_number'];
+    $insert_query = "INSERT INTO `users` (name, email, password, user_type, phone_number) VALUES ('$name', '$email', '$password', '$user_type', '$phone_number')";
+    header('Location: admin.php');
+    exit();
+}
+//search
+// if (isset($_GET['submit_search'])) 
+// {
+//     $search=$_GET['text_search'];
+//     $sql_tk="SELECT * FROM `users` WHERE `name` LIKE '%" . $search . "%'";
+//     $sql_search= mysqli_query($conn,$sql_tk);
+// }
+// else
+// {
+//     $search='';
+//     $sql_tk="SELECT* FROM `users` limit 5";
+//     $sql_search= mysqli_query($conn,$sql_tk);
+
+// }
+// xóa 
+
+if(isset($_GET['delete']))// kiểm tra xem có tồn tại tham số 'delete' trong mảng $_GET hay không nếu có gì có id
+{
+    $delete_id = $_GET['delete'];// nếu có thì lấy id 
+    mysqli_query($conn, "DELETE FROM `users` WHERE id = '$delete_id'") or die('query failed');
+   
+}
+if (isset($_GET['block']))
+{
+    $block_id = $_GET['block'];
+    $sql_block=mysqli_query($conn , "SELECT * FROM  `users` WHERE id=$block_id");
+    if(mysqli_num_rows($sql_block)>0)
+    {
+        $query = "UPDATE `users` SET `status` = 0 WHERE id = $block_id";
+    }
+    
+}
+if (isset($_GET['block']))
+{
+    $block_id = $_GET['block'];
+    $sql_block=mysqli_query($conn , "SELECT * FROM  `users` WHERE id=$block_id");
+    if(mysqli_num_rows($sql_block)>0)
+    {
+        $query = "UPDATE `users` SET `status` = 0 WHERE id = $block_id";
+        if (mysqli_query($conn, $query)) 
+        {
+            echo "<script>alert('Người dùng đã được chặn.');</script>";
+        } 
+        else 
+        {
+            echo "Cập nhật trạng thái thất bại: " . mysqli_error($conn);
+        }
+    }
+    
+}
+if (isset($_GET['unblock']))
+{
+    $unblock_id = $_GET['unblock'];
+    $sql_unblock=mysqli_query($conn , "SELECT * FROM  `users` WHERE id=$unblock_id");
+    if(mysqli_num_rows($sql_unblock)>0)
+    {
+        $query = "UPDATE `users` SET `status` = 1 WHERE id = $unblock_id";
+        if (mysqli_query($conn, $query)) 
+        {
+            echo "<script>alert('Người dùng đã gỡ chặn.');</script>";
+        } 
+        else 
+        {
+            echo "Cập nhật trạng thái thất bại: " . mysqli_error($conn);
+        }
+    }
+    
+}
+
 
 ?>
 <!DOCTYPE html>
@@ -48,7 +125,7 @@ if (!isset($admin_id)) {
                     <li class="sidebar-list-item tab-content active">
                         <a href="#" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-home"></i></div>
-                            <div class="hidden-sidebar">Trang tổng quan</div>
+                            <div class="hidden-sidebar"> rang tổng quan</div>
                         </a>
                     </li>
                     <li class="sidebar-list-item tab-content">
@@ -204,7 +281,7 @@ if (!isset($admin_id)) {
                                     </div>
                                     <div class="list-control">
                                         <div class="list-tool">
-                                            <button class="btn-edit" onclick="editProduct(${product.id})"><i class="fa fa-pencil"></i></button>
+                                            <!-- <button class="btn-edit" onclick="editProduct(${product.id})"><i class="fa fa-pencil"></i></button> -->
                                             
                                         </div>
                                     </div>
@@ -225,21 +302,24 @@ if (!isset($admin_id)) {
             <!-- Account  -->
             <div class="section">
                 <div class="admin-control">
-                    <div class="admin-control-left">
+                    <!-- <div class="admin-control-left">
                         <select name="tinh-trang-user" id="tinh-trang-user" onchange="showUser()">
                             <option value="2">Tất cả</option>
                             <option value="1">Hoạt động</option>
                             <option value="0">Bị khóa</option>
                         </select>
-                    </div>
+                    </div> -->
                     <div class="admin-control-center">
-                        <form action="" class="form-search">
+                        <form action="#?" class="form-search" method="GET">
                             <span class="search-btn"><i class="fa fa-search"></i></span>
-                            <input id="form-search-user" type="text" class="form-search-input" placeholder="Tìm kiếm khách hàng..." oninput="showUser()">
-                        </form>
+                            <!-- <input id="form-search-user" type="text" class="form-search-input" placeholder="Tìm kiếm khách hàng..." oninput="showUser()"> -->
+                            <input id="form-search-user" type="text"name ="text_search" class="form-search-input" placeholder="Tìm kiếm khách hàng...">
+                            <button id="btn-add-user" class="btn-control-large" type="submit" name="submit_search"> Tìm kiếm </button>
+                        </form>  
                     </div>
+                    
                     <div class="admin-control-right">
-                        <form action="" class="fillter-date">
+                        <!-- <form action="" class="fillter-date">
                             <div>
                                 <label for="time-start">Từ</label>
                                 <input type="date" class="form-control-date" id="time-start-user" onchange="showUser()">
@@ -248,24 +328,125 @@ if (!isset($admin_id)) {
                                 <label for="time-end">Đến</label>
                                 <input type="date" class="form-control-date" id="time-end-user" onchange="showUser()">
                             </div>
-                        </form>
-                        <button class="btn-reset-order" onclick="cancelSearchUser()"><i class="fa fa-refresh fa-spin"></i></button>
-                        <button id="btn-add-user" class="btn-control-large" onclick="openCreateAccount()"><i class="fa fa-plus"></i> <span>Thêm khách hàng</span></button>
+                        </form> -->
+                        <!-- <button class="btn-reset-order" onclick="cancelSearchUser()"><i class="fa fa-refresh fa-spin"></i></button> -->
+                        <button id="btn-add-user" class="btn-control-large" onclick="register()"><i class="fa fa-plus"></i> <span>Thêm khách hàng</span></button>
+                        <script> // chuyển sang trang register . khi thêm khách hàng
+                            function register()
+                            {
+                                window.location.href="register.php";
+                                // window.location.href="admin.php"; đang ghi đè nên không thành côngh
+
+                            }
+                        </script>
+                        
                     </div>
                 </div>
+                <?php
+if (isset($_GET['submit_search'])) 
+{
+    $search = $_GET['text_search'];
+    if (!empty($search)) {
+        $sql_tk = "SELECT * FROM `users` WHERE `name` LIKE '%" . $search . "%'";
+        $sql_search = mysqli_query($conn, $sql_tk);
+        if (mysqli_num_rows($sql_search) > 0) {
+            ?>
+            <table width="100%">
+                <thead>
+                    <tr>
+                        <td>Họ và tên</td>
+                        <td>Liên hệ</td>
+                        <td>Ngày tham gia</td>
+                    </tr>
+                </thead>
+                <tbody id="show-user">
+                    <?php
+                    while ($fetch_users = mysqli_fetch_assoc($sql_search)) 
+                    {   if($fetch_users['user_type']=="user")
+                        {
+                        ?>
+                        <tr>
+                            <td><?php echo $fetch_users['name']; ?></td>
+                            <td><?php echo $fetch_users['phone_number']; ?></td>
+                            <td><?php echo $fetch_users['date_time']; ?></td>
+                        </tr>
+                        <?php
+                        }
+                    }
+                    ?>
+                </tbody>
+            </table>
+            <?php
+        } else {
+            echo "Không tìm thấy thông tin.";
+        }
+    } else {
+        echo "Vui lòng nhập từ khóa tìm kiếm.";
+    }
+}
+else {
+    $search='';
+    $sql_tk="SELECT * FROM `users` LIMIT 5";
+    $sql_search= mysqli_query($conn,$sql_tk);
+}
+?>
+                <!-- thong tin nguoi dung -->
                 <div class="table">
                     <table width="100%">
                         <thead>
                             <tr>
-                                <td>STT</td>
+                                <td>STT </td>
                                 <td>Họ và tên</td>
                                 <td>Liên hệ</td>
                                 <td>Ngày tham gia</td>
-                                <td>Tình trạng</td>
+                                <td>Chức năng</td>
                                 <td></td>
                             </tr>
                         </thead>
                         <tbody id="show-user">
+                            <?php
+                                
+                               $select_users = mysqli_query($conn, "SELECT * FROM  `users`");
+                                
+                                $stt=1;
+                                while ($fetch_users =mysqli_fetch_assoc($select_users))
+                                {
+                                        if ($fetch_users['user_type']=='user')
+                                        {
+                                        ?>
+
+                                        <tr>
+                                            <td><?php echo $stt ?></td>
+                                            <td><?php echo $fetch_users['name']; ?></td>
+                                            <td><?php echo $fetch_users['phone_number']; ?></td>
+                                            <td><?php echo $fetch_users['date_time']; ?></td>
+                                            <td>
+                                                <form method="GET">
+                                                <?php 
+                                                    if ($fetch_users['status'] == 1) 
+                                                    { 
+                                                        ?>
+                                                        <a id="btn-add-user" class="btn-control-large" type="submit" name="delete" href="admin.php?delete=<?php echo $fetch_users['id']; ?>" onclick="return confirm('delete this user?');" class="delete-btn">Xóa</a>
+                                                        <a id="btn-add-user" class="btn-control-large" type="submit" name="block" href="admin.php?block=<?php echo $fetch_users['id']; ?>" onclick="return confirm('Block this user?');" class="delete-btn">Chặn</a>
+                                                        <?php 
+                                                    } 
+                                                    else 
+                                                    { 
+                                                        ?>
+                                                        <a id="btn-add-user" class="btn-control-large" type="submit" name="delete" href="admin.php?delete=<?php echo $fetch_users['id']; ?>" onclick="return confirm('delete this user?');" class="delete-btn">Xóa</a>
+                                                        <a id="btn-add-user" class="btn-control-large" type="submit" name="unblock" href="admin.php?unblock=<?php echo $fetch_users['id']; ?>" onclick="return confirm('Unblock this user?');" class="delete-btn">Gỡ chặn</a>
+                                                        <?php 
+                                                    } 
+                                                ?>
+                                            </td>
+                                           
+                                        </tr>
+                                        <?php
+                                        }
+
+                                    $stt++;
+                                }
+                            ?>
                         </tbody>
                     </table>
                 </div>
