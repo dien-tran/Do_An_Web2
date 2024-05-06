@@ -71,6 +71,17 @@ if (isset($_GET['unblock'])) {
 }
 
 
+$products_per_page = 8;
+
+// Tính số trang dựa trên tổng số sản phẩm và số sản phẩm mỗi trang
+$total_products = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `products`"));
+$total_pages = ceil($total_products / $products_per_page);
+
+// Lấy trang hiện tại từ tham số truyền vào hoặc mặc định là trang 1
+$current_page = isset($_GET['page']) ? $_GET['page'] : 1;
+
+// Tính offset (bắt đầu lấy từ vị trí nào trong cơ sở dữ liệu)
+$offset = ($current_page - 1) * $products_per_page;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -87,6 +98,48 @@ if (isset($_GET['unblock'])) {
 
     <link rel="stylesheet" href="">
     <title>Quản lý cửa hàng</title>
+    <style>
+        .pagination-justify-content-center {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            font-size: 15px;
+        }
+
+        .pagination-justify-content-center .page-item {
+            display: inline-block;
+            margin-right: 5px;
+            background-color: #ddd;
+            /* Màu nền xám */
+            padding: 15px 30px;
+            /* Kích thước padding */
+            border-radius: 10px;
+        }
+
+        .pagination-justify-content-center .page-item.disabled .page-link {
+            color: #6c757d;
+            pointer-events: none;
+            background-color: #ddd;
+            /* Màu nền xám */
+        }
+
+        .pagination-justify-content-center .page-item.active .page-link {
+            /* color: #613d8a; màu nút khi được bấm */
+            color: red;
+        }
+
+        .pagination-justify-content-center .page-link {
+            color: black;
+        }
+
+        .pagination-justify-content-center .page-link:hover {
+            color: purple;
+            /* Màu chữ khi hover */
+            text-decoration: none;
+
+        }
+    </style>
 </head>
 
 <body>
@@ -139,15 +192,15 @@ if (isset($_GET['unblock'])) {
                 </ul>
             </div>
             <div class="bottom-sidebar">
-            <ul class="sidebar-list">
-               <li class="sidebar-list-item user-logout">
-                  <a href="#" class="sidebar-link" id="logout-acc">
-                     <div class="sidebar-icon"><i class="fa fa-arrow-right"></i></div>
-                     <div class="hidden-sidebar">Đăng xuất</div>
-                  </a>
-               </li>
-            </ul>
-         </div>
+                <ul class="sidebar-list">
+                    <li class="sidebar-list-item user-logout">
+                        <a href="#" class="sidebar-link" id="logout-acc">
+                            <div class="sidebar-icon"><i class="fa fa-arrow-right"></i></div>
+                            <div class="hidden-sidebar">Đăng xuất</div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </aside>
         <main class="content">
             <div class="section product-all active">
@@ -186,7 +239,18 @@ if (isset($_GET['unblock'])) {
                                     <div class="list-info">
                                         <h4><?php echo $fetch_products['Name'] ?></h4>
                                         <p class="list-note"><?php echo $fetch_products['Description'] ?></p>
-                                        <span class="list-category">${product.category}</span>
+                                        <span class="list-category"><?php $category = mysqli_query($conn, "SELECT * FROM products p INNER JOIN category c ON p.CategoryId = c.CateId");
+                                        if(mysqli_num_rows($category) > 0)
+                                        {
+                                            while($fetch = mysqli_fetch_assoc($category))
+                                            {
+                                                if($fetch['CateId'] == $fetch_products['CategoryId'])
+                                                {
+                                                    echo $fetch['CateName'];
+                                                }
+                                            }
+                                        }
+                                        ?></span>
                                     </div>
                                 </div>
                                 <div class="list-right">
@@ -208,10 +272,32 @@ if (isset($_GET['unblock'])) {
                     }
                     ?>
                 </div>
-                <div class="page-nav">
-                    <ul class="page-nav-list">
-                    </ul>
-                </div>
+                <nav aria-label="Page navigation example">
+    <ul class="pagination-justify-content-center">
+    <li class="page-item <?php echo $current_page == 1 ? 'disabled' : ''; ?>">
+                <a class="page-link" href="<?php echo $current_page == 1 ? '#' : '?page=' . 1; ?>"> First </a>
+        </li>
+        <li class="page-item <?php echo $current_page == 1 ? 'disabled' : ''; ?>">
+            <a class="page-link" href="<?php echo $current_page == 1 ? '#' : '?page=' . ($current_page - 1); ?>" tabindex="-1"> < </a>
+        </li>
+        <?php
+        // Hiển thị các trang
+        for ($i = 1; $i <= $total_pages; $i++) {
+            ?>
+            <li class="page-item <?php echo $current_page == $i ? 'active' : ''; ?>">
+                <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+            </li>
+            <?php
+        }
+        ?>
+        <li class="page-item <?php echo $current_page == $total_pages ? 'disabled' : ''; ?>">
+            <a class="page-link" href="<?php echo $current_page == $total_pages ? '#' : '?page=' . ($current_page + 1); ?>"> > </a>
+        </li>
+        <li class="page-item <?php echo $current_page == $total_pages ? 'disabled' : ''; ?>">
+            <a class="page-link" href="<?php echo $current_page == $total_pages ? '#' : '?page=' . ($total_pages); ?>"> Last </a>
+        </li>
+    </ul>
+</nav>
             </div>
             <div class="modal add-product">
                 <div class="modal-container">
