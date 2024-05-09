@@ -1,4 +1,11 @@
+
 <?php
+
+if (!isset($user_id)) {
+  header('location:login_customer.php');
+  exit();
+}
+
 if (isset($message)) {
    foreach ($message as $message) {
       echo '
