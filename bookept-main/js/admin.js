@@ -429,87 +429,87 @@ function getOrderDetails(madon) {
 }
 
 // Show Order Detail
-function detailOrder(id) {
-    document.querySelector(".modal.detail-order").classList.add("open");
-    let orders = localStorage.getItem("order") ? JSON.parse(localStorage.getItem("order")) : [];
-    let products = localStorage.getItem("order") ? JSON.parse(localStorage.getItem("products")) : [];
-    // Lấy hóa đơn 
-    let order = orders.find((item) => item.id == id);
-    // Lấy chi tiết hóa đơn
-    let ctDon = getOrderDetails(id);
-    let spHtml = `<div class="modal-detail-left"><div class="order-item-group">`;
+// function detailOrder(id) {
+//     document.querySelector(".modal.detail-order").classList.add("open");
+//     let orders = localStorage.getItem("order") ? JSON.parse(localStorage.getItem("order")) : [];
+//     let products = localStorage.getItem("order") ? JSON.parse(localStorage.getItem("products")) : [];
+//     // Lấy hóa đơn 
+//     let order = orders.find((item) => item.id == id);
+//     // Lấy chi tiết hóa đơn
+//     let ctDon = getOrderDetails(id);
+//     let spHtml = `<div class="modal-detail-left"><div class="order-item-group">`;
 
-    ctDon.forEach((item) => {
-        let detaiSP = products.find(product => product.id == item.id);
-        spHtml += `<div class="order-product">
-            <div class="order-product-left">
-                <img src="${detaiSP.img}" alt="">
-                <div class="order-product-info">
-                    <h4>${detaiSP.title}</h4>
-                    <p class="order-product-note"><i class="fa-light fa-pen"></i> ${item.note}</p>
-                    <p class="order-product-quantity">SL: ${item.soluong}<p>
-                </div>
-            </div>
-            <div class="order-product-right">
-                <div class="order-product-price">
-                    <span class="order-product-current-price">${vnd(item.price)}</span>
-                </div>                         
-            </div>
-        </div>`;
-    });
-    spHtml += `</div></div>`;
-    spHtml += `<div class="modal-detail-right">
-        <ul class="detail-order-group">
-            <li class="detail-order-item">
-                <span class="detail-order-item-left"><i class="fa fa-calendar"></i> Ngày đặt hàng</span>
-                <span class="detail-order-item-right">${formatDate(order.thoigiandat)}</span>
-            </li>
-            <li class="detail-order-item">
-                <span class="detail-order-item-left"><i class="fa fa-truck"></i> Hình thức giao</span>
-                <span class="detail-order-item-right">${order.hinhthucgiao}</span>
-            </li>
-            <li class="detail-order-item">
-            <span class="detail-order-item-left"><i class="fa fa-user"></i> Người nhận</span>
-            <span class="detail-order-item-right">${order.tenguoinhan}</span>
-            </li>
-            <li class="detail-order-item">
-            <span class="detail-order-item-left"><i class="fa fa-phone"></i> Số điện thoại</span>
-            <span class="detail-order-item-right">${order.sdtnhan}</span>
-            </li>
-            <li class="detail-order-item">
-            <span class="detail-order-item-left"><i class="fa fa-credit-card"></i> Phương thức</span>
-            <span class="detail-order-item-right">${order.phuongthuc}</span>
-            </li>
-            <li class="detail-order-item tb">
-                <span class="detail-order-item-left"><i class="fa fa-clock-o"></i> Thời gian giao</span>
-                <p class="detail-order-item-b">${(order.thoigiangiao == "" ? "" : (order.thoigiangiao + " - ")) + formatDate(order.ngaygiaohang)}</p>
-            </li>
-            <li class="detail-order-item tb">
-                <span class="detail-order-item-t"><i class="fa fa-location-arrow"></i> Địa chỉ nhận</span>
-                <p class="detail-order-item-b">${order.diachinhan}</p>
-            </li>
-            <li class="detail-order-item tb">
-                <span class="detail-order-item-t"><i class="fa fa-sticky-note"></i> Ghi chú</span>
-                <p class="detail-order-item-b">${order.ghichu}</p>
-            </li>
-        </ul>
-    </div>`;
-    document.querySelector(".modal-detail-order").innerHTML = spHtml;
+//     ctDon.forEach((item) => {
+//         let detaiSP = products.find(product => product.id == item.id);
+//         spHtml += `<div class="order-product">
+//             <div class="order-product-left">
+//                 <img src="${detaiSP.img}" alt="">
+//                 <div class="order-product-info">
+//                     <h4>${detaiSP.title}</h4>
+//                     <p class="order-product-note"><i class="fa-light fa-pen"></i> ${item.note}</p>
+//                     <p class="order-product-quantity">SL: ${item.soluong}<p>
+//                 </div>
+//             </div>
+//             <div class="order-product-right">
+//                 <div class="order-product-price">
+//                     <span class="order-product-current-price">${vnd(item.price)}</span>
+//                 </div>                         
+//             </div>
+//         </div>`;
+//     });
+//     spHtml += `</div></div>`;
+//     spHtml += `<div class="modal-detail-right">
+//         <ul class="detail-order-group">
+//             <li class="detail-order-item">
+//                 <span class="detail-order-item-left"><i class="fa fa-calendar"></i> Ngày đặt hàng</span>
+//                 <span class="detail-order-item-right">${formatDate(order.thoigiandat)}</span>
+//             </li>
+//             <li class="detail-order-item">
+//                 <span class="detail-order-item-left"><i class="fa fa-truck"></i> Hình thức giao</span>
+//                 <span class="detail-order-item-right">${order.hinhthucgiao}</span>
+//             </li>
+//             <li class="detail-order-item">
+//             <span class="detail-order-item-left"><i class="fa fa-user"></i> Người nhận</span>
+//             <span class="detail-order-item-right">${order.tenguoinhan}</span>
+//             </li>
+//             <li class="detail-order-item">
+//             <span class="detail-order-item-left"><i class="fa fa-phone"></i> Số điện thoại</span>
+//             <span class="detail-order-item-right">${order.sdtnhan}</span>
+//             </li>
+//             <li class="detail-order-item">
+//             <span class="detail-order-item-left"><i class="fa fa-credit-card"></i> Phương thức</span>
+//             <span class="detail-order-item-right">${order.phuongthuc}</span>
+//             </li>
+//             <li class="detail-order-item tb">
+//                 <span class="detail-order-item-left"><i class="fa fa-clock-o"></i> Thời gian giao</span>
+//                 <p class="detail-order-item-b">${(order.thoigiangiao == "" ? "" : (order.thoigiangiao + " - ")) + formatDate(order.ngaygiaohang)}</p>
+//             </li>
+//             <li class="detail-order-item tb">
+//                 <span class="detail-order-item-t"><i class="fa fa-location-arrow"></i> Địa chỉ nhận</span>
+//                 <p class="detail-order-item-b">${order.diachinhan}</p>
+//             </li>
+//             <li class="detail-order-item tb">
+//                 <span class="detail-order-item-t"><i class="fa fa-sticky-note"></i> Ghi chú</span>
+//                 <p class="detail-order-item-b">${order.ghichu}</p>
+//             </li>
+//         </ul>
+//     </div>`;
+//     document.querySelector(".modal-detail-order").innerHTML = spHtml;
 
-    let classDetailBtn = order.trangthai == 0 ? "btn-chuaxuly" : "btn-daxuly";
-    let textDetailBtn = order.trangthai == 0 ? "Chưa xử lý" : "Đã xử lý";
-    document.querySelector(
-        ".modal-detail-bottom"
-    ).innerHTML = `<div class="modal-detail-bottom-left">
-        <div class="price-total">
-            <span class="thanhtien">Thành tiền</span>
-            <span class="price">${vnd(order.tongtien)}</span>
-        </div>
-    </div>
-    <div class="modal-detail-bottom-right">
-        <button class="modal-detail-btn ${classDetailBtn}" onclick="changeStatus('${order.id}',this)">${textDetailBtn}</button>
-    </div>`;
-}
+//     let classDetailBtn = order.trangthai == 0 ? "btn-chuaxuly" : "btn-daxuly";
+//     let textDetailBtn = order.trangthai == 0 ? "Chưa xử lý" : "Đã xử lý";
+//     document.querySelector(
+//         ".modal-detail-bottom"
+//     ).innerHTML = `<div class="modal-detail-bottom-left">
+//         <div class="price-total">
+//             <span class="thanhtien">Thành tiền</span>
+//             <span class="price">${vnd(order.tongtien)}</span>
+//         </div>
+//     </div>
+//     <div class="modal-detail-bottom-right">
+//         <button class="modal-detail-btn ${classDetailBtn}" onclick="changeStatus('${order.id}',this)">${textDetailBtn}</button>
+//     </div>`;
+// }
 
 // Find Order
 function findOrder() {
