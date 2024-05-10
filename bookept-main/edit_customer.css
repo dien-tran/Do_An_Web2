@@ -18,7 +18,10 @@ h2 {
 .input_form {
   margin-bottom: 10px;
 }
-
+select 
+{
+  margin-bottom:10px ;
+}
 .label {
   display: block;
   text-align: left;
@@ -79,4 +82,15 @@ td label {
     margin-right: 10px; /* Khoảng cách giữa nhãn và input */
     vertical-align: middle; /* Canh giữa theo chiều dọc */
     font-size: 18px; /* Kích thước chữ cho nhãn */
+  }
+  .select-container {
+    display: flex;
+  }
+  
+  .select-container select {
+    margin-right: 10px;
+  }
+select 
+  {
+    width: 100px;
   }
