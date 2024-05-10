@@ -226,10 +226,10 @@ if(isset($message) && is_array($message)) // Kiểm tra nếu $message là một
         </td>
     </tr>
     </table>
-  <div class="button_form">
-  <input type="submit" name="reload" id="return" value="Finish" form="form">
-  <input type="submit" name="submit" id ="submitBtn" value="Submit">
+  <div class="button_form" style="font-size:15px;">
   <input type="button" name="finish" value="Return" onclick="window.location.href='home.php';">
+  <input type="submit" name="submit" id ="submitBtn" value="Submit">
+  <input type="submit" name="reload" id="return" value="Reset" form="form">
 
   </div>
 

@@ -134,50 +134,44 @@ if (isset($_POST['order_btn'])) {
                <span><i class="fa-solid fa-location-dot"></i> road :</span>
                <input type="text" name="road" value="<?php echo $check['road']; ?>" >
             </div>
-           <table>
-           <tr>
-            <td><label for="ward">Ward:</label></td>
-            <td>
-            <select class="form-select form-select-sm" name="ward" id="ward" aria-label=".form-select-sm">
-                <option value="">Chọn phường xã</option>
-                <?php
-                for ($i = 1; $i <= 12; $i++) {
-                    $selected = ($_POST['ward'] == "Phường $i") ? 'selected' : '';
-                    "<option value='Phường $i' $selected>Phường $i</option>";
-                    $selected = ($check['ward'] == "Phường $i") ? 'selected' : '';
-                    echo "<option value='Phường $i' $selected>Phường $i</option>";
-                }
-                ?>
-            </select>
-        </td>
-    </tr>
-    <tr>
-        <td><label for="district">District:</label></td>
-        <td>
-            <select class="form-select form-select-sm mb-3" name="district" id="district" aria-label=".form-select-sm">
-                <option value="">Chọn quận huyện</option>
-                <?php
-                for ($i = 1; $i <= 12; $i++) {
-                  $selected = ($_POST['district'] == "Quận $i") ? 'selected' : '';
-                  "<option value='Quận $i' $selected>Quận $i</option>";
-                  $selected = ($check['district'] == "Quận $i") ? 'selected' : '';
-                  echo "<option value='Quận $i' $selected>Quận $i</option>";
-              }
-                
-                ?>
-            </select>
-        </td>
-    </tr>
-    <tr>
-        <td><label for="city">City:</label></td>
-        <td>
-            <select class="form-select form-select-sm mb-3" name="city" id="city" aria-label=".form-select-sm">
-                <option value="" selected>Chọn tỉnh thành</option>
-                <option value="Hồ Chí Minh" selected>Thành Phố Hồ Chí Minh</option>
-            </select>
-        </td>
-    </tr>
-           </table>
+            <div class="inputBox">
+               <span><i class="fa-solid fa-location-dot"></i> ward :</span>
+               <br>
+               <select class="" name="ward" id="ward" >
+                  <option value="" selected disabled >Choose ward</option>
+                  <?php
+                  for ($i = 1; $i <= 12; $i++) {
+                     $selected = ($_POST['ward'] == "Phường $i") ? 'selected' : '';
+                     "<option value='Phường $i' $selected >Phường $i</option>";
+                     $selected = ($check['ward'] == "Phường $i") ? 'selected' : '';
+                     echo "<option value='Phường $i' $selected>Phường $i</option>";
+                  }
+                  ?>
+               </select>
+            </div>
+            <div class="inputBox">
+               <span><i class="fa-solid fa-location-dot"></i> district :</span>
+               <br>
+               <select class="" name="district" id="district" aria-label=".form-select-sm">
+                  <option value=""  selected disabled>Choose district</option>
+                  <?php
+                  for ($i = 1; $i <= 12; $i++) {
+                     $selected = ($_POST['district'] == "Quận $i") ? 'selected' : '';
+                     "<option value='Quận $i' $selected>Quận $i</option>";
+                     $selected = ($check['district'] == "Quận $i") ? 'selected' : '';
+                     echo "<option value='Quận $i' $selected>Quận $i</option>";
+                  }
+                  ?>
+               </select>
+            </div>
+            <div class="inputBox">
+               <span><i class="fa-solid fa-location-dot"></i> city :</span>
+               <br>
+               <select class="" name="city" id="city" style = "width: 49.3%;">
+                  <option value="" selected disabled >Choose city</option>
+                  <option value="Hồ Chí Minh">Thành Phố Hồ Chí Minh</option>
+               </select>
+            </div>
          </div>
          <div style="display: flex; justify-content:end">
             <input type="submit" value="🚩 order now" class="btn" name="order_btn">
