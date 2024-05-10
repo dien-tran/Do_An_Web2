@@ -136,8 +136,8 @@ if (isset($_POST['order_btn'])) {
             </div>
            <table>
            <tr>
-        <td><label for="ward">Ward:</label></td>
-        <td>
+            <td><label for="ward">Ward:</label></td>
+            <td>
             <select class="form-select form-select-sm" name="ward" id="ward" aria-label=".form-select-sm">
                 <option value="">Chọn phường xã</option>
                 <?php
