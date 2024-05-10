@@ -74,7 +74,17 @@ if (isset($_POST['order_btn'])) {
    <!-- custom css file link  -->
    <link rel="stylesheet" href="styles/main.css">
    <link rel="stylesheet" href="./styles/customers/checkout.css">
-
+   <style>
+  .form-select {
+    
+    font-size: 16px;
+    display: inline-block;
+    width: 33.33%;
+    margin-right: 20px;
+    width: 100%; /* Đặt chiều rộng là 100% để các select box dài hết chiều rộng của cột */
+        max-width: 400px; /* Tùy chỉnh chiều rộng tối đa của các select box */
+  }
+</style>
 </head>
 
 <body>
@@ -124,19 +134,50 @@ if (isset($_POST['order_btn'])) {
                <span><i class="fa-solid fa-location-dot"></i> road :</span>
                <input type="text" name="road" value="<?php echo $check['road']; ?>" >
             </div>
-            <div class="inputBox">
-               <span><i class="fa-solid fa-city"></i> ward :</span>
-               <input type="text" name="ward" value="<?php echo $check['ward']; ?>">
-            </div>
-            <div class="inputBox">
-               <span><i class="fa-brands fa-squarespace"></i> district :</span>
-               <input type="text" name="district" value="<?php echo $check['district']; ?>">
-            </div>
-            <div class="inputBox">
-               <span><i class="fa-solid fa-earth-americas"></i> city :</span>
-               <input type="text" name="city" value="<?php echo $check['city']; ?>">
-            </div>
-           
+           <table>
+           <tr>
+        <td><label for="ward">Ward:</label></td>
+        <td>
+            <select class="form-select form-select-sm" name="ward" id="ward" aria-label=".form-select-sm">
+                <option value="">Chọn phường xã</option>
+                <?php
+                for ($i = 1; $i <= 12; $i++) {
+                    $selected = ($_POST['ward'] == "Phường $i") ? 'selected' : '';
+                    "<option value='Phường $i' $selected>Phường $i</option>";
+                    $selected = ($check['ward'] == "Phường $i") ? 'selected' : '';
+                    echo "<option value='Phường $i' $selected>Phường $i</option>";
+                }
+                ?>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td><label for="district">District:</label></td>
+        <td>
+            <select class="form-select form-select-sm mb-3" name="district" id="district" aria-label=".form-select-sm">
+                <option value="">Chọn quận huyện</option>
+                <?php
+                for ($i = 1; $i <= 12; $i++) {
+                  $selected = ($_POST['district'] == "Quận $i") ? 'selected' : '';
+                  "<option value='Quận $i' $selected>Quận $i</option>";
+                  $selected = ($check['district'] == "Quận $i") ? 'selected' : '';
+                  echo "<option value='Quận $i' $selected>Quận $i</option>";
+              }
+                
+                ?>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td><label for="city">City:</label></td>
+        <td>
+            <select class="form-select form-select-sm mb-3" name="city" id="city" aria-label=".form-select-sm">
+                <option value="" selected>Chọn tỉnh thành</option>
+                <option value="Hồ Chí Minh" selected>Thành Phố Hồ Chí Minh</option>
+            </select>
+        </td>
+    </tr>
+           </table>
          </div>
          <div style="display: flex; justify-content:end">
             <input type="submit" value="🚩 order now" class="btn" name="order_btn">

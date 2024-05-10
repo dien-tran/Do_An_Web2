@@ -191,7 +191,7 @@ if(isset($message) && is_array($message)) // Kiểm tra nếu $message là một
                 <?php
                 for ($i = 1; $i <= 12; $i++) {
                     $selected = ($_POST['ward'] == "Phường $i") ? 'selected' : '';
-                    echo "<option value='Phường $i' $selected>Phường $i</option>";
+                    "<option value='Phường $i' $selected>Phường $i</option>";
                     $selected = ($check['ward'] == "Phường $i") ? 'selected' : '';
                     echo "<option value='Phường $i' $selected>Phường $i</option>";
                 }
@@ -207,7 +207,7 @@ if(isset($message) && is_array($message)) // Kiểm tra nếu $message là một
                 <?php
                 for ($i = 1; $i <= 12; $i++) {
                   $selected = ($_POST['district'] == "Quận $i") ? 'selected' : '';
-                  echo "<option value='Quận $i' $selected>Quận $i</option>";
+                  "<option value='Quận $i' $selected>Quận $i</option>";
                   $selected = ($check['district'] == "Quận $i") ? 'selected' : '';
                   echo "<option value='Quận $i' $selected>Quận $i</option>";
               }
