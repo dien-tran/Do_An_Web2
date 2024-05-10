@@ -88,7 +88,7 @@ if (!isset($user_id)) {
             <h3>how we work</h3>
             <p>&bull; Access new ways to increase customer visibility and brand value. As well as looking to make the most of advances in digitization and embracing customer technology platforms.</p>
             <p>&bull; Selecting teams for every project, to ensure each event captures the attention of the people with the most relevant skills. Access partnerships from around the world.</p>
-            <a href="about.php" class="btn">read more</a>
+            <!-- <a href="about.php" class="btn">read more</a> -->
          </div>
          <div class="image">
             <img src="images/about-img.jpg" alt="">
@@ -131,9 +131,9 @@ if (!isset($user_id)) {
          <div class="content">
             <h3>about us</h3>
             <p>&bull; Massive business volume for suppliers with profitable contracts.</p>
-            <a href="about.php" class="btn">read more</a>
-         </div>
-      </div>
+            <!-- <a href="about.php" class="btn">read more</a> -->
+         <!-- </div>
+      </div> -->
    </section>
 
    <section class="reviews">

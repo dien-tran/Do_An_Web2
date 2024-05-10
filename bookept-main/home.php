@@ -49,6 +49,19 @@ if (isset($_POST['add_to_cart'])) {
    <!-- custom css file link  -->
    <link rel="stylesheet" href="styles/main.css">
    <link rel="stylesheet" href="styles/customers/service.css">
+   <style>
+   .action
+   {
+      display: flex;
+      justify-content: center; /* Canh giữa theo chiều ngang */
+      align-items: center; /* Canh giữa theo chiều dọc */
+   }
+
+.action button {
+  margin: 0 auto; /* Đảm bảo các nút button nằm chính giữa */
+}
+</style>
+
 </head>
 
 <body>
@@ -93,8 +106,10 @@ if (isset($_POST['add_to_cart'])) {
                         </div>
                      </div>
                      <div class="action">
-                        <button type="submit" name="add_to_cart"><img src="./public/card/cart.svg" alt="cart_icon">add to cart</button>
-                        <img src="./public/card/heart.svg" alt="favourite_icon">
+                        <button id="cart" type="submit" name="add_to_cart">
+                           <img src="./public/card/cart.svg" alt="cart_icon">add to cart
+                         </button>
+                         <!-- <img src="./public/card/heart.svg" alt="favourite_icon"> -->
                      </div>
                   </div>
                </form>

@@ -3,35 +3,63 @@ include 'config.php';
 session_start();
 
 if (isset($_POST['submit'])) {
-
    $name = mysqli_real_escape_string($conn, $_POST['name']);
    $email = mysqli_real_escape_string($conn, $_POST['email']);
    $pass = mysqli_real_escape_string($conn, md5($_POST['password']));
    $password2 = mysqli_real_escape_string($conn, md5($_POST['password2']));
    $phone_number = mysqli_real_escape_string($conn, $_POST['phone_number']);
-   // $user_type = $_POST['user_type'];
-
+   $invalidFields = array();
+   // Kiểm tra xem người dùng đã tồn tại hay chưa
    $select_users = mysqli_query($conn, "SELECT * FROM `users` WHERE email = '$email' ") or die('query failed');
-
    if (mysqli_num_rows($select_users) > 0) {
-      $message[] = 'user already exist!';
-   } else {
-      $user_type = isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'admin' ? 'admin' : 'user';
-      $insert_query = "INSERT INTO `users` (name, email, password, user_type, phone_number,status) VALUES ('$name', '$email', '$pass', 'user', '$phone_number','1')";
-      if (mysqli_query($conn, $insert_query)) {
-         if ($pass != $password2) {
-            $message[] = 'confirm password not matched!';
+      $message[] = 'User already exists!';
+   } 
+   else {
+     // Khai báo mảng chứa các trường không hợp lệ
+
+
+     if ($pass != $password2) {
+      // Nếu mật khẩu không trùng khớp, xóa cả hai mật khẩu và focus tới mật khẩu
+      $invalidFields[] = 'password';
+      $invalidFields[] = 'password2';
+  }
+  
+  // Nếu cả số điện thoại và mật khẩu không hợp lệ
+  if (!preg_match('/^\d{10}$/', $phone_number) && $pass != $password2) {
+      // Xóa số điện thoại và mật khẩu, focus tới mật khẩu
+      $invalidFields[] = 'phone_number';
+      $invalidFields[] = 'password';
+      $invalidFields[] = 'password2';
+  }
+// Kiểm tra số điện thoại và mật khẩu
+if (!preg_match('/^\d{10}$/', $phone_number)) {
+    // Nếu số điện thoại không hợp lệ, xóa và focus tới số điện thoại
+    $invalidFields[] = 'phone_number';
+}
+
+
+
+// Kiểm tra xem có trường nào không hợp lệ không
+if (!empty($invalidFields)) {
+    // Có lỗi, hiển thị thông báo lỗi và không thực hiện lưu dữ liệu
+    $message[] = 'Please check the entered data.';
+}
+
+      else {
+         $user_type = isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'admin' ? 'admin' : 'user';
+         $insert_query = "INSERT INTO `users` (name, email, password, user_type, phone_number,status) VALUES ('$name', '$email', '$pass', 'user', '$phone_number','1')";
+         if (mysqli_query($conn, $insert_query)) {
+            header('location: home.php');
+            exit();
          } else {
-               header('location: home.php');
-               exit();
+            $message[] = 'Registration failed!';
          }
-      } else {
-         $message = 'Registration failed!';
       }
    }
 }
-
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -77,7 +105,7 @@ if(isset($message) && is_array($message)) // Kiểm tra nếu $message là một
                   <img src="./public/form/user.svg" alt="user">
                </div>
                <div class="fill">
-                  <input type="text" name="name" placeholder="enter your name" required class="box">
+                  <input type="text" name="name" placeholder="enter your name" value="<?php if (isset($name)) echo $name; ?>" required class="box">
                </div>
             </div>
 
@@ -86,36 +114,46 @@ if(isset($message) && is_array($message)) // Kiểm tra nếu $message là một
                   <img src="./public/form/letter-svgrepo-com.svg" alt="gmail">
                </div>
                <div class="fill">
-                  <input type="email" name="email" placeholder="enter your email" required class="box">
+                  <input type="email" name="email" placeholder="enter your email"value="<?php if (isset($email)) echo $email; ?>"  required class="box">
                </div>
             </div>
+
 
             <div class="input-form"> <!--pass1 -->
                <div class="icon">
                   <img src="./public//form/finger_print.svg" alt="finger_print"> <!-- dấu pass-->
                </div>
                <div class="fill">
-                  <input type="password" name="password" placeholder="enter your password" required class="box">
+                  <input type="password" name="password" placeholder="enter your password" required class="box"value="<?php if (isset($_POST['password'])) echo htmlspecialchars($_POST['password']); ?>">
+                  <?php if (isset($invalidFields) && in_array('password', $invalidFields)) {
+                     echo '<div  style="color: red;" class="error-message">Password must match!</div>';
+                  } ?>
                </div>
             </div>
 
             <div class="input-form"> <!--pass2 -->
                <div class="icon">
                   <img src="./public//form/finger_print.svg" alt="finger_print"> <!-- dấu pass-->
-               </div>
-               <div class="fill">
-                  <input type="password" name="password2" placeholder="confirm your password" required class="box">
+                </div>
+            <div class="fill">
+                  <input type="password" name="password2" placeholder="confirm your password" required class="box" value="<?php if (isset($_POST['password'])) echo htmlspecialchars($_POST['password']); ?>">
+                  <?php if (isset($invalidFields) && in_array('password2', $invalidFields)) {
+                     echo '<div  style="color: red;" class="error-message">Password confirmation must match!</div>';
+                  } ?>
                </div>
             </div>
 
-            <div class="input-form"> <!--number -->
+            <div class="input-form <?php if (isset($invalidFields) && in_array('phone_number', $invalidFields)) echo 'invalid'; ?>"> <!--number -->
                <div class="icon">
                   <img src="./public//form/phone-office-svgrepo-com.svg" alt="phone_icon"> <!-- dấu pass-->
                </div>
                <div class="fill">
-                  <input type="tel" name="phone_number" placeholder="Number phone" required class="box">
+                  <input type="tel" name="phone_number" placeholder="Number phone" required class="box" value="<?php if (isset($_POST['phone_number'])) echo htmlspecialchars($_POST['phone_number']); ?>">
+                     <?php if (isset($invalidFields) && in_array('phone_number', $invalidFields)) {
+                        echo '<div  style="color: red;" class="error-message">Invalid phone number. Please check!</div>';
+                     } ?>
                </div>
-            </div>
+   </div>
 
 
 
@@ -130,7 +168,14 @@ if(isset($message) && is_array($message)) // Kiểm tra nếu $message là một
          </form>
       </div>
    </div>
-
+   <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const invalidFields = document.querySelectorAll('.invalid input');
+            if (invalidFields.length > 0) {
+                invalidFields[0].focus(); // Focus vào trường input đầu tiên không hợp lệ
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -6,87 +6,101 @@ session_start();
 $user_id = $_SESSION['user_id'];
 
 if (!isset($user_id)) {
-  header('location:login_customer.php');
-  exit();
+    header('location:login_customer.php');
+    exit();
 }
+
 
 if (isset($_POST['submit'])) {
-  $name = mysqli_real_escape_string($conn, $_POST['name_change']);
-  $email = mysqli_real_escape_string($conn, $_POST['email_change']);
-  $phone = mysqli_real_escape_string($conn, $_POST['phone_number']);
-  $address = mysqli_real_escape_string($conn, $_POST['address']);
-  $city = $_POST['city'];
-  $ward =$_POST['ward'];
-  $road = $_POST['road'];
-  $district=$_POST['district'];
-  // ban đầu. không có mảng arry thì session là:joppy đổi thành xucana thành công. nhưng sao đó đổi thành modmod  và bấm nút "Submit", thì lại không thành công . 
-  // nguyên nhân:thay đổi thông tin từ "xucana" thành "modmod", điều kiện "xucana" sẽ được kiểm tra ở phía trên và một truy vấn cập nhật tên mới sẽ được tạo ra và thực thi. Sau đó, khi đến điều kiện "modmod", nếu không thay đổi bất kỳ trường thông tin nào khác, không có truy vấn SQL mới nào được tạo ra, vì vậy tên "modmod" không được cập nhật vào cơ sở dữ liệu.
-  // dùng mảng arry () : sẽ được cập nhật bằng cách thêm giá trị mới vào mảng cho mỗi trường có dữ liệu mới được nhập vào form
-  // giả sử đổi thành xucana thì arry sẽ thêm 1 trường đổi tên thành xucana sau đó foreach nó sẽ duyệt qua mảng và đổi tên. khi đổi thành modmod tiếp và submit. thì thêm trường đổi tên vào arry và tiếp tục foreach. việc này sẽ giúp không ghi đè dữ liệu
-  $query=array();
-  if ($name != $_SESSION['name']) {
-    $query[] = "UPDATE `users` SET `name` = '$name' WHERE id = $user_id";
-    $_SESSION['name'] = $name;
-  } 
+    $name = mysqli_real_escape_string($conn, $_POST['name_change']);
+    $email = mysqli_real_escape_string($conn, $_POST['email_change']);
+    $phone = mysqli_real_escape_string($conn, $_POST['phone_number']);
+    $address = mysqli_real_escape_string($conn, $_POST['address']);
+    $city = $_POST['city'];
+    $ward = $_POST['ward'];
+    $road = $_POST['road'];
+    $district = $_POST['district'];
+    $success = false; // Biến cờ để kiểm tra xem có truy vấn SQL thành công không
 
-  else if ($email != $_SESSION['email'] ) {
-    $query[] = "UPDATE `users` SET `email` = '$email' WHERE id = $user_id";
-    $_SESSION['email'] = $email;
-  }
-  else if ($phone != $_SESSION['phone_number']) {
-    $query[] = "UPDATE `users` SET `phone_number` = '$phone' WHERE id = $user_id";
-    $_SESSION['phone_number'] = $phone;
-  } 
- else if (isset($_POST['address']) &&$address != $_SESSION['house_number'] ) 
-  {
-    $query[] = "UPDATE `users` SET `house_number` = '$address' WHERE id = $user_id";
-    $_SESSION['house_number'] = $address;
-  }
+    $queries = array(); // Mảng để lưu các truy vấn SQL
 
-  elseif ($road != $_SESSION['road']&& $road!="") {
-  $query[] = "UPDATE `users` SET `road` = '$road' WHERE id = $user_id";
-  $_SESSION['road'] = $road;
-}
-
-  else if ($ward != $_SESSION['ward'] &&$ward!="") {
-    $query[] = "UPDATE `users` SET `ward` = '$ward' WHERE id = $user_id";
-    $_SESSION['ward'] = $ward;
-}
-
- else if ($city != $_SESSION['city'] && $city!="") {
-    $query[] = "UPDATE `users` SET `city` = '$city' WHERE id = $user_id";
-    $_SESSION['city'] = $city;
-}
-
-
-else
-{
-  
-  foreach($query as $queries)
-  {
-    if (!empty($queries))
-    {
-      if (mysqli_query($conn,$queries))
-      {
-        $message[] = 'Update data successfully';
-
-      }
-
-      else
-      {
-        echo "error: " . mysqli_error($conn) . "<br>";
-      }
+    if ($name != $_SESSION['name'] ) {
+        $queries[] = "UPDATE `users` SET `name` = '$name' WHERE id = $user_id";
+        $_SESSION['name'] = $name;
     }
+
+    if ($email != $_SESSION['email']) {
+        $queries[] = "UPDATE `users` SET `email` = '$email' WHERE id = $user_id";
+        $_SESSION['email'] = $email;
+    }
+
+    if ($phone != $_SESSION['phone_number']) {
+      if (preg_match('/^[0-9]+$/', $phone)) {
+          // Kiểm tra độ dài của số điện thoại
+          if (strlen($phone) == 10) {
+              $queries[] = "UPDATE `users` SET `phone_number` = '$phone' WHERE id = $user_id";
+              $_SESSION['phone_number'] = $phone;
+          } else {
+              $message[] = 'The phone number must be 10 digits.';
+          }
+      } else {
+          $message[] = 'The phone number is invalid. Please check!';
+      }
   }
+  
+
+    if ($address != $_SESSION['house_number']) {
+        
+            $queries[] = "UPDATE `users` SET `house_number` = '$address' WHERE id = $user_id";
+            $_SESSION['house_number'] = $address;
+       
+    }
+
+    if ($road != $_SESSION['road']) {
+        $queries[] = "UPDATE `users` SET `road` = '$road' WHERE id = $user_id";
+        $_SESSION['road'] = $road;
+    }
+
+    if ($ward != $_SESSION['ward'] ) {
+      $queries[] = "UPDATE `users` SET `ward` = '$ward' WHERE id = $user_id";
+      $_SESSION['ward'] = $ward; // Sửa thành $_SESSION['ward'] = $ward;
+  } 
+  
+  if ($district != $_SESSION['district']) {
+      $queries[] = "UPDATE `users` SET `district` = '$district' WHERE id = $user_id";
+      $_SESSION['district'] = $district;
+  }
+  
+  if ($city != $_SESSION['city'] ) {
+      $queries[] = "UPDATE `users` SET `city` = '$city' WHERE id = $user_id";
+      $_SESSION['city'] = $city;
+  }
+
+ 
+        foreach ($queries as $query) {
+          if (!empty($query)) {
+              if (mysqli_query($conn, $query)) {
+                  $success = true;
+              // } else {
+              //     // $message[] = 'Error: ' . mysqli_error($conn);
+              // }
+          }
+      }
+  
+      if ($success) {
+          $message[] = 'Update data successfully.';
+      }
+
+    }
 }
 
-}
-if (isset($_POST["finish"]))
-{
-  header("location:home.php");
-  exit();
+
+if (isset($_POST["finish"])) {
+    header("location:home.php");
+    exit();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -136,6 +150,7 @@ if(isset($message) && is_array($message)) // Kiểm tra nếu $message là một
 
 
 <div class="from_container">
+
   <div class="container">
     <h2>EDIT INFORMATION</h2>
     <form action="" method="POST" id="form">
@@ -191,9 +206,12 @@ if(isset($message) && is_array($message)) // Kiểm tra nếu $message là một
                 <option value="">Chọn quận huyện</option>
                 <?php
                 for ($i = 1; $i <= 12; $i++) {
-                    $selected = ($check['district'] == "Quận $i") ? 'selected' : '';
-                    echo "<option value='Quận $i' $selected>Quận $i</option>";
-                }
+                  $selected = ($_POST['district'] == "Quận $i") ? 'selected' : '';
+                  echo "<option value='Quận $i' $selected>Quận $i</option>";
+                  $selected = ($check['district'] == "Quận $i") ? 'selected' : '';
+                  echo "<option value='Quận $i' $selected>Quận $i</option>";
+              }
+                
                 ?>
             </select>
         </td>
@@ -209,87 +227,94 @@ if(isset($message) && is_array($message)) // Kiểm tra nếu $message là một
     </tr>
     </table>
   <div class="button_form">
-    <input type="submit" name="reload" value="Return" form="myForm" onclick="return ReturnForm()">
-    <input type="submit" name="submit" id ="submitBtn" value="Submit">
-    <input type="submit" name="finish" value="Finish">
+  <input type="submit" name="reload" id="return" value="Finish" form="form">
+  <input type="submit" name="submit" id ="submitBtn" value="Submit">
+  <input type="button" name="finish" value="Return" onclick="window.location.href='home.php';">
+
   </div>
 
   </form>
 
 </body>
 
-  <script>
-  function ReturnForm() {
-    event.preventDefault();
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('form').addEventListener('submit', function(event) {
+      var phone = document.getElementById('phone').value.trim();
+      var name = document.getElementById('name').value.trim();
+      var email = document.getElementById('email').value.trim();
+      var address = document.getElementById('address').value.trim();
+      var city = document.getElementById('city').value.trim();
+      var road = document.getElementById('road').value.trim();
+      var district = document.getElementById('district').value.trim();
+      var ward = document.getElementById('ward').value.trim();
+      
+      // Check if any field is empty
+      if (name === "" || phone === "" || email === "" || address === "" || city === "" || road === "" || district === "" || ward === "") {
+        event.preventDefault(); // Prevent form submission
+        alert("You should fill out the form completely."); // Show error message
+
+        // Focus on the first empty field
+        if (name === "") {
+          document.getElementById('name').focus();
+        } else if (phone === "") {
+          document.getElementById('phone').focus();
+        } else if (email === "") {
+          document.getElementById('email').focus();
+        } else if (address === "") {
+          document.getElementById('address').focus();
+        } else if (city === "") {
+          document.getElementById("city").focus();
+        } else if (road === "") {
+          document.getElementById("road").focus();
+        } else if (district === "") {
+          document.getElementById("district").focus();
+        } else if (ward === "") {
+          document.getElementById("ward").focus();
+        }
+      }
+    });
+  });
+  
+ function ReturnForm(event) {
+    event.preventDefault(); // Ngăn chặn việc gửi biểu mẫu mặc định
+
+    // Lấy giá trị mới từ form và loại bỏ ký tự khoảng trắng
     var formData = new FormData(document.getElementById("form"));
     var result = {};
     for (var pair of formData.entries()) {
-        result[pair[0]] = pair[1];
+        result[pair[0]] = pair[1].trim(); // Loại bỏ ký tự khoảng trắng
     }
-    // var check= confirm("Are you delected the data ?");
-    // if (check)
-    // {
-    //   document.getElementById("form").reset();
-    //   return false;
-    // }
-    // else
-    // {
-    //   return false;
-    // }
-    document.getElementById("form").reset();
+
+    // Chuyển đổi dữ liệu sang JSON
+    var newData = JSON.stringify(result);
+    var originalData = <?php echo json_encode($check); ?>;
+
+    // Khai báo biến Check ở đây
+    var Check = true;
+
+    // So sánh dữ liệu mới với dữ liệu ban đầu từ PHP
+    if (newData !== JSON.stringify(originalData)) {
+        // Nếu có thay đổi, set Check thành false
+        Check = false;
+    }
+
+    // Hiển thị hộp thoại xác nhận nếu có thay đổi
+    if (!Check) {
+      var confirmed = confirm("Do you want to return to the old data?");
+        if (confirmed) {
+            document.getElementById("form").reset();
+        }
+    } else {
+        // Nếu không có thay đổi, reset form
+        document.getElementById("form").reset();
+    }
 }
 
+// Gắn sự kiện cho nút Return
+document.getElementById('return').addEventListener('click', ReturnForm);
 
-document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('form').addEventListener('submit', function(event) {
-        var phone = document.getElementById('phone').value.trim();
-        var name = document.getElementById('name').value.trim();
-        var email = document.getElementById('email').value.trim();
-        var address = document.getElementById('address').value.trim();
-        var city = document.getElementById('city').value.trim();
-        var road = document.getElementById('road').value.trim();
-        var district = document.getElementById('district').value.trim();
-        var ward = document.getElementById('ward').value.trim();
-        // Kiểm tra nếu bất kỳ trường nào rỗng
-        if (name === "" || phone === "" || email === "" || address==="" || city===""|| road===""|| district===""||ward==="") {
-            event.preventDefault(); // Ngăn chặn việc gửi form
-            alert("You should fill out the form completely."); // Hiển thị thông báo lỗi
 
-            // Tập trung (focus) lại vào ô dữ liệu đầu tiên rỗng
-            if (name === "") {
-                document.getElementById('name').focus();
-            } if (phone === "") {
-                document.getElementById('phone').focus();
-            }  if (email === "") {
-                document.getElementById('email').focus();
-            }
-            if (address==="")
-            {
-              document.getElementById('address').focus();
-            } 
-            if (city==="")
-            {
-              document.getElementById("city").focus();
-            
-            }
-            if (road==="")
-            {
-              document.getElementById("road").focus();
-              
-            }
-            if (district==="")
-            { 
-              document.getElementById(district).focus()
-
-            }
-            if (ward==="")
-            {
-              document.getElementById(ward).focus();
-            }
-        }
-    });
-});
 
 
 </script>
-  

@@ -59,6 +59,17 @@ $offset = ($current_page - 1) * $products_per_page;
     <link rel="stylesheet" href="styles/customers/service.css">
 
     <style>
+    .action
+   {
+      display: flex;
+      justify-content: center; /* Canh giữa theo chiều ngang */
+      align-items: center; /* Canh giữa theo chiều dọc */
+   }
+
+    .action button 
+    {
+        margin: 0 auto; /* Đảm bảo các nút button nằm chính giữa */
+    }
     .pagination-justify-content-center {
         display: flex;
         justify-content: center;
@@ -139,7 +150,7 @@ $offset = ($current_page - 1) * $products_per_page;
                             </div>
                             <div class="action">
                                 <button type="submit" name="add_to_cart"><img src="./public/card/cart.svg" alt="cart_icon">add to cart</button>
-                                <img src="./public/card/heart.svg" alt="favourite_icon">
+                                <!-- <img src="./public/card/heart.svg" alt="favourite_icon"> -->
                             </div>
                         </div>
                     </form>

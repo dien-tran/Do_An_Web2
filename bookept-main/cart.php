@@ -65,13 +65,13 @@ if(isset($_GET['delete_all'])){
          <h2>My List</h2>
          <h6>&bull; <?php echo mysqli_num_rows($select_cart) ?> items</h6>
       </div>
-      <div>
+      <!-- <div>
          <select name="sort_cart" id="sort_cart">
             <option value="default">default</option>
             <option value="alphabet">a-z</option>
             <option value="low_to_high_price">Low to high price</option>
          </select>
-      </div>
+      </div> -->
    </div>
 
    <ul class="cart-list">
