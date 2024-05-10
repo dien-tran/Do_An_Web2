@@ -18,7 +18,7 @@ if (isset($_POST['submit'])) {
     $address = mysqli_real_escape_string($conn, $_POST['address']);
     $city = $_POST['city'];
     $ward = $_POST['ward'];
-    $road = $_POST['road'];
+     $road = mysqli_real_escape_string($conn, $_POST['road']);
     $district = $_POST['district'];
     $success = false; // Biến cờ để kiểm tra xem có truy vấn SQL thành công không
 

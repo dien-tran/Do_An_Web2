@@ -10,24 +10,113 @@ if(!isset($user_id)){
    header('location:login.php');
 }
 
+
 if(isset($_POST['update_cart'])){
    $cart_id = $_POST['cart_id'];
    $cart_quantity = $_POST['cart_quantity'];
-   mysqli_query($conn, "UPDATE `cart` SET quantity = '$cart_quantity' WHERE id = '$cart_id'") or die('query failed');
-   $message[] = 'cart quantity updated!';
+
+   // Lấy thông tin sản phẩm cần cập nhật số lượng
+   $cart_info_query = mysqli_query($conn, "SELECT * FROM `cart` WHERE id = '$cart_id'");
+   $fetch_cart_info = mysqli_fetch_assoc($cart_info_query);
+   $product_name = mysqli_real_escape_string($conn, $fetch_cart_info['name']);
+
+   // Lấy số lượng hiện tại của sản phẩm trong giỏ hàng
+   $current_cart_quantity = $fetch_cart_info['quantity'];
+
+   // Lấy thông tin số lượng sản phẩm trong bảng products
+   $sql_product_quantity_table = "SELECT Quantity FROM products WHERE Name = '$product_name'";
+   $result_product_quantity = mysqli_query($conn, $sql_product_quantity_table);
+   if ($result_product_quantity) {
+      $row = mysqli_fetch_assoc($result_product_quantity);
+      $current_product_quantity = $row['Quantity'];
+
+      // Tính toán sự khác biệt giữa số lượng mới và số lượng hiện tại
+      $quantity_difference_after_update = $cart_quantity - $current_cart_quantity;
+      
+      // Kiểm tra sự khác biệt và thực hiện cập nhật số lượng sản phẩm trong bảng products
+      if ($quantity_difference_after_update < 0) {
+         // Cộng số lượng sản phẩm nếu sự khác biệt là số âm
+         $new_quantity_after_update = $current_product_quantity + abs($quantity_difference_after_update) + 1;
+      } else {
+         // Trừ số lượng sản phẩm nếu sự khác biệt là số dương
+         $new_quantity_after_update = $current_product_quantity - $quantity_difference_after_update + ($cart_quantity);
+      }
+
+      // Cập nhật số lượng mới vào bảng products
+      $update_quantity_productTable = mysqli_query($conn, "UPDATE products SET Quantity = $new_quantity_after_update WHERE Name = '$product_name'");
+      if (!$update_quantity_productTable) {
+         echo "Lỗi: " . mysqli_error($conn);
+      }
+
+      // Cập nhật số lượng trong giỏ hàng sau khi cập nhật thành công số lượng trong bảng sản phẩm
+      mysqli_query($conn, "UPDATE `cart` SET quantity = '$cart_quantity' WHERE id = '$cart_id'") or die('query failed');
+      $message[] = 'Cart quantity updated!';
+   } else {
+      echo "Lỗi: " . mysqli_error($conn);
+   }
 }
+
 
 if(isset($_GET['delete'])){
    $delete_id = $_GET['delete'];
+   
+   // Lấy thông tin sản phẩm cần xóa
+   $cart_product_info = mysqli_query($conn, "SELECT * FROM cart WHERE id = '$delete_id'");
+   $fetch_cart = mysqli_fetch_assoc($cart_product_info);
+   $product_name = mysqli_real_escape_string($conn, $fetch_cart['name']);
+   $cart_quantity = $fetch_cart['quantity'];
+   
+   // Xóa sản phẩm khỏi giỏ hàng
    mysqli_query($conn, "DELETE FROM `cart` WHERE id = '$delete_id'") or die('query failed');
+
+   // Truy vấn và cập nhật lại số lượng trong bảng products
+   $sql_product_quantity_table = "SELECT Quantity FROM products WHERE Name = '$product_name'";
+   $result_product_quantity = mysqli_query($conn, $sql_product_quantity_table);
+   if ($result_product_quantity) {
+      $row = mysqli_fetch_assoc($result_product_quantity);
+      $current_quantity = $row['Quantity'];
+      
+      // Cập nhật lại số lượng sản phẩm trong bảng products
+      $new_quantity = $current_quantity + $cart_quantity;
+      $update_quantity_productTable = mysqli_query($conn, "UPDATE products SET Quantity = $new_quantity WHERE Name = '$product_name'");
+      if (!$update_quantity_productTable) {
+         echo "Lỗi: " . mysqli_error($conn);
+      }
+   } else {
+      echo "Lỗi: " . mysqli_error($conn);
+   }
    header('location:cart.php');
 }
 
 if(isset($_GET['delete_all'])){
+   // Lấy thông tin sản phẩm trong giỏ hàng của user
+   $cart_product_info = mysqli_query($conn, "SELECT * FROM cart WHERE user_id = '$user_id'");
+   while ($fetch_cart = mysqli_fetch_assoc($cart_product_info)) {
+      $product_name = mysqli_real_escape_string($conn, $fetch_cart['name']);
+      $cart_quantity = $fetch_cart['quantity'];
+
+      // Truy vấn và cập nhật lại số lượng trong bảng products cho từng sản phẩm
+      $sql_product_quantity_table = "SELECT Quantity FROM products WHERE Name = '$product_name'";
+      $result_product_quantity = mysqli_query($conn, $sql_product_quantity_table);
+      if ($result_product_quantity) {
+         $row = mysqli_fetch_assoc($result_product_quantity);
+         $current_quantity = $row['Quantity'];
+
+         // Cập nhật lại số lượng sản phẩm trong bảng products
+         $new_quantity = $current_quantity + $cart_quantity;
+         $update_quantity_productTable = mysqli_query($conn, "UPDATE products SET Quantity = $new_quantity WHERE Name = '$product_name'");
+         if (!$update_quantity_productTable) {
+            echo "Lỗi: " . mysqli_error($conn);
+         }
+      } else {
+         echo "Lỗi: " . mysqli_error($conn);
+      }
+   }
+   
+   // Xóa toàn bộ giỏ hàng của user
    mysqli_query($conn, "DELETE FROM `cart` WHERE user_id = '$user_id'") or die('query failed');
    header('location:cart.php');
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -65,6 +154,7 @@ if(isset($_GET['delete_all'])){
          <h2>My List</h2>
          <h6>&bull; <?php echo mysqli_num_rows($select_cart) ?> items</h6>
       </div>
+<<<<<<< HEAD
       <!-- <div>
          <select name="sort_cart" id="sort_cart">
             <option value="default">default</option>
@@ -72,6 +162,8 @@ if(isset($_GET['delete_all'])){
             <option value="low_to_high_price">Low to high price</option>
          </select>
       </div> -->
+=======
+>>>>>>> e77710153e987a350dd2bcff3c3b3e4ee66ec828
    </div>
 
    <ul class="cart-list">
@@ -99,6 +191,29 @@ if(isset($_GET['delete_all'])){
             <div class="item-price">
                <div>
                   <div class="price">$<?php echo $fetch_cart['price']; ?> <span style="font-size: 1em; color:#888"> &bull; (<?php echo $sub_total = ($fetch_cart['quantity']); ?>)</span></div>
+                  <?php
+                  $product_name = mysqli_real_escape_string($conn, $fetch_cart['name']);
+                  $cart_quantity = $fetch_cart['quantity'];
+                  $cart_product_info = mysqli_query($conn, "SELECT * FROM cart WHERE name = '$product_name'");
+                  $result_cart_product_info = mysqli_fetch_assoc($cart_product_info);
+            
+                  // Truy vấn và cập nhật lại giá trị Quantity trong bảng products
+                  $sql_product_quantity_table = "SELECT Quantity FROM products WHERE Name = '$product_name'";
+                  $result_product_quantity = mysqli_query($conn, $sql_product_quantity_table);
+                  if ($result_product_quantity ) {
+                     $row = mysqli_fetch_assoc($result_product_quantity);
+                     $current_quantity = $row['Quantity'];
+                     $new_quantity = $current_quantity - $cart_quantity;
+            
+                     // Cập nhật giá trị mới vào bảng products
+                     $update_quantity_productTable = mysqli_query($conn, "UPDATE products SET Quantity = $new_quantity WHERE Name = '$product_name'");
+                     if (!$update_quantity_productTable) {
+                        echo "Lỗi: " . mysqli_error($conn);
+                     }
+                  } else {
+                     echo "Lỗi: " . mysqli_error($conn);
+                  }
+                  ?>
                   <div class="sub-total"> sub total : <span>$<?php echo $sub_total = ($fetch_cart['quantity'] * $fetch_cart['price']); ?></span></div>
                </div>
             </div>
