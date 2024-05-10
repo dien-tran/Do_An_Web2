@@ -40,7 +40,7 @@
 
    </div>
 
-   <div class="author">
+   <!-- <div class="author">
       <div class="flag">
          <img src="./public/footer/en_flag.svg" alt="en">
          <span> | </span>
@@ -49,6 +49,6 @@
       <p class="credit">Copyright <?php echo date('Y'); ?> by <a href="https://bookept.herokuapp.com"><span>&copy; bookist</span></a> | All rights reserved.</p>
       <div></div>
       
-   </div>
+   </div> -->
 
 </section>

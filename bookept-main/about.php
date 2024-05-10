@@ -54,7 +54,7 @@ if (!isset($user_id)) {
             <p>&bull; Professional organization, while always adding value and active in solving customer problems.</p>
             <p>&bull; Dive into our extensive collection of books curated for every reader, from classics to contemporary bestsellers. </p>
             <p>&bull; Immerse yourself in a world of knowledge and imagination, where every page offers an adventure waiting to be discovered. </p>
-            <a href="contact.php" class="btn">contact us</a>
+            <a href="https://www.facebook.com/ScytheTheKiller" class="btn">contact us</a>
          </div>
       </div>
    </section>
