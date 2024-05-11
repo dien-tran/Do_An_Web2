@@ -187,13 +187,13 @@ if(isset($message) && is_array($message)) // Kiểm tra nếu $message là một
         <td><label for="ward">Ward:</label></td>
         <td>
             <select class="form-select form-select-sm" name="ward" id="ward" aria-label=".form-select-sm">
-                <option value="">Chọn phường xã</option>
+                <option value="" selected disabled >Choose ward</option>
                 <?php
                 for ($i = 1; $i <= 12; $i++) {
-                    $selected = ($_POST['ward'] == "Phường $i") ? 'selected' : '';
-                    "<option value='Phường $i' $selected>Phường $i</option>";
-                    $selected = ($check['ward'] == "Phường $i") ? 'selected' : '';
-                    echo "<option value='Phường $i' $selected>Phường $i</option>";
+                    $selected = ($_POST['ward'] == "Ward $i") ? 'selected' : '';
+                    "<option value='Ward $i' $selected>Ward $i</option>";
+                    $selected = ($check['ward'] == "Ward $i") ? 'selected' : '';
+                    echo "<option value='Ward $i' $selected>Ward $i</option>";
                 }
                 ?>
             </select>
@@ -203,13 +203,13 @@ if(isset($message) && is_array($message)) // Kiểm tra nếu $message là một
         <td><label for="district">District:</label></td>
         <td>
             <select class="form-select form-select-sm mb-3" name="district" id="district" aria-label=".form-select-sm">
-                <option value="">Chọn quận huyện</option>
+                <option value="" selected disabled >Choose district</option>
                 <?php
                 for ($i = 1; $i <= 12; $i++) {
-                  $selected = ($_POST['district'] == "Quận $i") ? 'selected' : '';
-                  "<option value='Quận $i' $selected>Quận $i</option>";
-                  $selected = ($check['district'] == "Quận $i") ? 'selected' : '';
-                  echo "<option value='Quận $i' $selected>Quận $i</option>";
+                  $selected = ($_POST['district'] == "District $i") ? 'selected' : '';
+                  "<option value='District $i' $selected>District $i</option>";
+                  $selected = ($check['district'] == "District $i") ? 'selected' : '';
+                  echo "<option value='District $i' $selected>District $i</option>";
               }
                 
                 ?>
@@ -220,8 +220,8 @@ if(isset($message) && is_array($message)) // Kiểm tra nếu $message là một
         <td><label for="city">City:</label></td>
         <td>
             <select class="form-select form-select-sm mb-3" name="city" id="city" aria-label=".form-select-sm">
-                <option value="" selected>Chọn tỉnh thành</option>
-                <option value="Hồ Chí Minh" selected>Thành Phố Hồ Chí Minh</option>
+                <option value="" selected disabled >Choose city</option>
+                <option value="Hồ Chí Minh" selected>Ho Chi Minh city</option>
             </select>
         </td>
     </tr>

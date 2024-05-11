@@ -142,10 +142,10 @@ if (isset($_POST['order_btn'])) {
                   <option value="" selected disabled >Choose ward</option>
                   <?php
                   for ($i = 1; $i <= 12; $i++) {
-                     $selected = ($_POST['ward'] == "Phường $i") ? 'selected' : '';
-                     "<option value='Phường $i' $selected >Phường $i</option>";
-                     $selected = ($check['ward'] == "Phường $i") ? 'selected' : '';
-                     echo "<option value='Phường $i' $selected>Phường $i</option>";
+                     $selected = ($_POST['ward'] == "Ward $i") ? 'selected' : '';
+                     "<option value='Ward $i' $selected >Ward $i</option>";
+                     $selected = ($check['ward'] == "Ward $i") ? 'selected' : '';
+                     echo "<option value='Ward $i' $selected>Ward $i</option>";
                   }
                   ?>
                </select>
@@ -157,10 +157,10 @@ if (isset($_POST['order_btn'])) {
                   <option value=""  selected disabled>Choose district</option>
                   <?php
                   for ($i = 1; $i <= 12; $i++) {
-                     $selected = ($_POST['district'] == "Quận $i") ? 'selected' : '';
-                     "<option value='Quận $i' $selected>Quận $i</option>";
-                     $selected = ($check['district'] == "Quận $i") ? 'selected' : '';
-                     echo "<option value='Quận $i' $selected>Quận $i</option>";
+                     $selected = ($_POST['district'] == "District $i") ? 'selected' : '';
+                     "<option value='District $i' $selected>District $i</option>";
+                     $selected = ($check['district'] == "District $i") ? 'selected' : '';
+                     echo "<option value='District $i' $selected>District $i</option>";
                   }
                   ?>
                </select>
@@ -169,8 +169,8 @@ if (isset($_POST['order_btn'])) {
                <span><i class="fa-solid fa-location-dot"></i> city :</span>
                <br>
                <select class="" name="city" id="city" style = "width: 49.3%;">
-                  <option value="" selected >Choose city</option>
-                  <option value="Hồ Chí Minh" selected>Thành Phố Hồ Chí Minh</option>
+                  <option value="" selected disabled >Choose city</option>
+                  <option value="Hồ Chí Minh" selected>Ho Chi Minh city</option>
                </select>
             </div>
          </div>
