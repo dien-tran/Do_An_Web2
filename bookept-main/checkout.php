@@ -1,3 +1,4 @@
+
 <?php
 
 include 'config.php';
@@ -168,11 +169,12 @@ if (isset($_POST['order_btn'])) {
                <span><i class="fa-solid fa-location-dot"></i> city :</span>
                <br>
                <select class="" name="city" id="city" style = "width: 49.3%;">
-                  <option value="" selected disabled >Choose city</option>
-                  <option value="Hồ Chí Minh">Thành Phố Hồ Chí Minh</option>
+                  <option value="" selected >Choose city</option>
+                  <option value="Hồ Chí Minh" selected>Thành Phố Hồ Chí Minh</option>
                </select>
             </div>
          </div>
+         
          <div style="display: flex; justify-content:end">
             <input type="submit" value="🚩 order now" class="btn" name="order_btn">
          </div>
