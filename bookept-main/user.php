@@ -71,6 +71,7 @@ if (isset($_GET['unblock'])) {
 }
 
 
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -196,45 +197,35 @@ if (isset($_GET['unblock'])) {
             <?php
                // Define default SQL query to fetch all users
                $sql_tk = "SELECT * FROM users";
-               // Default SQL query to fetch all users      
+               // Default SQL query to fetch all users
                $sql_search = mysqli_query($conn, $sql_tk);
-               $products_per_page = 2; // số lượng hiển thị trên 1 trang
-               $sql_page = mysqli_query($conn, "SELECT * FROM `users`");
 
                // Check if search form is submitted
                if (isset($_GET['submit_search'])) 
                {
                   $search = $_GET['text_search'];
                   // Modify the SQL query to include search functionality
-                   $sql_tk .= " WHERE name LIKE '%" . $search . "%'";
-                   $sql_search = mysqli_query($conn, $sql_tk);
-                  $row_count = mysqli_num_rows($sql_search);
-                  $max = ceil($row_count / $products_per_page); // Tính lại số lượng trang dựa trên kết quả tìm kiếm
-
+                  $sql_tk = "SELECT * FROM users WHERE name LIKE '%" . $search . "%'";
+                  $sql_search = mysqli_query($conn, $sql_tk);
                }
-               else
-               {
-                  $row_count = mysqli_num_rows($sql_page);
-                   $max = ceil($row_count / $products_per_page); // tìm tổng số lượng trang
-
-               }
-               // Calculate pagination variables
+               $sql_page = mysqli_query($conn, "SELECT * FROM `users`");
+               $row_count = mysqli_num_rows($sql_page);
                $start = 1;
-                  // Kiểm tra và lấy giá trị của tham số 'page'
+               $products_per_page = 2; // số lượng hiển thị trên 1 trang
+               $max = ceil($row_count / $products_per_page); // tìm tổng số lương trang
+               // Kiểm tra và lấy giá trị của tham số 'page'
                $pagee = isset($_GET['page']) ? $_GET['page'] : 1;
                if ($pagee == "" || $pagee == 1) 
                {
-                   $begin = 0;
+                  $begin = 0;
                } 
                else 
                {
                   $begin = ($pagee * $products_per_page) - $products_per_page;
                }
-             // Modify the SQL query to include pagination
                $sql_tk .= " LIMIT $begin, $products_per_page";
-                $sql_search = mysqli_query($conn, $sql_tk);
+               $sql_search = mysqli_query($conn, $sql_tk);
             ?>
-
             <div class="table">
                <table width="100%">
                   <thead>
@@ -248,48 +239,48 @@ if (isset($_GET['unblock'])) {
                      </tr>
                   </thead>
                   <tbody id="show-user">
-                     <?php
-                     $stt = 1;
-                     while ($fetch_users = mysqli_fetch_assoc($sql_search))
-                     {
-                        if ($fetch_users['user_type']!='admin')
-                     {   
-                     ?>
-                        <tr>
-                           <td><?php echo $stt ?></td>
-                           <td><?php echo $fetch_users['name']; ?></td>
-                           <td><?php echo $fetch_users['phone_number']; ?></td>
-                           <td><?php echo $fetch_users['date_time']; ?></td>
-                           <td>
-                                                <form method="GET">
-                                                <?php 
-                                                    if ($fetch_users['status'] == 1) 
-                                                    { 
-                                                        ?>
-                                                        <a id="btn-add-user" class="btn-control-large" type="submit" name="delete" href="admin_users.php?delete=<?php echo $fetch_users['id']; ?>" onclick="return confirm('delete this user?');" class="delete-btn">Xóa</a>
-                                                        <a id="btn-add-user" class="btn-control-large" type="submit" name="block" href="admin_users.php?block=<?php echo $fetch_users['id']; ?>" onclick="return confirm('Block this user?');" class="delete-btn">Chặn</a>
-                                                        <?php 
-                                                    } 
-                                                    else 
-                                                    { 
-                                                        ?>
-                                                        <a id="btn-add-user" class="btn-control-large" type="submit" name="delete" href="admin_users.php?delete=<?php echo $fetch_users['id']; ?>" onclick="return confirm('delete this user?');" class="delete-btn">Xóa</a>
-                                                        <a id="btn-add-user" class="btn-control-large" type="submit" name="unblock" href="admin_users.php?unblock=<?php echo $fetch_users['id']; ?>" onclick="return confirm('Unblock this user?');" class="delete-btn">Gỡ chặn</a>
-                                                        <?php 
-                                                    } 
-                                                ?>
-                                            </td>
-                        </tr>
-                     <?php
-                     }
+                     <?php // cách phân trang 
+                        $stt = 1;// từ đâu trở về sau là show thông tin
+                        while ($fetch_users = mysqli_fetch_assoc($sql_show)) 
+                        {
+                           ?>
+                              <tr>
+                                 <td><?php echo $stt ?></td>
+                                 <td><?php echo $fetch_users['name']; ?></td>
+                                 <td><?php echo $fetch_users['phone_number']; ?></td>
+                                 <td><?php echo $fetch_users['date_time']; ?></td>
+                                 <td>
+                                 <form method="GET">
+                                    <?php
+                                       if ($fetch_users['status'] == 1) 
+                                       {
+                                          ?>
+                                             <a id="btn-add-user" class="btn-control-large" type="submit" name="delete" href="admin_users.php?delete=<?php echo $fetch_users['id']; ?>" onclick="return confirm('delete this user?');" class="delete-btn">Xóa</a>
+                                             <a id="btn-add-user" class="btn-control-large" type="submit" name="block" href="admin_users.php?block=<?php echo $fetch_users['id']; ?>" onclick="return confirm('Block this user?');" class="delete-btn">Chặn</a>
+                                          <?php
+                                       } 
+                                       else 
+                                       {
+                                          ?>
+                                             <a id="btn-add-user" class="btn-control-large" type="submit" name="delete" href="admin_users.php?delete=<?php echo $fetch_users['id']; ?>" onclick="return confirm('delete this user?');" class="delete-btn">Xóa</a>
+                                             <a id="btn-add-user" class="btn-control-large" type="submit" name="unblock" href="admin_users.php?unblock=<?php echo $fetch_users['id']; ?>" onclick="return confirm('Unblock this user?');" class="delete-btn">Gỡ chặn</a>
+                                          <?php
+                                       }
+                                    ?>
+                                 </form>
+                                 </td>
+                              </tr>
+                           <?php
                         $stt++;
-                     }
+                        }
                      ?>
                   </tbody>
                </table>
             </div>
-            <!-- </div> -->
-            
+         </div>
+
+         <div>
+
 <div class="pagination">
    <p>Page:</p>
    <ul class="list_page">
@@ -297,7 +288,7 @@ if (isset($_GET['unblock'])) {
          for ($i = $start; $i <= $max; $i++) {
           
       ?>
-      <li><a href="admin_users.php?page=<?php echo $i ?>" class="page-link "><?php echo $i ?></a></li>
+      <li><a href="admin_users.php?page=<?php echo $i ?>" class="page-link <?php echo $activeClass ?>"><?php echo $i ?></a></li>
       <?php
          }
       ?>
@@ -346,13 +337,6 @@ if (isset($_GET['unblock'])) {
    }
 </style>
         
-      </main>
-      <div id="toast"></div>
-      <script src="js/admin.js"></script>
-</body>
-
-</html>
-         </div>
       </main>
       <div id="toast"></div>
       <script src="js/admin.js"></script>
