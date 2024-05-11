@@ -45,14 +45,14 @@ if (isset($_POST['add_product'])) {
     $cover =  $_POST['CoverType'];
     $quantity = $_POST['Quantity'];
     $des = $_POST['Description'];
-    $cate = $_POST['Category'];
+    $cate = $_POST['CategoryId'];
     $select_product_name = mysqli_query($conn, "SELECT Name FROM products WHERE Name = '$name'") or die('query failed');
         $add_product_query = mysqli_query($conn, "INSERT INTO products(CategoryId, Name, Price, Image, MainAuthor, Publisher, PublicationYear, Language, CoverType, Quantity, Description)
          VALUES('$cate','$name', '$price', '$image', '$author', '$publisher', '$pub_year', '$language', '$cover', '$quantity', '$des')") or die('query failed');
 
         if ($add_product_query) {
             move_uploaded_file($_FILES["Image"]["tmp_name"], "image/" . $_FILES["Image"]["name"]);
-            $message[] = 'product added successfully!';
+            $message[] = $cate;
         } else {
             $message[] = 'product could not be added!';
     }
@@ -72,7 +72,7 @@ if (isset($_GET['block'])) {
 if (isset($_GET['edit'])) {
 }
 
-$products_per_page = 8;
+$products_per_page = 2;
 
 // Tính số trang dựa trên tổng số sản phẩm và số sản phẩm mỗi trang
 $total_products = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `products`"));
@@ -144,6 +144,19 @@ $offset = ($current_page - 1) * $products_per_page;
 </head>
 
 <body>
+<?php
+if(isset($message) && is_array($message)) // Kiểm tra nếu $message là một mảng
+{
+    foreach($message as $msg)
+    {
+        echo '
+        <div class="message">
+        <span>' . $msg . '</span>
+        <i class="fas fa-times" onclick="this.parentElement.remove();"></i>
+        </div>'; // Thêm </div> ở cuối để đóng div.message
+    }
+}
+?>
     <header class="header">
         <button class="menu-icon-btn">
             <div class="menu-icon">
@@ -207,13 +220,13 @@ $offset = ($current_page - 1) * $products_per_page;
             <div class="section product-all active">
                 <div class="admin-control">
                     <div class="admin-control-left">
+                    <select name="CategoryId">
                         <?php
                         $sql_cate = "SELECT * FROM category";
                         $result = mysqli_query($conn, $sql_cate);
                         if (mysqli_num_rows($result) > 0) {
-                            echo '<select name="Category" id="chon-mon">';
                             while ($row = mysqli_fetch_assoc($result)) {
-                                echo '<option value="' . $row['CategoryId'] . '">' . $row['CateName'] . '</option>';
+                                echo '<option value="' . $row['CateId'] . '">' . $row['CateName'] . '</option>';
                             }
                             echo '</select>';
                         }
@@ -323,13 +336,14 @@ $offset = ($current_page - 1) * $products_per_page;
                             </div>
                             <div class="form-group">
                                 <label for="category" class="form-label">Chọn thể loại</label>
+                                <select name="CategoryId" id="chon-mon">
                                 <?php
                                 $sql_cate = "SELECT * FROM category";
                                 $result = mysqli_query($conn, $sql_cate);
                                 if (mysqli_num_rows($result) > 0) {
-                                    echo '<select name="Category" id="chon-mon">';
+                                    // echo '<select name="CategoryId" id="chon-mon">';
                                     while ($row = mysqli_fetch_assoc($result)) {
-                                        echo '<option value="' . $row['CategoryId'] . '">' . $row['CateName'] . '</option>';
+                                        echo '<option value="' . $row['CateId'] . '">' . $row['CateName'] . '</option>';
                                     }
                                     echo '</select>';
                                 }
@@ -382,6 +396,7 @@ $offset = ($current_page - 1) * $products_per_page;
                             <button type="submit" class="form-submit btn-add-product-form add-product-e" id="add-product-button" name="add_product">
                                 <i class="fa fa-plus"></i>
                                 <span>THÊM SÁCH</span>
+                            
                             </button>
                             </form>
                             </a>
