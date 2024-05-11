@@ -28,18 +28,6 @@ if(isset($_POST['add_to_cart'])){
 
 };
 
-
-$products_per_page = 8;
-
-// Tính số trang dựa trên tổng số sản phẩm và số sản phẩm mỗi trang
-$total_products = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `products`"));
-$total_pages = ceil($total_products / $products_per_page);
-
-// Lấy trang hiện tại từ tham số truyền vào hoặc mặc định là trang 1
-$current_page = isset($_GET['page']) ? $_GET['page'] : 1;
-
-// Tính offset (bắt đầu lấy từ vị trí nào trong cơ sở dữ liệu)
-$offset = ($current_page - 1) * $products_per_page;
 ?>
 
 <!DOCTYPE html>
@@ -67,6 +55,17 @@ $offset = ($current_page - 1) * $products_per_page;
    }
    </style>
     <style>
+    .action
+   {
+      display: flex;
+      justify-content: center; /* Canh giữa theo chiều ngang */
+      align-items: center; /* Canh giữa theo chiều dọc */
+   }
+
+    .action button 
+    {
+        margin: 0 auto; /* Đảm bảo các nút button nằm chính giữa */
+    }
     .pagination-justify-content-center {
         display: flex;
         justify-content: center;
@@ -203,21 +202,16 @@ $offset = ($current_page - 1) * $products_per_page;
       // Kết thúc select box
       echo "</select>";
 
-      $sql_product = "SELECT Price FROM products";
-      $result_product = mysqli_query($conn, $sql_product);
-      echo "<select name='price' id='price'>";
-      echo "<option value='' selected disabled >Price</option>";
-      echo "<option value='<50'  > <$50 </option>";
-      echo "<option value='>50' > >$50 </option>";
-
-      echo "</select>";
+      
+      echo "<input type='text' name = 'min_price' placeholder='Min Price' style='width:58px;border: 1px solid black;border-radius: 5px;font-size: 12px;text-align: center;'>";
+      echo "<input type='text' name = 'max_price' placeholder='Max Price'style='width:59px;border: 1px solid black;border-radius: 5px;font-size: 12px;text-align: center;'>";
    } else {
       echo "Không có dữ liệu";
    }
    ?>
  
-      <input type="text" name="search" placeholder="search products..." class="box">
-      <form action="#?" method="GET">
+      <input type="text" name="search" placeholder="search..." class="box">
+      <form action="#?" method="POST">
       <input type="submit" name="submit" value="search" class="btn">
       </form>
       
@@ -227,7 +221,7 @@ $offset = ($current_page - 1) * $products_per_page;
 <section class="products" style="padding-top: 0;">
    <div class="box-container">
    <?php
-      if(isset($_POST['submit'])){ 
+   if(isset($_POST['submit'])){ 
       $sql = "SELECT * FROM products WHERE 1=1";
 
       if(!empty($_POST['category_name'])) {
@@ -237,16 +231,13 @@ $offset = ($current_page - 1) * $products_per_page;
          $result_category_id = mysqli_query($conn, $sql_category_id);
          
          if(mysqli_num_rows($result_category_id) > 0) {
-   
-             $row_category_id = mysqli_fetch_assoc($result_category_id);
-             $category_id = $row_category_id['CateId'];
-         
-             
-             $sql = "SELECT * FROM products WHERE CategoryId = '$category_id'";
+            $row_category_id = mysqli_fetch_assoc($result_category_id);
+            $category_id = $row_category_id['CateId'];
+            $sql = "SELECT * FROM products WHERE CategoryId = '$category_id'";
          }
       }
       if(!empty($_POST['author'])) {
-            $author = mysqli_real_escape_string($conn, $_POST['author']);
+            $author = mysqli_real_escape_string($conn,$_POST['author']);
             $sql .= " AND MainAuthor = '$author'";
       }
       if(!empty($_POST['publisher'])) {
@@ -261,32 +252,46 @@ $offset = ($current_page - 1) * $products_per_page;
             $language = mysqli_real_escape_string($conn, $_POST['language']);
             $sql .= " AND Language = '$language'";
       }
-      if(!empty($_POST['cover'])) {
+      if(!empty($_GET['cover'])) {
             $cover = mysqli_real_escape_string($conn, $_POST['cover']);
             $sql .= " AND CoverType = '$cover'";
       }
-      if(!empty($_POST['price'])) {
-            $selected_price =mysqli_real_escape_string($conn, $_POST['price']);
-            $sql = "SELECT * FROM products";
-
-            // Nếu người dùng chọn giá dưới $50
-            if ($selected_price == '<50') {
-               $sql .= " WHERE Price <= 50";
-            }
-            // Nếu người dùng chọn giá trên $50
-            if ($selected_price == '>50') {
-               $sql .= " WHERE Price > 50";
-            }
+      // Kiểm tra xem giá trị đã nhập vào có hợp lệ không
+      $min_price = $_POST['min_price'];
+      $max_price = $_POST['max_price'];
+      // Kiểm tra xem có giá trị hợp lệ không
+      if (!empty($min_price) && !empty($max_price)) {
+         // Chuyển đổi giá trị thành số nguyên để tránh lỗ hổng bảo mật SQL Injection
+         $min_price = intval($min_price);
+         $max_price = intval($max_price);
+         // Tạo câu truy vấn SQL để lấy các sản phẩm trong khoảng giá trị min và max
+         $sql = "SELECT * FROM products WHERE Price > $min_price AND Price < $max_price";
       }
+
       if(!empty($_POST['search'])) {
          $search_item = mysqli_real_escape_string($conn,$_POST['search']);
-         $sql = "SELECT * FROM `products` WHERE name LIKE '%{$search_item}%'";
+         $sql = "SELECT * FROM `products` WHERE name LIKE '%$search_item%'";
       }
-      $select_products = mysqli_query($conn, $sql);
+
+     $products_per_page = 8;
+
+      // Tính số trang dựa trên tổng số sản phẩm và số sản phẩm mỗi trang
+      $total_products = mysqli_num_rows(mysqli_query($conn, $sql));
+      $total_pages = ceil($total_products / $products_per_page);
+
+      // Lấy trang hiện tại từ tham số truyền vào hoặc mặc định là trang 1
+      $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
+
+      // Tính offset (bắt đầu lấy từ vị trí nào trong cơ sở dữ liệu)
+      $offset = ($current_page - 1) * $products_per_page;
+
+      $select_products = mysqli_query($conn, $sql . " LIMIT $products_per_page OFFSET $offset ");
+
       if(mysqli_num_rows($select_products) > 0){
-      while($fetch_product = mysqli_fetch_assoc($select_products)){   
-   ?>
-   <form action="" method="post" class="box" style="padding-left: 20px;">
+      
+      while($fetch_product = mysqli_fetch_assoc($select_products)){ 
+      ?>  
+      <form action="" method="post" class="box" style="padding-left: 20px;">
       <a href="products_details.php?product_id=<?php echo $fetch_product['Id']; ?>">
       <img src="uploaded_img/<?php echo $fetch_product['Image']; ?>" alt="" class="image" style="align: center;">
       </a>
@@ -298,46 +303,28 @@ $offset = ($current_page - 1) * $products_per_page;
       <input type="hidden" name="product_image" value="<?php echo $fetch_product['Image']; ?>">
       <input type="submit" class="btn" value="add to cart" name="add_to_cart">
    </form>
-   <?php
-            }
-         }else{
-            echo '<p class="empty">no result found!</p>';
-         }
-      }else{
-         echo '<p class="empty">search something!</p>';
+   <?php 
       }
+      } else {
+         echo '<p class="empty">No result found!</p>';
+      }
+   } else {
+      echo '<p class="empty">Search something!</p>';
+   }
    ?>
-   </div>
+
+
 </section>
-
-   <!-- Pagination -->
-   <nav aria-label="Page navigation example">
-    <ul class="pagination-justify-content-center">
-    <li class="page-item <?php echo $current_page == 1 ? 'disabled' : ''; ?>">
-                <a class="page-link" href="<?php echo $current_page == 1 ? '#' : '?page=' . 1; ?>"> First </a>
-        </li>
-        <li class="page-item <?php echo $current_page == 1 ? 'disabled' : ''; ?>">
-            <a class="page-link" href="<?php echo $current_page == 1 ? '#' : '?page=' . ($current_page - 1); ?>" tabindex="-1"> < </a>
-        </li>
-        <?php
-        // Hiển thị các trang
-        for ($i = 1; $i <= $total_pages; $i++) {
-            ?>
-            <li class="page-item <?php echo $current_page == $i ? 'active' : ''; ?>">
-                <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
-            </li>
-            <?php
-        }
-        ?>
-        <li class="page-item <?php echo $current_page == $total_pages ? 'disabled' : ''; ?>">
-            <a class="page-link" href="<?php echo $current_page == $total_pages ? '#' : '?page=' . ($current_page + 1); ?>"> > </a>
-        </li>
-        <li class="page-item <?php echo $current_page == $total_pages ? 'disabled' : ''; ?>">
-            <a class="page-link" href="<?php echo $current_page == $total_pages ? '#' : '?page=' . ($total_pages); ?>"> Last </a>
-        </li>
-    </ul>
-</nav>
-
+      <div class="page-nav">
+         <ul class="page-nav-list">
+               <?php
+               // Hiển thị các nút phân trang
+               for ($page = 1; $page <= $total_pages; $page++) {
+                  echo '<li class="page-nav-item"><a href="admin_products.php?page=' . $page . '">' . $page . '</li></a>';
+               }
+               ?>
+         </ul>
+      </div>
 <?php include 'footer.php'; ?>
 
 <!-- custom js file link  -->
