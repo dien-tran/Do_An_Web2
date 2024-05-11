@@ -33,6 +33,14 @@ if (!isset($admin_id)) {
 // }
 // xóa 
 
+if(isset($_GET['page']))
+{
+    $id = $_GET['page'];
+}
+else {
+    $id = 1;
+}
+
 if (isset($_POST['add_product'])) {
     $name = $_POST['Name'];
     $price = $_POST['Price'];
@@ -72,17 +80,6 @@ if (isset($_GET['block'])) {
 if (isset($_GET['edit'])) {
 }
 
-$products_per_page = 2;
-
-// Tính số trang dựa trên tổng số sản phẩm và số sản phẩm mỗi trang
-$total_products = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `products`"));
-$total_pages = ceil($total_products / $products_per_page);
-
-// Lấy trang hiện tại từ tham số truyền vào hoặc mặc định là trang 1
-$current_page = isset($_GET['page']) ? $_GET['page'] : 1;
-
-// Tính offset (bắt đầu lấy từ vị trí nào trong cơ sở dữ liệu)
-$offset = ($current_page - 1) * $products_per_page;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -99,63 +96,11 @@ $offset = ($current_page - 1) * $products_per_page;
 
     <link rel="stylesheet" href="">
     <title>Quản lý cửa hàng</title>
-    <style>
-        .pagination-justify-content-center {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            font-size: 15px;
-        }
-
-        .pagination-justify-content-center .page-item {
-            display: inline-block;
-            margin-right: 5px;
-            background-color: #ddd;
-            /* Màu nền xám */
-            padding: 15px 30px;
-            /* Kích thước padding */
-            border-radius: 10px;
-        }
-
-        .pagination-justify-content-center .page-item.disabled .page-link {
-            color: #6c757d;
-            pointer-events: none;
-            background-color: #ddd;
-            /* Màu nền xám */
-        }
-
-        .pagination-justify-content-center .page-item.active .page-link {
-            /* color: #613d8a; màu nút khi được bấm */
-            color: red;
-        }
-
-        .pagination-justify-content-center .page-link {
-            color: black;
-        }
-
-        .pagination-justify-content-center .page-link:hover {
-            color: purple;
-            /* Màu chữ khi hover */
-            text-decoration: none;
-
-        }
-    </style>
 </head>
 
-<body>
-    <?php
-    if (isset($message) && is_array($message)) // Kiểm tra nếu $message là một mảng
-    {
-        foreach ($message as $msg) {
-            echo '
-        <div class="message">
-        <span>' . $msg . '</span>
-        <i class="fas fa-times" onclick="this.parentElement.remove();"></i>
-        </div>'; // Thêm </div> ở cuối để đóng div.message
-        }
-    }
-    ?>
+
+
+<body id="<?php echo $id ?>">
     <header class="header">
         <button class="menu-icon-btn">
             <div class="menu-icon">
@@ -244,8 +189,27 @@ $offset = ($current_page - 1) * $products_per_page;
                 </div>
                 <div id="show-product">
                     <?php
+                    $products_per_page = 2;
 
-                    $select_products = mysqli_query($conn, "SELECT * FROM `products`") or die('query failed');
+                    // Tính số trang dựa trên tổng số sản phẩm và số sản phẩm mỗi trang
+                    $total_products = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `products`"));
+                    $total_pages = ceil($total_products / $products_per_page);
+
+                    // Lấy trang hiện tại từ tham số truyền vào hoặc mặc định là trang 1
+                    $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
+
+                    // Tính offset (bắt đầu lấy từ vị trí nào trong cơ sở dữ liệu)
+                    $offset = ($current_page - 1) * $products_per_page;
+                    $select_products = mysqli_query($conn, "SELECT * FROM `products` LIMIT $offset, $products_per_page") or die('query failed');
+
+
+
+
+
+
+
+
+                
                     if (mysqli_num_rows($select_products) > 0) {
                         while ($fetch_products = mysqli_fetch_assoc($select_products)) {
                     ?>
@@ -255,15 +219,16 @@ $offset = ($current_page - 1) * $products_per_page;
                                     <div class="list-info">
                                         <h4><?php echo $fetch_products['Name'] ?></h4>
                                         <p class="list-note"><?php echo $fetch_products['Description'] ?></p>
-                                        <span class="list-category"><?php $category = mysqli_query($conn, "SELECT * FROM products p INNER JOIN category c ON p.CategoryId = c.CateId");
-                                                                    if (mysqli_num_rows($category) > 0) {
-                                                                        while ($fetch = mysqli_fetch_assoc($category)) {
-                                                                            if ($fetch['CateId'] == $fetch_products['CategoryId']) {
-                                                                                echo $fetch['CateName'];
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                    ?></span>
+                                        <span class="list-category">
+                                            <?php $category = mysqli_query($conn, "SELECT * FROM products p INNER JOIN category c ON p.CategoryId = c.CateId");
+                                            if (mysqli_num_rows($category) > 0) {
+                                                while ($fetch = mysqli_fetch_assoc($category)) {
+                                                    if ($fetch['CateId'] == $fetch_products['CategoryId']) {
+                                                        echo $fetch['CateName'];
+                                                    }
+                                                }
+                                            }
+                                            ?></span>
                                     </div>
                                 </div>
                                 <div class="list-right">
@@ -272,7 +237,7 @@ $offset = ($current_page - 1) * $products_per_page;
                                     </div>
                                     <div class="list-control">
                                         <div class="list-tool">
-                                            <a href="admin_products_edit.php?edit=<?php echo $fetch_products['Id']; ?>"><button id="edit-product" name="edit" class="btn-edit"><i class="fa fa-pencil"></i></button></a>
+                                            <a href="admin_products_edit.php?edit_product=<?php echo $fetch_products['Id']; ?>" style="color:black;"><button id="edit-product" name="edit" class="btn-edit"><i class="fa fa-pencil"></i></button></a>
                                             <a href="admin_products.php?delete=<?php echo $fetch_products['Id']; ?>"><button class="btn-delete" name="delete" onclick="return confirm('Delete this product?')"><i class="fa fa-trash"></i></button> </a>
                                         </div>
                                     </div>
@@ -284,34 +249,18 @@ $offset = ($current_page - 1) * $products_per_page;
                         echo '<div class="no-result"><div class="no-result-i"><i class="fa fa-home"></i></div><div class="no-result-h">Không có sản phẩm để hiển thị</div></div>';
                     }
                     ?>
+                    <div class="page-nav">
+                        <ul class="page-nav-list">
+                            <?php
+                            // Hiển thị các nút phân trang
+                            for ($page = 1; $page <= $total_pages; $page++) {
+                                echo '<li class="page-nav-item"><a href="admin_products.php?page=' . $page . '">' . $page . '</li></a>';
+                            }
+                            ?>
+                        </ul>
+                    </div>
                 </div>
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination-justify-content-center">
-                        <li class="page-item <?php echo $current_page == 1 ? 'disabled' : ''; ?>">
-                            <a class="page-link" href="<?php echo $current_page == 1 ? '#' : '?page=' . 1; ?>"> First </a>
-                        </li>
-                        <li class="page-item <?php echo $current_page == 1 ? 'disabled' : ''; ?>">
-                            <a class="page-link" href="<?php echo $current_page == 1 ? '#' : '?page=' . ($current_page - 1); ?>" tabindex="-1">
-                                < </a>
-                        </li>
-                        <?php
-                        // Hiển thị các trang
-                        for ($i = 1; $i <= $total_pages; $i++) {
-                        ?>
-                            <li class="page-item <?php echo $current_page == $i ? 'active' : ''; ?>">
-                                <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
-                            </li>
-                        <?php
-                        }
-                        ?>
-                        <li class="page-item <?php echo $current_page == $total_pages ? 'disabled' : ''; ?>">
-                            <a class="page-link" href="<?php echo $current_page == $total_pages ? '#' : '?page=' . ($current_page + 1); ?>"> > </a>
-                        </li>
-                        <li class="page-item <?php echo $current_page == $total_pages ? 'disabled' : ''; ?>">
-                            <a class="page-link" href="<?php echo $current_page == $total_pages ? '#' : '?page=' . ($total_pages); ?>"> Last </a>
-                        </li>
-                    </ul>
-                </nav>
+
             </div>
         </main>
         <div class="modal add-product">
@@ -340,7 +289,6 @@ $offset = ($current_page - 1) * $products_per_page;
                                     $sql_cate = "SELECT * FROM category";
                                     $result = mysqli_query($conn, $sql_cate);
                                     if (mysqli_num_rows($result) > 0) {
-                                        // echo '<select name="CategoryId" id="chon-mon">';
                                         while ($row = mysqli_fetch_assoc($result)) {
                                             echo '<option value="' . $row['CateId'] . '">' . $row['CateName'] . '</option>';
                                         }
@@ -402,103 +350,16 @@ $offset = ($current_page - 1) * $products_per_page;
                 </div>
             </div>
         </div>
-        <input type="hidden" id="edit-product-id" name="edit_product_id">
-        <!-- <?php
-                if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                    $editProductId = $_POST['edit_product_id'];
-                    $sql_edit = mysqli_query($conn, "SELECT * FROM products WHERE Id = '$editProductId'");
-                    $fetch_products_edit = mysqli_fetch_assoc($sql_edit);
-                    echo '<script>alert("a");';
-                }
-                ?> -->
-        <div class="modal edit-product">
-            <div class="modal-container">
-                <h3 class="modal-container-title edit-product-e">CHỈNH SỬA SẢN PHẨM</h3>
-                <button class="modal-close product-form"><i class="fa fa-times"></i></button>
-                <div class="modal-content">
-                    <form action="" method="POST" class="add-product-form" enctype="multipart/form-data">
-                        <div class="modal-content-left">
-                            <img id="imagePreview" src="./image/ <?php echo $fetch_products_edit['Image']['name'] ?>" alt="" class="upload-image-preview">
-                            <div class="form-group file">
-                                <label for="up-hinh-anh" class="form-label-file"><i class="fa fa-plus"></i>Chọn hình ảnh</label>
-                                <input accept="image/jpeg, image/png, image/jpg" id="up-hinh-anh" name="Image" type="file" class="form-control" onchange="previewImage(event)">
-                            </div>
-                        </div>
-                        <div class="modal-content-right">
-                            <div class="form-group">
-                                <label for="ten-mon" class="form-label">Tên sách</label>
-                                <input id="ten-mon" name="Name" type="text" placeholder="Nhập tên sách" value="<?php echo $fetch_products_edit['Name'] ?>" class="form-control">
-                                <span class="form-message"></span>
-                            </div>
-                            <div class="form-group">
-                                <label for="category" class="form-label">Chọn thể loại</label>
-                                <select name="category" id="chon-mon">
-                                    <option>Tiểu thuyết</option>
-                                    <option>Truyện ngắn</option>
-                                    <option>Kinh dị</option>
-                                    <option>Self Help</option>
-                                </select>
-                                <span class="form-message"></span>
-                            </div>
-                            <!-- Price -->
-                            <div class="form-group">
-                                <label for="gia-moi" class="form-label">Price</label>
-                                <input id="gia-moi" name="Price" type="text" placeholder="Nhập giá bán" value="<?php echo $fetch_products_edit['Price'] ?>" class="form-control">
-                                <span class="form-message"></span>
-                            </div>
-                            <!-- Author -->
-                            <div class="form-group">
-                                <label for="author" class="form-label">Author</label>
-                                <input id="author" name="Author" type="text" value="<?php echo $fetch_products_edit['MainAuthor'] ?>" class="form-control">
-                                <span class="form-message"></span>
-                            </div>
-                            <div class="form-group">
-                                <label for="publisher" class="form-label">Publisher</label>
-                                <input id="publisher" name="Publisher" value="<?php echo $fetch_products_edit['Publisher'] ?>" type="text" class="form-control">
-                                <span class="form-message"></span>
-                            </div>
-                            <div class="form-group">
-                                <label for="pub-year" class="form-label">PublicationYear</label>
-                                <input id="pub-year" name="PublicationYear" value="<?php echo $fetch_products_edit['PublicationYear'] ?>" type="number" min="0" class="form-control">
-                                <span class="form-message"></span>
-                            </div>
-                            <div class="form-group">
-                                <label for="language" class="form-label">Language</label>
-                                <input id="language" name="Language" value="<?php echo $fetch_products_edit['Language'] ?>" type="text" class="form-control">
-                                <span class="form-message"></span>
-                            </div>
-                            <div class="form-group">
-                                <label for="cover" class="form-label">Cover</label>
-                                <input id="cover" name="CoverType" value="<?php echo $fetch_products_edit['CoverType'] ?>" type="text" class="form-control">
-                                <span class="form-message"></span>
-                            </div>
-                            <div class="form-group">
-                                <label for="quanitiy" class="form-label">Quantity</label>
-                                <input id="quanitiy" name="Quantity" value="<?php echo $fetch_products_edit['Quantity'] ?>" type="number" min="0" class="form-control">
-                                <span class="form-message"></span>
-                            </div>
-                            <div class="form-group">
-                                <label for="mo-ta" class="form-label">Mô tả</label>
-                                <textarea class="product-desc" id="mo-ta" value="<?php echo $fetch_products_edit['Description'] ?>" name="Description" placeholder="Nhập mô tả sách..."></textarea>
-                                <span class="form-message"></span>
-                            </div>
-                            <button type="submit" class="form-submit btn-add-product-form add-product-e" id="add-product-button" name="add_product">
-                                <i class="fa fa-plus"></i>
-                                <span>THÊM SÁCH</span>
-                            </button>
-                            <a href="admin.php?update=<?php echo $fetch_products['Id']; ?>">
-                                <button class="form-submit btn-update-product-form edit-product-e" id="update-product-button">
-                                    <i class="fa fa-floppy-o"></i>
-                                    <span>LƯU THAY ĐỔI</span>
-                                </button>
 
-                            </a>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <script src="js/admin.js"></script>
+        <script src="js/admin.js">
+        </script>
+        <script>
+            let links = document.querySelectorAll('.page-nav-item');
+            let bodyId = parseInt(document.body.id) - 1;
+            console.log(links + "as" + bodyId);
+            links[bodyId].classList.add('active'); 
+        </script>
+
 </body>
 
 </html>
