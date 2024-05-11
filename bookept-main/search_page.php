@@ -273,14 +273,14 @@ if(isset($_POST['add_to_cart'])){
          $sql = "SELECT * FROM `products` WHERE name LIKE '%$search_item%'";
       }
 
-     $products_per_page = 8;
+     $products_per_page = 2;
 
       // Tính số trang dựa trên tổng số sản phẩm và số sản phẩm mỗi trang
       $total_products = mysqli_num_rows(mysqli_query($conn, $sql));
       $total_pages = ceil($total_products / $products_per_page);
 
       // Lấy trang hiện tại từ tham số truyền vào hoặc mặc định là trang 1
-      $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
+      $current_page = isset($_GET['search_page']) ? $_GET['search_page'] : 1;
 
       // Tính offset (bắt đầu lấy từ vị trí nào trong cơ sở dữ liệu)
       $offset = ($current_page - 1) * $products_per_page;
@@ -308,9 +308,6 @@ if(isset($_POST['add_to_cart'])){
       } else {
          echo '<p class="empty">No result found!</p>';
       }
-   } else {
-      echo '<p class="empty">Search something!</p>';
-   }
    ?>
 
 
@@ -320,12 +317,15 @@ if(isset($_POST['add_to_cart'])){
                <?php
                // Hiển thị các nút phân trang
                for ($page = 1; $page <= $total_pages; $page++) {
-                  echo '<li class="page-nav-item"><a href="admin_products.php?page=' . $page . '">' . $page . '</li></a>';
+                  echo '<li class="page-nav-item"><a href="search_page.php?page=' . $page . '">' . $page . '</li></a>';
                }
+            } else {
+               echo '<p class="empty">Search something!</p>';
+            }
                ?>
          </ul>
       </div>
-<?php include 'footer.php'; ?>
+<?php include 'footer.php'; ?> 
 
 <!-- custom js file link  -->
 <script src="js/script.js"></script>
