@@ -126,6 +126,8 @@ $offset = ($current_page - 1) * $products_per_page;
             $select_products = mysqli_query($conn, "SELECT * FROM `products` LIMIT $products_per_page OFFSET $offset") or die('query failed');
             if (mysqli_num_rows($select_products) > 0) {
                 while ($fetch_products = mysqli_fetch_assoc($select_products)) {
+                    if($fetch_products['Status'] == 1)
+                    {
             ?>
                     <form action="" method="post" class="box">
                         <input type="hidden" name="product_price" value="<?php echo $fetch_products['Price']; ?>" class="price">
@@ -156,6 +158,7 @@ $offset = ($current_page - 1) * $products_per_page;
                     </form>
             <?php
                 }
+            }
             } else {
                 echo '<p class="empty">no products added yet!</p>';
             }
