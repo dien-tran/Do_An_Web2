@@ -46,188 +46,28 @@ for(let i=0;i<closeBtn.length;i++){
     })
 }
 
-// Get amount product
-function getAmoumtProduct() {
-    let products = localStorage.getItem("products") ? JSON.parse(localStorage.getItem("products")) : [];
-    return products.length;
-}
 
-// Get amount user
-function getAmoumtUser() {
-    let accounts = localStorage.getItem("accounts") ? JSON.parse(localStorage.getItem("accounts")) : [];
-    return accounts.filter(item => item.userType == 0).length;
-}
-
-// Get amount user
-function getMoney() {
-    let tongtien = 0;
-    let orders = localStorage.getItem("order") ? JSON.parse(localStorage.getItem("order")) : [];
-    orders.forEach(item => {
-        tongtien += item.tongtien
-    });
-    return tongtien;
-}
-
-
-
-// Doi sang dinh dang tien VND
-function vnd(price) {
-    return price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
-}
-const VND = new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
-  });
-// Phân trang 
-let perPage = 12;
-let currentPage = 1;
-let totalPage = 0;
-let perProducts = [];
-
-function displayList(productAll, perPage, currentPage) {
-    let start = (currentPage - 1) * perPage;
-    let end = (currentPage - 1) * perPage + perPage;
-    let productShow = productAll.slice(start, end);
-    //showProductArr(productShow);
-}
-
-function setupPagination(productAll, perPage) {
-    document.querySelector('.page-nav-list').innerHTML = '';
-    let page_count = Math.ceil(productAll.length / perPage);
-    for (let i = 1; i <= page_count; i++) {
-        let li = paginationChange(i, productAll, currentPage);
-        document.querySelector('.page-nav-list').appendChild(li);
-    }
-}
-
-function paginationChange(page, productAll, currentPage) {
-    let node = document.createElement(`li`);
-    node.classList.add('page-nav-item');
-    node.innerHTML = `<a href="#">${page}</a>`;
-    if (currentPage == page) node.classList.add('active');
-    node.addEventListener('click', function () {
-        currentPage = page;
-        displayList(productAll, perPage, currentPage);
-        let t = document.querySelectorAll('.page-nav-item.active');
-        for (let i = 0; i < t.length; i++) {
-            t[i].classList.remove('active');
-        }
-        node.classList.add('active');
-    })
-    return node;
-}
-
-// Hiển thị danh sách sản phẩm 
-function showProductArr(arr) {
-    let productHtml = "";
-    if(arr.length == 0) {
-        productHtml = `<div class="no-result"><div class="no-result-i"><i class="fa fa-home"></i></div><div class="no-result-h">Không có sản phẩm để hiển thị</div></div>`;
-    } else {
-        arr.forEach(product => {
-            let btnCtl = product.status == 1 ? 
-            `<button class="btn-delete" onclick="deleteProduct(${product.id})"><i class="fa fa-trash"></i></button>` :
-            `<button class="btn-delete" onclick="changeStatusProduct(${product.id})"><i class="fa fa-refresh"></i></button>`;
-            productHtml += `
-            <div class="list">
-                    <div class="list-left">
-                    <img src="${product.img}" alt="">
-                    <div class="list-info">
-                        <h4>${product.title}</h4>
-                        <p class="list-note">${product.desc}</p>
-                        <span class="list-category">${product.category}</span>
-                    </div>
-                </div>
-                <div class="list-right">
-                    <div class="list-price">
-                    <span class="list-current-price">${VND.format(product.price)}</span>                   
-                    </div>
-                    <div class="list-control">
-                    <div class="list-tool">
-                        <button class="btn-edit" onclick="editProduct(${product.id})"><i class="fa fa-pencil"></i></button>
-                        ${btnCtl}
-                    </div>                       
-                </div>
-                </div> 
-            </div>`;
-        });
-    }
-    document.getElementById("show-product").innerHTML = productHtml;
-}
-
-function showProduct() {
-    let selectOp = document.getElementById('the-loai').value;
-    let valeSearchInput = document.getElementById('form-search-product').value;
-    let products = localStorage.getItem("products") ? JSON.parse(localStorage.getItem("products")) : [];
-
-    if(selectOp == "Tất cả") {
-        result = products.filter((item) => item.status == 1);
-    } else if(selectOp == "Đã xóa") {
-        result = products.filter((item) => item.status == 0);
-    } else {
-        result = products.filter((item) => item.category == selectOp);
-    }
-
-    result = valeSearchInput == "" ? result : result.filter(item => {
-        return item.title.toString().toUpperCase().includes(valeSearchInput.toString().toUpperCase());
-    })
-
-    displayList(result, perPage, currentPage);
-    setupPagination(result, perPage, currentPage);
-}
-
-function cancelSearchProduct() {
-    let products = localStorage.getItem("products") ? JSON.parse(localStorage.getItem("products")).filter(item => item.status == 1) : [];
-    document.getElementById('the-loai').value = "Tất cả";
-    document.getElementById('form-search-product').value = "";
-    displayList(products, perPage, currentPage);
-    setupPagination(products, perPage, currentPage);
-}
-
-window.onload = showProduct();
-
-function createId(arr) {
-    let id = arr.length;
-    let check = arr.find((item) => item.id == id);
-    while (check != null) {
-        id++;
-        check = arr.find((item) => item.id == id);
-    }
-    return id;
-}
-// Xóa sản phẩm 
-function deleteProduct(id) {
-    let products = JSON.parse(localStorage.getItem("products"));
-    let index = products.findIndex(item => {
-        return item.id == id;
-    })
-    if (confirm("Bạn có chắc muốn xóa?") == true) {
-        products[index].status = 0;
-    }
-    localStorage.setItem("products", JSON.stringify(products));
-    showProduct();
-}
-
-function changeStatusProduct(id) {
-    let products = JSON.parse(localStorage.getItem("products"));
-    let index = products.findIndex(item => {
-        return item.id == id;
-    })
-    if (confirm("Bạn có chắc chắn muốn hủy xóa?") == true) {
-        products[index].status = 1;
-    }
-    localStorage.setItem("products", JSON.stringify(products));
-    showProduct();
-}
-
-var indexCur;
-function editProduct(id) {
+function openEditPopup(productId) {
+    // Set the value of a hidden input field in your form with the edit ID
     document.querySelectorAll(".add-product-e").forEach(item => {
         item.style.display = "none";
     })
     document.querySelectorAll(".edit-product-e").forEach(item => {
         item.style.display = "block";
     })
-    document.querySelector(".add-product").classList.add("open");
+    document.querySelector(".edit-product").classList.add("open");
+    document.getElementById('edit-product-id').value = productId;
+    // Show the pop-up container
+    // Add your code to show the pop-up container here
+}
+
+var indexCur;
+function editProduct() {
+
+    document.querySelectorAll(".edit-product-e").forEach(item => {
+        item.style.display = "block";
+    })
+    document.querySelector(".edit-product").classList.add("open");
     //
 }
 
@@ -236,43 +76,7 @@ function getPathImage(path) {
     return "./image/" + patharr[patharr.length - 1];
 }
 
-let btnUpdateProductIn = document.getElementById("update-product-button");
-btnUpdateProductIn.addEventListener("click", (e) => {
-    e.preventDefault();
-    let products = JSON.parse(localStorage.getItem("products"));
-    let idProduct = products[indexCur].id;
-    let imgProduct = products[indexCur].img;
-    let titleProduct = products[indexCur].title;
-    let curProduct = products[indexCur].price;
-    let descProduct = products[indexCur].desc;
-    let categoryProduct = products[indexCur].category;
-    let imgProductCur = getPathImage(document.querySelector(".upload-image-preview").src)
-    let titleProductCur = document.getElementById("ten-mon").value;
-    let curProductCur = document.getElementById("gia-moi").value;
-    let descProductCur = document.getElementById("mo-ta").value;
-    let categoryText = document.getElementById("chon-mon").value;
 
-    if (imgProductCur != imgProduct || titleProductCur != titleProduct || curProductCur != curProduct || descProductCur != descProduct || categoryText != categoryProduct) {
-        let productadd = {
-            id: idProduct,
-            title: titleProductCur,
-            img: imgProductCur,
-            category: categoryText,
-            price: parseInt(curProductCur),
-            desc: descProductCur,
-            status: 1,
-        };
-        products.splice(indexCur, 1);
-        products.splice(indexCur, 0, productadd);
-        localStorage.setItem("products", JSON.stringify(products));
-        toast({ title: "Success", message: "Sửa sản phẩm thành công!", type: "success", duration: 3000, });
-        setDefaultValue();
-        document.querySelector(".add-product").classList.remove("open");
-        showProduct();
-    } else {
-        toast({ title: "Warning", message: "Sản phẩm của bạn không thay đổi!", type: "warning", duration: 3000, });
-    }
-});
 
 let btnAddProductIn = document.getElementById("add-product-button");
 // btnAddProductIn.addEventListener("click", (e) => {
@@ -322,12 +126,6 @@ function setDefaultValue() {
 // Open Popup Modal
 let btnAddProduct = document.getElementById("btn-add-product");
 btnAddProduct.addEventListener("click", () => {
-    document.querySelectorAll(".add-product-e").forEach(item => {
-        item.style.display = "block";
-    })
-    document.querySelectorAll(".edit-product-e").forEach(item => {
-        item.style.display = "none";
-    })
     document.querySelector(".add-product").classList.add("open");
 });
 
@@ -362,71 +160,10 @@ function previewImage(event) {
 }
 
 // Đổi trạng thái đơn hàng
-function changeStatus(id, el) {
-    let orders = JSON.parse(localStorage.getItem("order"));
-    let order = orders.find((item) => {
-        return item.id == id;
-    });
-    order.trangthai = 1;
-    el.classList.remove("btn-chuaxuly");
-    el.classList.add("btn-daxuly");
-    el.innerHTML = "Đã xử lý";
-    localStorage.setItem("order", JSON.stringify(orders));
-    findOrder(orders);
-}
-
-// Format Date
-function formatDate(date) {
-    let fm = new Date(date);
-    let yyyy = fm.getFullYear();
-    let mm = fm.getMonth() + 1;
-    let dd = fm.getDate();
-    if (dd < 10) dd = "0" + dd;
-    if (mm < 10) mm = "0" + mm;
-    return dd + "/" + mm + "/" + yyyy;
-}
 
 // Show order
-function showOrder(arr) {
-    let orderHtml = "";
-    if(arr.length == 0) {
-        orderHtml = `<td colspan="6">Không có dữ liệu</td>`
-    } else {
-        arr.forEach((item) => {
-            let status = item.trangthai == 0 ? `<span class="fa fa-times">Chưa xử lý</span>` : `<span class="fa fa-check">Đã xử lý</span>`;
-            let date = formatDate(item.thoigiandat);
-            orderHtml += `
-            <tr>
-            <td>${item.id}</td>
-            <td>${item.khachhang}</td>
-            <td>${date}</td>
-            <td>${vnd(item.tongtien)}</td>                               
-            <td>${status}</td>
-            <td class="control">
-            <button class="btn-detail" id="" onclick="detailOrder('${item.id}')"><i class="	fa fa-asterisk"></i> Chi tiết</button>
-            </td>
-            </tr>      
-            `;
-        });
-    }
-    document.getElementById("showOrder").innerHTML = orderHtml;
-}
-
-let orders = localStorage.getItem("order") ? JSON.parse(localStorage.getItem("order")) : [];
-window.onload = showOrder(orders);
 
 // Get Order Details
-function getOrderDetails(madon) {
-    let orderDetails = localStorage.getItem("orderDetails") ?
-        JSON.parse(localStorage.getItem("orderDetails")) : [];
-    let ctDon = [];
-    orderDetails.forEach((item) => {
-        if (item.madon == madon) {
-            ctDon.push(item);
-        }
-    });
-    return ctDon;
-}
 
 // Show Order Detail
 // function detailOrder(id) {
@@ -616,97 +353,14 @@ function thongKe(mode) {
 }
 
 // Show số lượng sp, số lượng đơn bán, doanh thu
-function showOverview(arr){
-    document.getElementById("quantity-product").innerText = arr.length;
-    document.getElementById("quantity-order").innerText = arr.reduce((sum, cur) => (sum + parseInt(cur.quantity)),0);
-    document.getElementById("quantity-sale").innerText = vnd(arr.reduce((sum, cur) => (sum + parseInt(cur.doanhthu)),0));
-}
 
-function showThongKe(arr,mode) {
-    let orderHtml = "";
-    let mergeObj = mergeObjThongKe(arr);
-    showOverview(mergeObj);
 
-    switch (mode){
-        case 0:
-            mergeObj = mergeObjThongKe(createObj());
-            showOverview(mergeObj);
-            document.getElementById("the-loai-tk").value = "Tất cả";
-            document.getElementById("form-search-tk").value = "";
-            document.getElementById("time-start-tk").value = "";
-            document.getElementById("time-end-tk").value = "";
-            break;
-        case 1:
-            mergeObj.sort((a,b) => parseInt(a.quantity) - parseInt(b.quantity))
-            break;
-        case 2:
-            mergeObj.sort((a,b) => parseInt(b.quantity) - parseInt(a.quantity))
-            break;
-    }
-    for(let i = 0; i < mergeObj.length; i++) {
-        orderHtml += `
-        <tr>
-        <td>${i + 1}</td>
-        <td><div class="prod-img-title"><img class="prd-img-tbl" src="${mergeObj[i].img}" alt=""><p>${mergeObj[i].title}</p></div></td>
-        <td>${mergeObj[i].quantity}</td>
-        <td>${vnd(mergeObj[i].doanhthu)}</td>
-        <td><button class="btn-detail product-order-detail" data-id="${mergeObj[i].id}"><i class="fa fa-eye"></i> Chi tiết</button></td>
-        </tr>      
-        `;
-    }
-    document.getElementById("showTk").innerHTML = orderHtml;
-    document.querySelectorAll(".product-order-detail").forEach(item => {
-        let idProduct = item.getAttribute("data-id");
-        item.addEventListener("click", () => {           
-            detailOrderProduct(arr,idProduct);
-        })
-    })
-}
 
-showThongKe(createObj())
-
-function mergeObjThongKe(arr) {
-    let result = [];
-    arr.forEach(item => {
-        let check = result.find(i => i.id == item.id) // Không tìm thấy gì trả về undefined
-
-        if(check){
-            check.quantity = parseInt(check.quantity)  + parseInt(item.quantity);
-            check.doanhthu += parseInt(item.price) * parseInt(item.quantity);
-        } else {
-            const newItem = {...item}
-            newItem.doanhthu = newItem.price * newItem.quantity;
-            result.push(newItem);
-        }
-        
-    });
-    return result;
-}
-
-function detailOrderProduct(arr,id) {
-    let orderHtml = "";
-    arr.forEach(item => {
-        if(item.id == id) {
-            orderHtml += `<tr>
-            <td>${item.madon}</td>
-            <td>${item.quantity}</td>
-            <td>${vnd(item.price)}</td>
-            <td>${formatDate(item.time)}</td>
-            </tr>      
-            `;
-        }
-    });
-    document.getElementById("show-product-order-detail").innerHTML = orderHtml
-    document.querySelector(".modal.detail-order-product").classList.add("open")
-}
 
 // User
 let addAccount = document.getElementById('signup-button');
 let updateAccount = document.getElementById("btn-update-account")
 
-document.querySelector(".modal.signup .modal-close").addEventListener("click",() => {
-    signUpFormReset();
-})
 
 function openCreateAccount() {
     document.querySelector(".signup").classList.add("open");
@@ -826,89 +480,6 @@ function editAccount(phone) {
     document.getElementById("user-status").checked = accounts[index].status == 1 ? true : false;
 }
 
-updateAccount.addEventListener("click", (e) => {
-    e.preventDefault();
-    let accounts = JSON.parse(localStorage.getItem("accounts"));
-    let fullname = document.getElementById("fullname").value;
-    let phone = document.getElementById("phone").value;
-    let password = document.getElementById("password").value;
-    if(fullname == "" || phone == "" || password == "") {
-        toast({ title: 'Chú ý', message: 'Vui lòng nhập đầy đủ thông tin !', type: 'warning', duration: 3000 });
-    } else {
-        accounts[indexFlag].fullname = document.getElementById("fullname").value;
-        accounts[indexFlag].phone = document.getElementById("phone").value;
-        accounts[indexFlag].password = document.getElementById("password").value;
-        accounts[indexFlag].status = document.getElementById("user-status").checked ? true : false;
-        localStorage.setItem("accounts", JSON.stringify(accounts));
-        toast({ title: 'Thành công', message: 'Thay đổi thông tin thành công !', type: 'success', duration: 3000 });
-        document.querySelector(".signup").classList.remove("open");
-        signUpFormReset();
-        showUser();
-    }
-})
-
-addAccount.addEventListener("click", (e) => {
-    e.preventDefault();
-    let fullNameUser = document.getElementById('fullname').value;
-    let phoneUser = document.getElementById('phone').value;
-    let passwordUser = document.getElementById('password').value;
-        // Check validate
-        let fullNameIP = document.getElementById('fullname');
-        let formMessageName = document.querySelector('.form-message-name');
-        let formMessagePhone = document.querySelector('.form-message-phone');
-        let formMessagePassword = document.querySelector('.form-message-password');
-    
-        if (fullNameUser.length == 0) {
-            formMessageName.innerHTML = 'Vui lòng nhập họ vâ tên';
-            fullNameIP.focus();
-        } else if (fullNameUser.length < 3) {
-            fullNameIP.value = '';
-            formMessageName.innerHTML = 'Vui lòng nhập họ và tên lớn hơn 3 kí tự';
-        }
-        
-        if (phoneUser.length == 0) {
-            formMessagePhone.innerHTML = 'Vui lòng nhập vào số điện thoại';
-        } else if (phoneUser.length != 10) {
-            formMessagePhone.innerHTML = 'Vui lòng nhập vào số điện thoại 10 số';
-            document.getElementById('phone').value = '';
-        }
-        
-        if (passwordUser.length == 0) {
-            formMessagePassword.innerHTML = 'Vui lòng nhập mật khẩu';
-        } else if (passwordUser.length < 6) {
-            formMessagePassword.innerHTML = 'Vui lòng nhập mật khẩu lớn hơn 6 kí tự';
-            document.getElementById('password').value = '';
-        }
-
-    if (fullNameUser && phoneUser && passwordUser) {
-        let user = {
-            fullname: fullNameUser,
-            phone: phoneUser,
-            password: passwordUser,
-            address: '',
-            email: '',
-            status: 1,
-            join: new Date(),
-            cart: [],
-            userType: 0
-        }
-        console.log(user);
-        let accounts = localStorage.getItem('accounts') ? JSON.parse(localStorage.getItem('accounts')) : [];
-        let checkloop = accounts.some(account => {
-            return account.phone == user.phone;
-        })
-        if (!checkloop) {
-            accounts.push(user);
-            localStorage.setItem('accounts', JSON.stringify(accounts));
-            toast({ title: 'Thành công', message: 'Tạo thành công tài khoản !', type: 'success', duration: 3000 });
-            document.querySelector(".signup").classList.remove("open");
-            showUser();
-            signUpFormReset();
-        } else {
-            toast({ title: 'Cảnh báo !', message: 'Tài khoản đã tồn tại !', type: 'error', duration: 3000 });
-        }
-    }
-})
 
 document.getElementById("logout-acc").addEventListener('click', (e) => {
     e.preventDefault();
@@ -916,66 +487,3 @@ document.getElementById("logout-acc").addEventListener('click', (e) => {
     window.location = "index.html";
 })
 
-function toast({
-    title = 'Success',
-    message = 'Tạo tài khoản thành công',
-    type = 'success', 
-    duration = 3000
-}){
-    const main = document.getElementById('toast');
-    if(main){
-        const toast = document.createElement('div');
-        //Auto remove toast
-        const autoRemove = setTimeout(function(){
-            main.removeChild(toast);
-        },duration+1000);
-        //Remove toast when click btn close
-        toast.onclick = function(e){
-            if(e.target.closest('.fa')){
-                main.removeChild(toast);
-                clearTimeout(autoRemove);
-            }
-        }
-        const colors = {
-            success: '#47d864',
-            info: '#2f86eb',
-            warning: '#ffc021',
-            error: '#ff6243'
-        }
-        const icons = {
-            success: 'fa fa-check',
-            info: 'fa fa-info',
-            warning: 'fa fa-exclamation-triangle',
-            error: 'fa fa-bug'
-        };
-        const color = colors[type];
-        const icon = icons[type];
-        const delay = (duration / 1000).toFixed(2);
-        toast.classList.add('toast', `toast--${type}`);
-        toast.style.animation = `slideInLeft ease 0.3s, fadeOut linear 1s ${delay}s forwards`;
-        toast.innerHTML = `<div class="toast__private">
-        <div class="toast__icon">
-            <i class="${icon}"></i>
-        </div>
-        <div class="toast__body">
-            <h3 class="toast__title">${title}</h3>
-            <p class="toast__msg">
-                ${message}
-            </p>
-        </div>
-        <div class="toast__close">
-            <i class="fa fa-times"></i>
-        </div>
-    </div>
-    <div class="toast__background"style="background-color: ${color};">
-    </div>`
-    main.appendChild(toast);
-    }
-}
-let btnSearchUser = document.getElementById('btn-search-user');
-btnSearchUser.addEventListener("click", () => {
-    let main = document.getElementById("main");
-    main.classList.remove("active");
-    let customers = document.getElementById("customers");
-    customers.classList.add("active");
-})

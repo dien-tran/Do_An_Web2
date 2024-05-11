@@ -4,7 +4,7 @@ session_start();
 $admin_id = $_SESSION['admin_id'];
 
 if (!isset($admin_id)) {
-    header('Location:login.php');
+    header('Location:login_admin.php');
     exit();
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'];
     $phone_number = $_POST['phone_number'];
     $insert_query = "INSERT INTO users (name, email, password, user_type, phone_number) VALUES ('$name', '$email', '$password', '$user_type', '$phone_number')";
-    header('Location: admin.php');
+    header('Location: admin_main.php');
     exit();
 }
 //search
@@ -139,15 +139,20 @@ if (isset($_GET['unblock'])) {
                 </ul>
             </div>
             <div class="bottom-sidebar">
-            <ul class="sidebar-list">
-               <li class="sidebar-list-item user-logout">
-                  <a href="#" class="sidebar-link" id="logout-acc">
-                     <div class="sidebar-icon"><i class="fa fa-arrow-right"></i></div>
-                     <div class="hidden-sidebar">Đăng xuất</div>
-                  </a>
-               </li>
-            </ul>
-         </div>
+                <ul class="sidebar-list">
+                    <li class="sidebar-list-item user-logout">
+                        <a href="#" class="sidebar-link" id="logout-acc">
+                            <div class="sidebar-icon"><i class="fa fa-arrow-right"></i></div>
+                            <div class="hidden-sidebar" onclick="redirectToLogout()">Đăng xuất</div>
+                            <script>
+                                function redirectToLogout() {
+                                    window.location.href = "logout_admin.php";
+                                }
+                            </script>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </aside>
         <main class="content">
             <div class="section active">
@@ -212,4 +217,5 @@ if (isset($_GET['unblock'])) {
     </div>
     <script src="js/admin.js"></script>
 </body>
+
 </html>

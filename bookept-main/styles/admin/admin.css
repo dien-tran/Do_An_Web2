@@ -810,6 +810,11 @@ tbody tr td {
     width: 800px;
     padding-bottom: 20px;
 }
+.modal.edit-product .modal-container {
+    width: 800px;
+    padding-bottom: 20px;
+}
+
 
 .modal-container-title {
     display: inline-block;
@@ -921,8 +926,16 @@ input[type="file"] {
 .add-product-form {
     display: flex;
 }
+.edit-product-form {
+    display: flex;
+}
+
 
 .add-product-form>div {
+    width: 50%;
+    padding: 0 20px;
+}
+.edit-product-form>div {
     width: 50%;
     padding: 0 20px;
 }

@@ -4,7 +4,7 @@ session_start();
 $admin_id = $_SESSION['admin_id'];
 
 if (!isset($admin_id)) {
-    header('Location:login.php');
+    header('<Location:login_admin></Location:login_admin>.php');
     exit();
 }
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'];
     $phone_number = $_POST['phone_number'];
     $insert_query = "INSERT INTO users (name, email, password, user_type, phone_number) VALUES ('$name', '$email', '$password', '$user_type', '$phone_number')";
-    header('Location: admin.php');
+    header('Location: admin_products.php');
     exit();
 }
 //search
@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 if (isset($_GET['delete'])) // kiểm tra xem có tồn tại tham số 'delete' trong mảng $_GET hay không nếu có gì có id
 {
     $delete_id = $_GET['delete']; // nếu có thì lấy id 
-    mysqli_query($conn, "DELETE FROM users WHERE id = '$delete_id'") or die('query failed');
+    mysqli_query($conn, "DELETE FROM products WHERE id = '$delete_id'") or die('query failed');
 }
 if (isset($_GET['block'])) {
     $block_id = $_GET['block'];
@@ -45,31 +45,10 @@ if (isset($_GET['block'])) {
         $query = "UPDATE users SET status = 0 WHERE id = $block_id";
     }
 }
-if (isset($_GET['block'])) {
-    $block_id = $_GET['block'];
-    $sql_block = mysqli_query($conn, "SELECT * FROM  users WHERE id=$block_id");
-    if (mysqli_num_rows($sql_block) > 0) {
-        $query = "UPDATE users SET status = 0 WHERE id = $block_id";
-        if (mysqli_query($conn, $query)) {
-            echo "<script>alert('Người dùng đã được chặn.');</script>";
-        } else {
-            echo "Cập nhật trạng thái thất bại: " . mysqli_error($conn);
-        }
-    }
-}
-if (isset($_GET['unblock'])) {
-    $unblock_id = $_GET['unblock'];
-    $sql_unblock = mysqli_query($conn, "SELECT * FROM  users WHERE id=$unblock_id");
-    if (mysqli_num_rows($sql_unblock) > 0) {
-        $query = "UPDATE users SET status = 1 WHERE id = $unblock_id";
-        if (mysqli_query($conn, $query)) {
-            echo "<script>alert('Người dùng đã gỡ chặn.');</script>";
-        } else {
-            echo "Cập nhật trạng thái thất bại: " . mysqli_error($conn);
-        }
-    }
-}
+if (isset($_GET['edit']))
+{
 
+}
 
 $products_per_page = 8;
 
@@ -240,17 +219,14 @@ $offset = ($current_page - 1) * $products_per_page;
                                         <h4><?php echo $fetch_products['Name'] ?></h4>
                                         <p class="list-note"><?php echo $fetch_products['Description'] ?></p>
                                         <span class="list-category"><?php $category = mysqli_query($conn, "SELECT * FROM products p INNER JOIN category c ON p.CategoryId = c.CateId");
-                                        if(mysqli_num_rows($category) > 0)
-                                        {
-                                            while($fetch = mysqli_fetch_assoc($category))
-                                            {
-                                                if($fetch['CateId'] == $fetch_products['CategoryId'])
-                                                {
-                                                    echo $fetch['CateName'];
-                                                }
-                                            }
-                                        }
-                                        ?></span>
+                                                                    if (mysqli_num_rows($category) > 0) {
+                                                                        while ($fetch = mysqli_fetch_assoc($category)) {
+                                                                            if ($fetch['CateId'] == $fetch_products['CategoryId']) {
+                                                                                echo $fetch['CateName'];
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    ?></span>
                                     </div>
                                 </div>
                                 <div class="list-right">
@@ -259,8 +235,8 @@ $offset = ($current_page - 1) * $products_per_page;
                                     </div>
                                     <div class="list-control">
                                         <div class="list-tool">
-                                            <button name="edit" class="btn-edit"><i class="fa fa-pencil"></i></button>
-                                            <a href="admin.php?delete=<?php echo $fetch_products['Id']; ?>"><button class="btn-delete" name="delete" onclick="return confirm('Delete this product?')"><i class="fa fa-trash"></i></button> </a>
+                                            <button onclick="openEditPopup(<?php echo $fetch_products['Id']; ?>)" id="edit-product"  name="edit" class="btn-edit"><i class="fa fa-pencil"></i></button>
+                                            <a href="admin_products.php?delete=<?php echo $fetch_products['Id']; ?>"><button class="btn-delete" name="delete" onclick="return confirm('Delete this product?')"><i class="fa fa-trash"></i></button> </a>
                                         </div>
                                     </div>
                                 </div>
@@ -273,35 +249,126 @@ $offset = ($current_page - 1) * $products_per_page;
                     ?>
                 </div>
                 <nav aria-label="Page navigation example">
-    <ul class="pagination-justify-content-center">
-    <li class="page-item <?php echo $current_page == 1 ? 'disabled' : ''; ?>">
-                <a class="page-link" href="<?php echo $current_page == 1 ? '#' : '?page=' . 1; ?>"> First </a>
-        </li>
-        <li class="page-item <?php echo $current_page == 1 ? 'disabled' : ''; ?>">
-            <a class="page-link" href="<?php echo $current_page == 1 ? '#' : '?page=' . ($current_page - 1); ?>" tabindex="-1"> < </a>
-        </li>
-        <?php
-        // Hiển thị các trang
-        for ($i = 1; $i <= $total_pages; $i++) {
-            ?>
-            <li class="page-item <?php echo $current_page == $i ? 'active' : ''; ?>">
-                <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
-            </li>
-            <?php
-        }
-        ?>
-        <li class="page-item <?php echo $current_page == $total_pages ? 'disabled' : ''; ?>">
-            <a class="page-link" href="<?php echo $current_page == $total_pages ? '#' : '?page=' . ($current_page + 1); ?>"> > </a>
-        </li>
-        <li class="page-item <?php echo $current_page == $total_pages ? 'disabled' : ''; ?>">
-            <a class="page-link" href="<?php echo $current_page == $total_pages ? '#' : '?page=' . ($total_pages); ?>"> Last </a>
-        </li>
-    </ul>
-</nav>
+                    <ul class="pagination-justify-content-center">
+                        <li class="page-item <?php echo $current_page == 1 ? 'disabled' : ''; ?>">
+                            <a class="page-link" href="<?php echo $current_page == 1 ? '#' : '?page=' . 1; ?>"> First </a>
+                        </li>
+                        <li class="page-item <?php echo $current_page == 1 ? 'disabled' : ''; ?>">
+                            <a class="page-link" href="<?php echo $current_page == 1 ? '#' : '?page=' . ($current_page - 1); ?>" tabindex="-1">
+                                < </a>
+                        </li>
+                        <?php
+                        // Hiển thị các trang
+                        for ($i = 1; $i <= $total_pages; $i++) {
+                        ?>
+                            <li class="page-item <?php echo $current_page == $i ? 'active' : ''; ?>">
+                                <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                            </li>
+                        <?php
+                        }
+                        ?>
+                        <li class="page-item <?php echo $current_page == $total_pages ? 'disabled' : ''; ?>">
+                            <a class="page-link" href="<?php echo $current_page == $total_pages ? '#' : '?page=' . ($current_page + 1); ?>"> > </a>
+                        </li>
+                        <li class="page-item <?php echo $current_page == $total_pages ? 'disabled' : ''; ?>">
+                            <a class="page-link" href="<?php echo $current_page == $total_pages ? '#' : '?page=' . ($total_pages); ?>"> Last </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
+        </main>
             <div class="modal add-product">
                 <div class="modal-container">
                     <h3 class="modal-container-title add-product-e">THÊM MỚI SẢN PHẨM</h3>
+                    <button class="modal-close product-form"><i class="fa fa-times"></i></button>
+                    <div class="modal-content">
+                        <form action="" method="POST" class="add-product-form" enctype="multipart/form-data">
+                            <div class="modal-content-left">
+                                <img id="imagePreview" src="./image/" alt="" class="upload-image-preview">
+                                <div class="form-group file">
+                                    <label for="up-hinh-anh" class="form-label-file"><i class="fa fa-plus"></i>Chọn hình ảnh</label>
+                                    <input accept="image/jpeg, image/png, image/jpg" id="up-hinh-anh" name="Image" type="file" class="form-control" onchange="previewImage(event)">
+                                </div>
+                            </div>
+                            <div class="modal-content-right">
+                                <div class="form-group">
+                                    <label for="ten-mon" class="form-label">Tên sách</label>
+                                    <input id="ten-mon" name="Name" type="text" placeholder="Nhập tên sách" value="" class="form-control">
+                                    <span class="form-message"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="category" class="form-label">Chọn thể loại</label>
+                                    <select name="category" id="chon-mon">
+                                        <option>Tiểu thuyết</option>
+                                        <option>Truyện ngắn</option>
+                                        <option>Kinh dị</option>
+                                        <option>Self Help</option>
+                                    </select>
+                                    <span class="form-message"></span>
+                                </div>
+                                <!-- Price -->
+                                <div class="form-group">
+                                    <label for="gia-moi" class="form-label">Price</label>
+                                    <input id="gia-moi" name="Price" type="text" placeholder="Nhập giá bán" value="" class="form-control">
+                                    <span class="form-message"></span>
+                                </div>
+                                <!-- Author -->
+                                <div class="form-group">
+                                    <label for="author" class="form-label">Author</label>
+                                    <input id="author" name="Author" type="text" value="" class="form-control">
+                                    <span class="form-message"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="publisher" class="form-label">Publisher</label>
+                                    <input id="publisher" name="Publisher" value="" type="text" class="form-control">
+                                    <span class="form-message"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="pub-year" class="form-label">PublicationYear</label>
+                                    <input id="pub-year" name="PublicationYear" value="" type="number" min="0" class="form-control">
+                                    <span class="form-message"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="language" class="form-label">Language</label>
+                                    <input id="language" name="Language" value="" type="text" class="form-control">
+                                    <span class="form-message"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cover" class="form-label">Cover</label>
+                                    <input id="cover" name="CoverType" value="" type="text" class="form-control">
+                                    <span class="form-message"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="quanitiy" class="form-label">Quantity</label>
+                                    <input id="quanitiy" name="Quantity" value="" type="number" min="0" class="form-control">
+                                    <span class="form-message"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="mo-ta" class="form-label">Mô tả</label>
+                                    <textarea class="product-desc" id="mo-ta" value="" name="Description" placeholder="Nhập mô tả sách..."></textarea>
+                                    <span class="form-message"></span>
+                                </div>
+                                <button type="submit" class="form-submit btn-add-product-form add-product-e" id="add-product-button" name="add_product">
+                                    <i class="fa fa-plus"></i>
+                                    <span>THÊM SÁCH</span>
+                                </button>
+                                    </button>
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" id="edit-product-id" name="edit_product_id">
+            <?php 
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                $editProductId = $_POST['edit_product_id'];
+                $sql_edit = mysqli_query($conn, "SELECT * FROM products WHERE Id = '$editProductId'");
+                $fetch_products_edit = mysqli_fetch_assoc($sql_edit);
+            }
+            ?>
+            <div class="modal edit-product">
+                <div class="modal-container">
                     <h3 class="modal-container-title edit-product-e">CHỈNH SỬA SẢN PHẨM</h3>
                     <button class="modal-close product-form"><i class="fa fa-times"></i></button>
                     <div class="modal-content">
@@ -380,6 +447,7 @@ $offset = ($current_page - 1) * $products_per_page;
                                         <i class="fa fa-floppy-o"></i>
                                         <span>LƯU THAY ĐỔI</span>
                                     </button>
+                                    
                                 </a>
                             </div>
                         </form>
