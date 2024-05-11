@@ -169,7 +169,7 @@ if(isset($message) && is_array($message)) // Kiểm tra nếu $message là một
       <td><input type="email" id="email" name="email_change" value="<?php echo $check['email']; ?>" class="box"></td>
     </tr>
     <tr>
-      <td><label for="phone">Teleohone Number:</label></td>
+      <td><label for="phone">Phone Number:</label></td>
       <td><input type="tel" id="phone" name="phone_number" value="<?php echo $check['phone_number']; ?>" class="box"></td>
     </tr>
     <tr>
