@@ -53,8 +53,8 @@ if (isset($_POST['add_product'])) {
     $des = $_POST['Description'];
     $cate = $_POST['CategoryId'];
     $select_product_name = mysqli_query($conn, "SELECT Name FROM products WHERE Name = '$name'") or die('query failed');
-    $add_product_query = mysqli_query($conn, "INSERT INTO products(CategoryId, Name, Price, Image, MainAuthor, Publisher, PublicationYear, Language, CoverType, Quantity, Description)
-         VALUES('$cate','$name', '$price', '$image', '$author', '$publisher', '$pub_year', '$language', '$cover', '$quantity', '$des')") or die('query failed');
+    $add_product_query = mysqli_query($conn, "INSERT INTO products(CategoryId, Name, Price, Image, MainAuthor, Publisher, PublicationYear, Language, CoverType, Quantity, Description, SoldYet, Status)
+         VALUES('$cate','$name', '$price', '$image', '$author', '$publisher', '$pub_year', '$language', '$cover', '$quantity', '$des', 'No', '1')") or die('query failed');
 
     if ($add_product_query) {
         move_uploaded_file($_FILES["Image"]["tmp_name"], "image/" . $_FILES["Image"]["name"]);
@@ -63,20 +63,26 @@ if (isset($_POST['add_product'])) {
         $message[] = 'product could not be added!';
     }
 }
+
 if (isset($_GET['delete'])) // kiểm tra xem có tồn tại tham số 'delete' trong mảng $_GET hay không nếu có gì có id
 {
     $delete_id = $_GET['delete']; // nếu có thì lấy id 
     $check_sold_query = mysqli_query($conn, "SELECT * FROM products WHERE '$delete_id' = Id");
     $fetch_delete = mysqli_fetch_assoc($check_sold_query);
-    if($fetch_delete['SoldYet'] == "Yes")
+    if($fetch_delete['SoldYet'] == "Yes" && $fetch_delete['Status'] == 0)
     {
+        echo '<script>alert("Hello")';
+        echo $fetch_delete;
+        mysqli_query($conn, "DELETE FROM products WHERE id = '$delete_id'") or die('query failed');
+    }
+    elseif ($fetch_delete['SoldYet'] == "Yes") {
         mysqli_query($conn, "UPDATE products SET STATUS = 0");
     }
-    // mysqli_query($conn, "DELETE FROM products WHERE id = '$delete_id'") or die('query failed');
+     else
+        mysqli_query($conn, "DELETE FROM products WHERE id = '$delete_id'") or die('query failed');
 }
 
-if(isset($_GET['display']))
-{
+if (isset($_GET['display'])) {
     $hidden_id = $_GET['display'];
     $display_sql = mysqli_query($conn, "SELECT * FROM products WHERE Id = '$hidden_id'");
     $fetch_display = mysqli_fetch_assoc($display_sql);
@@ -223,20 +229,19 @@ if(isset($_GET['display']))
                                 </div>
                                 <div class="list-right">
                                     <div class="list-price">
-                                        <span class="list-current-price"><?php echo $fetch_products['Price'] ?></span>
+                                        <span class="list-current-price"><?php echo $fetch_products['Price'] ?>$</span>
                                     </div>
                                     <div class="list-control">
                                         <div class="list-tool">
-                                            <?php 
-                                            if($fetch_products['Status'] == 0)
-                                            {?>
-                                            <a style="color:black"href="admin_products.php?display=<?php echo $fetch_products['Id']?>"><button name="display" class="btn-edit" onclick="alert('Do you want to continue selling this item?')"><i class="fa fa-eye" aria-hidden="true"></i></button>
                                             <?php
+                                            if ($fetch_products['Status'] == 0) { ?>
+                                                <a style="color:black" href="admin_products.php?display=<?php echo $fetch_products['Id'] ?>"><button name="display" class="btn-edit" onclick="return confirm('Do you want to continue selling this item?')"><i class="fa fa-eye" aria-hidden="true"></i></button>
+                                                <?php
                                             }
-                                            ?>
-                                            <a href="admin_products_edit.php?edit_product=<?php echo $fetch_products['Id']; ?>" style="color:black;"><button id="edit-product" name="edit" class="btn-edit"><i class="fa fa-pencil"></i></button></a>
-                                            <a href="admin_products.php?delete=<?php echo $fetch_products['Id']; ?>"><button class="btn-delete" name="delete" onclick="return confirm('Delete this product?')"><i class="fa fa-trash"></i></button> </a>
-                                            
+                                                ?>
+                                                <a href="admin_products_edit.php?edit_product=<?php echo $fetch_products['Id']; ?>" style="color:black;"><button id="edit-product" name="edit" class="btn-edit"><i class="fa fa-pencil"></i></button></a>
+                                                <a href="admin_products.php?delete=<?php echo $fetch_products['Id']; ?>"><button class="btn-delete" name="delete" onclick="return confirm('Delete this product?')"><i class="fa fa-trash"></i></button> </a>
+
                                         </div>
                                     </div>
                                 </div>
@@ -352,13 +357,19 @@ if(isset($_GET['display']))
         <script src="js/admin.js">
         </script>
         <script>
+            if (typeof window.history.pushState === 'function') {
+            // Remove GET parameters from the URL
+            window.history.pushState({}, '', window.location.href.split('?')[0]);
+        }
             let links = document.querySelectorAll('.page-nav-item');
             let bodyId = parseInt(document.body.id) - 1;
             console.log(links + "as" + bodyId);
             links[bodyId].classList.add('active');
-            let catelink = documet.getElementById
+            
         </script>
+        <?php
 
+        ?>
 </body>
 
 </html>
