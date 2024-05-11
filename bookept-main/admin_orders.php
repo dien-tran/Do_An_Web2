@@ -41,7 +41,7 @@ if (!isset($admin_id)) {
    <div class="container">
       <aside class="sidebar open">
          <div class="top-sidebar">
-            <a href="index.html" class="channel-logo"><img src="image/Logo.jpg" alt="Channel Logo"></a>
+            <a href="admin_main.php" class="channel-logo"><img src="image/Logo.jpg" alt="Channel Logo"></a>
             <div class="hidden-sidebar your-channel"><img src="" style="height: 30px;" alt="">
             </div>
          </div>
