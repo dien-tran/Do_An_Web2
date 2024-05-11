@@ -4,19 +4,19 @@ session_start();
 $admin_id = $_SESSION['admin_id'];
 
 if (!isset($admin_id)) {
-    header('<Location:login_admin></Location:login_admin>.php');
+    header('Location:login_admin.php');
     exit();
 }
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Lấy dữ liệu từ form
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $phone_number = $_POST['phone_number'];
-    $insert_query = "INSERT INTO users (name, email, password, user_type, phone_number) VALUES ('$name', '$email', '$password', '$user_type', '$phone_number')";
-    header('Location: admin_products.php');
-    exit();
-}
+// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+//     // Lấy dữ liệu từ form
+//     $name = $_POST['name'];
+//     $email = $_POST['email'];
+//     $password = $_POST['password'];
+//     $phone_number = $_POST['phone_number'];
+//     $insert_query = "INSERT INTO users (name, email, password, user_type, phone_number) VALUES ('$name', '$email', '$password', '$user_type', '$phone_number')";
+//     header('Location: admin_products.php');
+//     exit();
+// }
 //search
 // if (isset($_GET['submit_search'])) 
 // {
@@ -33,6 +33,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // }
 // xóa 
 
+if (isset($_POST['add_product'])) {
+    $name = $_POST['Name'];
+    $price = $_POST['Price'];
+    $image = $_FILES['Image']['name'];
+    $image_tmp_name = $_FILES['Image']['tmp_name'];
+    $author = $_POST['MainAuthor'];
+    $publisher = $_POST['Publisher'];
+    $pub_year = $_POST['PublicationYear'];
+    $language = $_POST['Language'];
+    $cover =  $_POST['CoverType'];
+    $quantity = $_POST['Quantity'];
+    $des = $_POST['Description'];
+    $cate = $_POST['Category'];
+    $select_product_name = mysqli_query($conn, "SELECT Name FROM products WHERE Name = '$name'") or die('query failed');
+        $add_product_query = mysqli_query($conn, "INSERT INTO products(CategoryId, Name, Price, Image, MainAuthor, Publisher, PublicationYear, Language, CoverType, Quantity, Description)
+         VALUES('$cate','$name', '$price', '$image', '$author', '$publisher', '$pub_year', '$language', '$cover', '$quantity', '$des')") or die('query failed');
+
+        if ($add_product_query) {
+            move_uploaded_file($_FILES["Image"]["tmp_name"], "image/" . $_FILES["Image"]["name"]);
+            $message[] = 'product added successfully!';
+        } else {
+            $message[] = 'product could not be added!';
+    }
+}
 if (isset($_GET['delete'])) // kiểm tra xem có tồn tại tham số 'delete' trong mảng $_GET hay không nếu có gì có id
 {
     $delete_id = $_GET['delete']; // nếu có thì lấy id 
@@ -45,9 +69,7 @@ if (isset($_GET['block'])) {
         $query = "UPDATE users SET status = 0 WHERE id = $block_id";
     }
 }
-if (isset($_GET['edit']))
-{
-
+if (isset($_GET['edit'])) {
 }
 
 $products_per_page = 8;
@@ -185,14 +207,17 @@ $offset = ($current_page - 1) * $products_per_page;
             <div class="section product-all active">
                 <div class="admin-control">
                     <div class="admin-control-left">
-                        <select name="the-loai" id="the-loai" onchange="showProduct()">
-                            <!-- ------------------------------Use while to display all the category----------------------------- -->
-                            <option>Tiểu thuyết</option>
-                            <option>Truyện ngắn</option>
-                            <option>Self Help</option>
-                            <option>Kinh dị</option>
-                            <option>Đã xóa</option>
-                        </select>
+                        <?php
+                        $sql_cate = "SELECT * FROM category";
+                        $result = mysqli_query($conn, $sql_cate);
+                        if (mysqli_num_rows($result) > 0) {
+                            echo '<select name="Category" id="chon-mon">';
+                            while ($row = mysqli_fetch_assoc($result)) {
+                                echo '<option value="' . $row['CategoryId'] . '">' . $row['CateName'] . '</option>';
+                            }
+                            echo '</select>';
+                        }
+                        ?>
                     </div>
                     <div class="admin-control-center">
                         <form action="" class="form-search">
@@ -235,7 +260,7 @@ $offset = ($current_page - 1) * $products_per_page;
                                     </div>
                                     <div class="list-control">
                                         <div class="list-tool">
-                                            <button onclick="openEditPopup(<?php echo $fetch_products['Id']; ?>)" id="edit-product"  name="edit" class="btn-edit"><i class="fa fa-pencil"></i></button>
+                                            <button onclick="openEditPopup(<?php echo $fetch_products['Id']; ?>)" id="edit-product" name="edit" class="btn-edit"><i class="fa fa-pencil"></i></button>
                                             <a href="admin_products.php?delete=<?php echo $fetch_products['Id']; ?>"><button class="btn-delete" name="delete" onclick="return confirm('Delete this product?')"><i class="fa fa-trash"></i></button> </a>
                                         </div>
                                     </div>
@@ -277,184 +302,191 @@ $offset = ($current_page - 1) * $products_per_page;
                 </nav>
             </div>
         </main>
-            <div class="modal add-product">
-                <div class="modal-container">
-                    <h3 class="modal-container-title add-product-e">THÊM MỚI SẢN PHẨM</h3>
-                    <button class="modal-close product-form"><i class="fa fa-times"></i></button>
-                    <div class="modal-content">
-                        <form action="" method="POST" class="add-product-form" enctype="multipart/form-data">
-                            <div class="modal-content-left">
-                                <img id="imagePreview" src="./image/" alt="" class="upload-image-preview">
-                                <div class="form-group file">
-                                    <label for="up-hinh-anh" class="form-label-file"><i class="fa fa-plus"></i>Chọn hình ảnh</label>
-                                    <input accept="image/jpeg, image/png, image/jpg" id="up-hinh-anh" name="Image" type="file" class="form-control" onchange="previewImage(event)">
-                                </div>
+        <div class="modal add-product">
+            <div class="modal-container">
+                <h3 class="modal-container-title add-product-e">THÊM MỚI SẢN PHẨM</h3>
+                <button class="modal-close product-form"><i class="fa fa-times"></i></button>
+                <div class="modal-content">
+                    <form action="" method="POST" class="add-product-form" enctype="multipart/form-data">
+                        <div class="modal-content-left">
+                            <img id="imagePreview" src="./image/" alt="" class="upload-image-preview">
+                            <div class="form-group file">
+                                <label for="up-hinh-anh" class="form-label-file"><i class="fa fa-plus"></i>Chọn hình ảnh</label>
+                                <input accept="image/jpeg, image/png, image/jpg" id="up-hinh-anh" name="Image" type="file" class="form-control" onchange="previewImage(event)">
                             </div>
-                            <div class="modal-content-right">
-                                <div class="form-group">
-                                    <label for="ten-mon" class="form-label">Tên sách</label>
-                                    <input id="ten-mon" name="Name" type="text" placeholder="Nhập tên sách" value="" class="form-control">
-                                    <span class="form-message"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label for="category" class="form-label">Chọn thể loại</label>
-                                    <select name="category" id="chon-mon">
-                                        <option>Tiểu thuyết</option>
-                                        <option>Truyện ngắn</option>
-                                        <option>Kinh dị</option>
-                                        <option>Self Help</option>
-                                    </select>
-                                    <span class="form-message"></span>
-                                </div>
-                                <!-- Price -->
-                                <div class="form-group">
-                                    <label for="gia-moi" class="form-label">Price</label>
-                                    <input id="gia-moi" name="Price" type="text" placeholder="Nhập giá bán" value="" class="form-control">
-                                    <span class="form-message"></span>
-                                </div>
-                                <!-- Author -->
-                                <div class="form-group">
-                                    <label for="author" class="form-label">Author</label>
-                                    <input id="author" name="Author" type="text" value="" class="form-control">
-                                    <span class="form-message"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label for="publisher" class="form-label">Publisher</label>
-                                    <input id="publisher" name="Publisher" value="" type="text" class="form-control">
-                                    <span class="form-message"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label for="pub-year" class="form-label">PublicationYear</label>
-                                    <input id="pub-year" name="PublicationYear" value="" type="number" min="0" class="form-control">
-                                    <span class="form-message"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label for="language" class="form-label">Language</label>
-                                    <input id="language" name="Language" value="" type="text" class="form-control">
-                                    <span class="form-message"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label for="cover" class="form-label">Cover</label>
-                                    <input id="cover" name="CoverType" value="" type="text" class="form-control">
-                                    <span class="form-message"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label for="quanitiy" class="form-label">Quantity</label>
-                                    <input id="quanitiy" name="Quantity" value="" type="number" min="0" class="form-control">
-                                    <span class="form-message"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label for="mo-ta" class="form-label">Mô tả</label>
-                                    <textarea class="product-desc" id="mo-ta" value="" name="Description" placeholder="Nhập mô tả sách..."></textarea>
-                                    <span class="form-message"></span>
-                                </div>
-                                <button type="submit" class="form-submit btn-add-product-form add-product-e" id="add-product-button" name="add_product">
-                                    <i class="fa fa-plus"></i>
-                                    <span>THÊM SÁCH</span>
-                                </button>
-                                    </button>
-                                </a>
+                        </div>
+                        <div class="modal-content-right">
+                            <div class="form-group">
+                                <label for="ten-mon" class="form-label">Tên sách</label>
+                                <input id="ten-mon" name="Name" type="text" placeholder="Nhập tên sách" value="" class="form-control">
+                                <span class="form-message"></span>
                             </div>
-                        </form>
-                    </div>
+                            <div class="form-group">
+                                <label for="category" class="form-label">Chọn thể loại</label>
+                                <?php
+                                $sql_cate = "SELECT * FROM category";
+                                $result = mysqli_query($conn, $sql_cate);
+                                if (mysqli_num_rows($result) > 0) {
+                                    echo '<select name="Category" id="chon-mon">';
+                                    while ($row = mysqli_fetch_assoc($result)) {
+                                        echo '<option value="' . $row['CategoryId'] . '">' . $row['CateName'] . '</option>';
+                                    }
+                                    echo '</select>';
+                                }
+                                ?>
+                                <span class="form-message"></span>
+                            </div>
+                            <!-- Price -->
+                            <div class="form-group">
+                                <label for="gia-moi" class="form-label">Price</label>
+                                <input id="gia-moi" name="Price" type="text" placeholder="Nhập giá bán" value="" class="form-control">
+                                <span class="form-message"></span>
+                            </div>
+                            <!-- Author -->
+                            <div class="form-group">
+                                <label for="author" class="form-label">Author</label>
+                                <input id="author" name="MainAuthor" type="text" value="" class="form-control">
+                                <span class="form-message"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="publisher" class="form-label">Publisher</label>
+                                <input id="publisher" name="Publisher" value="" type="text" class="form-control">
+                                <span class="form-message"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="pub-year" class="form-label">PublicationYear</label>
+                                <input id="pub-year" name="PublicationYear" value="" type="number" min="0" class="form-control">
+                                <span class="form-message"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="language" class="form-label">Language</label>
+                                <input id="language" name="Language" value="" type="text" class="form-control">
+                                <span class="form-message"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="cover" class="form-label">Cover</label>
+                                <input id="cover" name="CoverType" value="" type="text" class="form-control">
+                                <span class="form-message"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="quanitiy" class="form-label">Quantity</label>
+                                <input id="quanitiy" name="Quantity" value="" type="number" min="0" class="form-control">
+                                <span class="form-message"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="mo-ta" class="form-label">Mô tả</label>
+                                <textarea class="product-desc" id="mo-ta" value="" name="Description" placeholder="Nhập mô tả sách..."></textarea>
+                                <span class="form-message"></span>
+                            </div>
+                            <form method="post" enctype="multipart/form-data">
+                            <button type="submit" class="form-submit btn-add-product-form add-product-e" id="add-product-button" name="add_product">
+                                <i class="fa fa-plus"></i>
+                                <span>THÊM SÁCH</span>
+                            </button>
+                            </form>
+                            </a>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <input type="hidden" id="edit-product-id" name="edit_product_id">
-            <?php 
-            if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                $editProductId = $_POST['edit_product_id'];
-                $sql_edit = mysqli_query($conn, "SELECT * FROM products WHERE Id = '$editProductId'");
-                $fetch_products_edit = mysqli_fetch_assoc($sql_edit);
-            }
-            ?>
-            <div class="modal edit-product">
-                <div class="modal-container">
-                    <h3 class="modal-container-title edit-product-e">CHỈNH SỬA SẢN PHẨM</h3>
-                    <button class="modal-close product-form"><i class="fa fa-times"></i></button>
-                    <div class="modal-content">
-                        <form action="" method="POST" class="add-product-form" enctype="multipart/form-data">
-                            <div class="modal-content-left">
-                                <img id="imagePreview" src="./image/ <?php echo $fetch_products_edit['Image']['name'] ?>" alt="" class="upload-image-preview">
-                                <div class="form-group file">
-                                    <label for="up-hinh-anh" class="form-label-file"><i class="fa fa-plus"></i>Chọn hình ảnh</label>
-                                    <input accept="image/jpeg, image/png, image/jpg" id="up-hinh-anh" name="Image" type="file" class="form-control" onchange="previewImage(event)">
-                                </div>
+        </div>
+        <input type="hidden" id="edit-product-id" name="edit_product_id">
+        <!-- <?php
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $editProductId = $_POST['edit_product_id'];
+            $sql_edit = mysqli_query($conn, "SELECT * FROM products WHERE Id = '$editProductId'");
+            $fetch_products_edit = mysqli_fetch_assoc($sql_edit);
+            echo '<script>alert("a");';
+        }
+        ?> -->
+        <div class="modal edit-product">
+            <div class="modal-container">
+                <h3 class="modal-container-title edit-product-e">CHỈNH SỬA SẢN PHẨM</h3>
+                <button class="modal-close product-form"><i class="fa fa-times"></i></button>
+                <div class="modal-content">
+                    <form action="" method="POST" class="add-product-form" enctype="multipart/form-data">
+                        <div class="modal-content-left">
+                            <img id="imagePreview" src="./image/ <?php echo $fetch_products_edit['Image']['name'] ?>" alt="" class="upload-image-preview">
+                            <div class="form-group file">
+                                <label for="up-hinh-anh" class="form-label-file"><i class="fa fa-plus"></i>Chọn hình ảnh</label>
+                                <input accept="image/jpeg, image/png, image/jpg" id="up-hinh-anh" name="Image" type="file" class="form-control" onchange="previewImage(event)">
                             </div>
-                            <div class="modal-content-right">
-                                <div class="form-group">
-                                    <label for="ten-mon" class="form-label">Tên sách</label>
-                                    <input id="ten-mon" name="Name" type="text" placeholder="Nhập tên sách" value="<?php echo $fetch_products_edit['Name'] ?>" class="form-control">
-                                    <span class="form-message"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label for="category" class="form-label">Chọn thể loại</label>
-                                    <select name="category" id="chon-mon">
-                                        <option>Tiểu thuyết</option>
-                                        <option>Truyện ngắn</option>
-                                        <option>Kinh dị</option>
-                                        <option>Self Help</option>
-                                    </select>
-                                    <span class="form-message"></span>
-                                </div>
-                                <!-- Price -->
-                                <div class="form-group">
-                                    <label for="gia-moi" class="form-label">Price</label>
-                                    <input id="gia-moi" name="Price" type="text" placeholder="Nhập giá bán" value="<?php echo $fetch_products_edit['Price'] ?>" class="form-control">
-                                    <span class="form-message"></span>
-                                </div>
-                                <!-- Author -->
-                                <div class="form-group">
-                                    <label for="author" class="form-label">Author</label>
-                                    <input id="author" name="Author" type="text" value="<?php echo $fetch_products_edit['MainAuthor'] ?>" class="form-control">
-                                    <span class="form-message"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label for="publisher" class="form-label">Publisher</label>
-                                    <input id="publisher" name="Publisher" value="<?php echo $fetch_products_edit['Publisher'] ?>" type="text" class="form-control">
-                                    <span class="form-message"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label for="pub-year" class="form-label">PublicationYear</label>
-                                    <input id="pub-year" name="PublicationYear" value="<?php echo $fetch_products_edit['PublicationYear'] ?>" type="number" min="0" class="form-control">
-                                    <span class="form-message"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label for="language" class="form-label">Language</label>
-                                    <input id="language" name="Language" value="<?php echo $fetch_products_edit['Language'] ?>" type="text" class="form-control">
-                                    <span class="form-message"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label for="cover" class="form-label">Cover</label>
-                                    <input id="cover" name="CoverType" value="<?php echo $fetch_products_edit['CoverType'] ?>" type="text" class="form-control">
-                                    <span class="form-message"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label for="quanitiy" class="form-label">Quantity</label>
-                                    <input id="quanitiy" name="Quantity" value="<?php echo $fetch_products_edit['Quantity'] ?>" type="number" min="0" class="form-control">
-                                    <span class="form-message"></span>
-                                </div>
-                                <div class="form-group">
-                                    <label for="mo-ta" class="form-label">Mô tả</label>
-                                    <textarea class="product-desc" id="mo-ta" value="<?php echo $fetch_products_edit['Description'] ?>" name="Description" placeholder="Nhập mô tả sách..."></textarea>
-                                    <span class="form-message"></span>
-                                </div>
-                                <button type="submit" class="form-submit btn-add-product-form add-product-e" id="add-product-button" name="add_product">
-                                    <i class="fa fa-plus"></i>
-                                    <span>THÊM SÁCH</span>
+                        </div>
+                        <div class="modal-content-right">
+                            <div class="form-group">
+                                <label for="ten-mon" class="form-label">Tên sách</label>
+                                <input id="ten-mon" name="Name" type="text" placeholder="Nhập tên sách" value="<?php echo $fetch_products_edit['Name'] ?>" class="form-control">
+                                <span class="form-message"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="category" class="form-label">Chọn thể loại</label>
+                                <select name="category" id="chon-mon">
+                                    <option>Tiểu thuyết</option>
+                                    <option>Truyện ngắn</option>
+                                    <option>Kinh dị</option>
+                                    <option>Self Help</option>
+                                </select>
+                                <span class="form-message"></span>
+                            </div>
+                            <!-- Price -->
+                            <div class="form-group">
+                                <label for="gia-moi" class="form-label">Price</label>
+                                <input id="gia-moi" name="Price" type="text" placeholder="Nhập giá bán" value="<?php echo $fetch_products_edit['Price'] ?>" class="form-control">
+                                <span class="form-message"></span>
+                            </div>
+                            <!-- Author -->
+                            <div class="form-group">
+                                <label for="author" class="form-label">Author</label>
+                                <input id="author" name="Author" type="text" value="<?php echo $fetch_products_edit['MainAuthor'] ?>" class="form-control">
+                                <span class="form-message"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="publisher" class="form-label">Publisher</label>
+                                <input id="publisher" name="Publisher" value="<?php echo $fetch_products_edit['Publisher'] ?>" type="text" class="form-control">
+                                <span class="form-message"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="pub-year" class="form-label">PublicationYear</label>
+                                <input id="pub-year" name="PublicationYear" value="<?php echo $fetch_products_edit['PublicationYear'] ?>" type="number" min="0" class="form-control">
+                                <span class="form-message"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="language" class="form-label">Language</label>
+                                <input id="language" name="Language" value="<?php echo $fetch_products_edit['Language'] ?>" type="text" class="form-control">
+                                <span class="form-message"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="cover" class="form-label">Cover</label>
+                                <input id="cover" name="CoverType" value="<?php echo $fetch_products_edit['CoverType'] ?>" type="text" class="form-control">
+                                <span class="form-message"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="quanitiy" class="form-label">Quantity</label>
+                                <input id="quanitiy" name="Quantity" value="<?php echo $fetch_products_edit['Quantity'] ?>" type="number" min="0" class="form-control">
+                                <span class="form-message"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="mo-ta" class="form-label">Mô tả</label>
+                                <textarea class="product-desc" id="mo-ta" value="<?php echo $fetch_products_edit['Description'] ?>" name="Description" placeholder="Nhập mô tả sách..."></textarea>
+                                <span class="form-message"></span>
+                            </div>
+                            <button type="submit" class="form-submit btn-add-product-form add-product-e" id="add-product-button" name="add_product">
+                                <i class="fa fa-plus"></i>
+                                <span>THÊM SÁCH</span>
+                            </button>
+                            <a href="admin.php?update=<?php echo $fetch_products['Id']; ?>">
+                                <button class="form-submit btn-update-product-form edit-product-e" id="update-product-button">
+                                    <i class="fa fa-floppy-o"></i>
+                                    <span>LƯU THAY ĐỔI</span>
                                 </button>
-                                <a href="admin.php?update=<?php echo $fetch_products['Id']; ?>">
-                                    <button class="form-submit btn-update-product-form edit-product-e" id="update-product-button">
-                                        <i class="fa fa-floppy-o"></i>
-                                        <span>LƯU THAY ĐỔI</span>
-                                    </button>
-                                    
-                                </a>
-                            </div>
-                        </form>
-                    </div>
+
+                            </a>
+                        </div>
+                    </form>
                 </div>
             </div>
-            <script src="js/admin.js"></script>
+        </div>
+        <script src="js/admin.js"></script>
 </body>
 
 </html>
