@@ -189,16 +189,14 @@ if (isset($_GET['unblock'])) {
 
                             <p class="order-statistical-item-content-desc">Sản phẩm được bán nhiều nhất</p>
                             <?php $most_sold = mysqli_query($conn, "SELECT p.Name AS ProductName, SUM(db.ProductAmount) AS TotalSold FROM detailsbill db INNER JOIN products p ON db.IdProduct = p.Id GROUP BY db.IdProduct ORDER BY TotalSold DESC LIMIT 3");
-                            if(mysqli_num_rows($most_sold) > 0)
-                            {
+                            if (mysqli_num_rows($most_sold) > 0) {
                                 $i = 1;
-                                while ($fetch_sold = mysqli_fetch_assoc($most_sold)) 
-                                {
-                                    echo '<h4 class="order-statistical-item-content-h">#'.$i++.' '.$fetch_sold['name'].'</h4>';
+                                while ($fetch_sold = mysqli_fetch_assoc($most_sold)) {
+                                    echo '<h4 class="order-statistical-item-content-h">#' . $i++ . ' ' . $fetch_sold['name'] . '</h4>';
                                 }
                             }
                             ?>
-                        </h4>
+                            </h4>
                         </div>
                         <div class="order-statistical-item-icon">
                             <i class="fa-light fa-salad"></i>
@@ -227,14 +225,33 @@ if (isset($_GET['unblock'])) {
                     <table width="100%">
                         <thead>
                             <tr>
-                                <td>STT</td>
-                                <td>Tên món</td>
-                                <td>Số lượng bán</td>
+                                <td>Khách hàng</td>
+                                <td>Ngày đặt hàng</td>
+                                <td>Sản phẩm</td>
                                 <td>Doanh thu</td>
                                 <td></td>
                             </tr>
                         </thead>
                         <tbody id="showTk">
+                            <?php
+                            $select_orders = mysqli_query($conn, "SELECT * FROM orders") or die('query failed');
+                            if (mysqli_num_rows($select_orders) > 0) {
+                                while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                            ?>
+                                    <tr>
+                                        <td><?php echo $fetch_orders['name'] ?></td>
+                                        <td><?php echo $fetch_orders['placed_on'] ?></td>
+                                        <td><?php echo $fetch_orders['total_products'] ?></td>
+                                        <td><?php echo $fetch_orders['total_price'] ?>$</td>
+                                        <td class="control">
+                                            <form method="post">
+                                                <a style="color:black" href="admin_orderdetail.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Chi tiết</a>
+                                            </form>
+                                    <?php
+                                }
+                            }
+
+                                    ?>
                         </tbody>
                     </table>
                 </div>
