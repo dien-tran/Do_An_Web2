@@ -59,28 +59,7 @@ if (!isset($user_id)) {
       </div>
    </section>
 
-   <!-- <div class="about-benefit">
-      <div>
-         <img src="https://www.aimgroupinternational.com/build/assets/why-choose-us/dedicated-teams.png" alt="dedicated-teams_img">
-         <p>Dedicated teams</p>
-      </div>
-      <div>
-         <img src="https://www.aimgroupinternational.com/build/assets/why-choose-us/true-partners.png" alt="true-partners_img">
-         <p>True partners</p>
-      </div>
-      <div>
-         <img src="https://www.aimgroupinternational.com/build/assets/why-choose-us/global-know-how.png" alt="global-know-how_img">
-         <p>Global know-how</p>
-      </div>
-      <div>
-         <img src="https://www.aimgroupinternational.com/build/assets/why-choose-us/focus-on-innovation.png" alt="focus-on-innovation_img">
-         <p>Focus on innovation</p>
-      </div>
-      <div>
-         <img src="https://www.aimgroupinternational.com/build/assets/why-choose-us/respect-clients.png" alt="respect-clients_img">
-         <p>Respect customers</p>
-      </div>
-   </div> -->
+   
 
    <section class="about">
       <div class="flex">
@@ -96,32 +75,7 @@ if (!isset($user_id)) {
       </div>
    </section>
 
-   <!-- <div class="about-benefit">
-      <div>
-         <img src="https://www.aimgroupinternational.com/build/assets/why-choose-us/research-analysis.png" alt="research-analysis_img">
-         <p>Reasearch & Analysis</p>
-      </div>
-      <div>
-         <img src="https://www.aimgroupinternational.com/build/assets/why-choose-us/negotiation-power.png" alt="negotiation-power_img">
-         <p>Negotiation power</p>
-      </div>
-      <div>
-         <img src="https://www.aimgroupinternational.com/build/assets/why-choose-us/creative-solution.png" alt="creative-solution_img">
-         <p>Creative and innovative solutions</p>
-      </div>
-      <div>
-         <img src="https://www.aimgroupinternational.com/build/assets/why-choose-us/technological-tools.png" alt="technological-tools_img">
-         <p>Top technological tools</p>
-      </div>
-      <div>
-         <img src="https://www.aimgroupinternational.com/build/assets/why-choose-us/flexibility-efficient-solutions.png" alt="flexibility-efficient-solutions_img">
-         <p>Flexibility with effective</p>
-      </div>
-      <div>
-         <img src="https://www.aimgroupinternational.com/build/assets/why-choose-us/ease-work.png" alt="ease-work_img">
-         <p>Transparency and ease</p>
-      </div>
-   </div> -->
+
 
    <section class="about">
       <div class="flex">
@@ -131,105 +85,10 @@ if (!isset($user_id)) {
          <div class="content">
             <h3>about us</h3>
             <p>&bull; Massive business volume for suppliers with profitable contracts.</p>
-            <!-- <a href="about.php" class="btn">read more</a> -->
-         <!-- </div>
-      </div> -->
+            
    </section>
 
-   <section class="reviews">
-      <h1 class="title">client's reviews</h1>
-      <div class="box-container">
-         <div class="box">
-            <div class="review-infor">
-               <img src="https://scontent.fsgn2-5.fna.fbcdn.net/v/t1.6435-9/83979562_1585954714895087_6401964817036345344_n.jpg?_nc_cat=102&ccb=1-6&_nc_sid=174925&_nc_ohc=p7UrNJk3O4sAX-kVq4E&_nc_ht=scontent.fsgn2-5.fna&oh=00_AT8DVxDK0qXrUYVetgE1Kc1NJ4NHewozqcFt_g0eBvsu1A&oe=62ABE3D8" alt="review_img_1">
-               <h3>Danh Vo</h3>
-               <div class="stars">
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-               </div>
-            </div>
-            <p>Wonderful book for kids. My grandkids love it.</p>
-         </div>
-
-         <div class="box">
-            <div class="review-infor">
-               <img src="https://scontent.fsgn2-6.fna.fbcdn.net/v/t39.30808-6/270012528_3144488045830078_518552516310324421_n.jpg?_nc_cat=110&ccb=1-6&_nc_sid=174925&_nc_ohc=SX8_BepqJZoAX-l8IIk&_nc_ht=scontent.fsgn2-6.fna&oh=00_AT9EpmidHI0EJRqtjNDGKO8SSpUplJKau7ZaUApP5JR7FA&oe=62897475" alt="review_img_2">
-               <h3>Anh Ngo</h3>
-               <div class="stars">
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-               </div>
-            </div>
-            <p>I read the whole thing on the exercise bike and couldn't put it down.</p>
-         </div>
-
-         <div class="box">
-            <div class="review-infor">
-               <img src="./public/about/review-3.png" alt="review_img_3">
-               <h3>Duy Khang</h3>
-               <div class="stars">
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-               </div>
-            </div>
-            <p>Enjoyable, easy read. I smiled and hooked. Definitely read this one.</p>
-         </div>
-
-         <div class="box">
-            <div class="review-infor">
-            <img src="./public/about/review-4.png" alt="review_img_4">
-               <h3>Phú Thành</h3>
-               <div class="stars">
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-               </div>
-            </div>
-            <p>Well worth the reader's time and a book to make you smile.</p>
-         </div>
-
-         <div class="box">
-            <div class="review-infor">
-            <img src="./public/about/review-5.png" alt="review_img_5">
-               <h3>Vinh Nguyễn</h3>
-               <div class="stars">
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-               </div>
-            </div>
-            <p>This book took your interest and kept going until the last page.</p>
-         </div>
-
-         <div class="box">
-            <div class="review-infor">
-            <img src="./public/about/review-6.png" alt="review_img_6">
-               <h3>Phát Trịnh</h3>
-               <div class="stars">
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-               </div>
-            </div>
-            <p>Wow! This was a really good book. Tense and exciting.</p>
-         </div>
-      </div>
-   </section>
+   
 
 
    <?php include 'footer.php'; ?>
