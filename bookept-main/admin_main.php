@@ -109,31 +109,31 @@ if (isset($_GET['unblock'])) {
                     <li id="main" class="sidebar-list-item tab-content active">
                         <a href="admin_main.php" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-home"></i></div>
-                            <div class="hidden-sidebar">Trang tổng quan</div>
+                            <div class="hidden-sidebar">Over view </div>
                         </a>
                     </li>
                     <li class="sidebar-list-item tab-content">
                         <a href="admin_products.php" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-book"></i></div>
-                            <div class="hidden-sidebar">Sản phẩm</div>
+                            <div class="hidden-sidebar">Products</div>
                         </a>
                     </li>
                     <li id="customers" class="sidebar-list-item tab-content">
                         <a href="admin_users.php" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-group"></i></div>
-                            <div class="hidden-sidebar">Khách hàng</div>
+                            <div class="hidden-sidebar">Customer</div>
                         </a>
                     </li>
                     <li class="sidebar-list-item tab-content">
                         <a href="admin_orders.php" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-shopping-cart"></i></div>
-                            <div class="hidden-sidebar">Đơn hàng</div>
+                            <div class="hidden-sidebar">Order</div>
                         </a>
                     </li>
                     <li class="sidebar-list-item tab-content">
                         <a href="admin_stats.php" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-bar-chart"></i></div>
-                            <div class="hidden-sidebar">Thống kê</div>
+                            <div class="hidden-sidebar">Statistical</div>
                         </a>
                     </li>
                 </ul>
@@ -143,7 +143,7 @@ if (isset($_GET['unblock'])) {
                     <li class="sidebar-list-item user-logout">
                         <a href="#" class="sidebar-link" id="logout-acc">
                             <div class="sidebar-icon"><i class="fa fa-arrow-right"></i></div>
-                            <div class="hidden-sidebar" onclick="redirectToLogout()">Đăng xuất</div>
+                            <div class="hidden-sidebar" onclick="redirectToLogout()">Log out</div>
                             <script>
                                 function redirectToLogout() {
                                     window.location.href = "logout_admin.php";
@@ -156,7 +156,7 @@ if (isset($_GET['unblock'])) {
         </aside>
         <main class="content">
             <div class="section active">
-                <h1 class="page-title">Trang tổng quát của cửa hàng Goodbookclub</h1>
+                <h1 class="page-title">Over view of Bookept store</h1>
                 <div class="cards">
                     <div class="card-single">
                         <div class="box">
