@@ -139,7 +139,7 @@ $offset = ($current_page - 1) * $products_per_page;
                             </div>
                         </a>
                         <div class="details">
-                            <div class="name" style="font-size: 18px;">
+                            <div class="name" style="font-size: 14px;">
                                 <img src="./public/card/name.svg" alt="name_icon">
                                 <?php echo $fetch_products['Name']; ?>
                             </div>

@@ -117,6 +117,11 @@ if (isset($_POST["bill_details"])) {
             <td><label>Ship date:</label></td>
             <td><input type="text" value="<?php echo $delivery_date; ?>" class="box" readonly></td>
           </tr>
+
+          <tr>
+            <td><label>Status:</label></td>
+            <td><input type="text" value="<?php echo $order_info['payment_status']; ?>" class="box" readonly></td>
+          </tr>
         </table>
         <?php
         // Kiểm tra xem có bản ghi nào trong bảng bill có các giá trị tương tự hay không
@@ -125,14 +130,18 @@ if (isset($_POST["bill_details"])) {
                    AND NameUser = '{$check['name']}' 
                    AND ShipDate = '$delivery_date' 
                    AND TotalPay = {$order_info['total_price']} 
-                   AND MethodPayment = '{$order_info['method']}'";
+                   AND MethodPayment = '{$order_info['method']}'
+                   AND BillStatus = '{$order_info['payment_status']}'";
+                   
+
 
         $result_check_bill = mysqli_query($conn, $sql_check_bill);
 
         // Nếu không có bản ghi nào có các giá trị tương tự, thêm bản ghi mới vào bảng bill
         if (mysqli_num_rows($result_check_bill) == 0) {
-          $sql_insert_bill = "INSERT INTO bill (IdUser, NameUser, ShipDate, TotalPay, MethodPayment) 
-                        VALUES ('$user_id', '{$check['name']}', '$delivery_date', {$order_info['total_price']}, '{$order_info['method']}')";
+          $sql_insert_bill = "INSERT INTO bill (IdUser, NameUser, ShipDate, TotalPay, MethodPayment, BillStatus) 
+                    VALUES ('$user_id', '{$check['name']}', '$delivery_date', {$order_info['total_price']}, '{$order_info['method']}', '{$order_info['payment_status']}')";
+
 
           if (mysqli_query($conn, $sql_insert_bill)) {
             echo '<span style="color: white;">Bill inserted successfully.</span>';
