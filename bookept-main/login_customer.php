@@ -104,7 +104,7 @@ if (isset($_POST['submit'])) // kiểm tra giá trị tồn tại và có ko nul
          }
          else
          {
-            $message[] = 'Tài khoản đã bị khóa . Vui lòng gọi cho tổng đài !';
+            $message[] = 'The account has been locked. Please call the hotline';
          }
                  
       }
@@ -117,6 +117,7 @@ if (isset($_POST['submit'])) // kiểm tra giá trị tồn tại và có ko nul
         //         alert("Email hoặc mật khẩu không chính xác!");
         //     </script>
          <?php */ else {
-      echo "<script>alert('Email hoặc tài khoản không chính xác!');</script>";
+      echo "<script>alert('Incorrect email or account.');</script>";
+
    }
 } ?>
