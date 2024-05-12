@@ -11,7 +11,6 @@ if (isset($_POST['submit'])) {
    $user_type = $_POST['user_type'];
 
    $select_users = mysqli_query($conn, "SELECT * FROM `users` WHERE email = '$email' AND password = '$pass'") or die('query failed');
-
    if (mysqli_num_rows($select_users) > 0) {
       $message[] = 'user already exist!';
    } else {

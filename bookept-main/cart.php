@@ -40,7 +40,7 @@ if(isset($_POST['update_cart'])){
       } else {
          // Trừ số lượng sản phẩm nếu sự khác biệt là số dương
          $new_quantity_after_update = $current_product_quantity - $quantity_difference_after_update + ($cart_quantity);
-         mysqli_query($conn, "UPDATE products SET SoldYet = 'Yes' WHERE Name = '$product_name'") or die('query failed');
+
       }
 
       // Cập nhật số lượng mới vào bảng products
