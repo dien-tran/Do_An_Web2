@@ -74,7 +74,8 @@ if (isset($_GET['delete'])) // kiểm tra xem có tồn tại tham số 'delete'
         echo $fetch_delete;
         mysqli_query($conn, "DELETE FROM products WHERE id = '$delete_id'") or die('query failed');
     } elseif ($fetch_delete['SoldYet'] == "Yes") {
-        mysqli_query($conn, "UPDATE products SET STATUS = 0");
+        echo $fetch_delete['SoldYet'];
+        mysqli_query($conn, "UPDATE products SET STATUS = 0 WHERE id = '$delete_id'");
     } else
         mysqli_query($conn, "DELETE FROM products WHERE id = '$delete_id'") or die('query failed');
 }
