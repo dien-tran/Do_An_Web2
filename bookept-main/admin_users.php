@@ -194,45 +194,56 @@ if (isset($_GET['unblock'])) {
                </div>
             </div>
             <?php
-               // Define default SQL query to fetch all users
-               $sql_tk = "SELECT * FROM users";
-               // Default SQL query to fetch all users      
-               $sql_search = mysqli_query($conn, $sql_tk);
-               $products_per_page = 2; // số lượng hiển thị trên 1 trang
-               $sql_page = mysqli_query($conn, "SELECT * FROM `users`");
+            $search_keyword = isset($_GET['text_search']) ? $_GET['text_search'] : '';
+            // Define default SQL query to fetch all users
+            $sql_tk = "SELECT * FROM users WHERE user_type = 'user' AND Name LIKE '%$search_keyword%'";
+            // Default SQL query to fetch all users      
+            // $sql_search = mysqli_query($conn, $sql_tk);
+            $products_per_page = 8; // số lượng hiển thị trên 1 trang
+            $total_users = mysqli_num_rows(mysqli_query($conn, $sql_tk));
+            $total_pages = ceil($total_users / $products_per_page);
+            $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
+            // Tính offset (bắt đầu lấy từ vị trí nào trong cơ sở dữ liệu)
+            $offset = ($current_page - 1) * $products_per_page;
+            // $select_products = mysqli_query($conn, "SELECT * FROM `products` LIMIT $offset, $products_per_page") or die('query failed');
+            $select_products = mysqli_query($conn, $sql_tk . " LIMIT $offset, $products_per_page") or die('query failed');
+            $stt = 1;
 
-               // Check if search form is submitted
-               if (isset($_GET['submit_search'])) 
-               {
-                  $search = $_GET['text_search'];
-                  // Modify the SQL query to include search functionality
-                   $sql_tk .= " WHERE name LIKE '%" . $search . "%'";
-                   $sql_search = mysqli_query($conn, $sql_tk);
-                  $row_count = mysqli_num_rows($sql_search);
-                  $max = ceil($row_count / $products_per_page); // Tính lại số lượng trang dựa trên kết quả tìm kiếm
 
-               }
-               else
-               {
-                  $row_count = mysqli_num_rows($sql_page);
-                   $max = ceil($row_count / $products_per_page); // tìm tổng số lượng trang
+            // $sql_page = mysqli_query($conn, "SELECT * FROM `users`");
 
-               }
-               // Calculate pagination variables
-               $start = 1;
-                  // Kiểm tra và lấy giá trị của tham số 'page'
-               $pagee = isset($_GET['page']) ? $_GET['page'] : 1;
-               if ($pagee == "" || $pagee == 1) 
-               {
-                   $begin = 0;
-               } 
-               else 
-               {
-                  $begin = ($pagee * $products_per_page) - $products_per_page;
-               }
-             // Modify the SQL query to include pagination
-               $sql_tk .= " LIMIT $begin, $products_per_page";
-                $sql_search = mysqli_query($conn, $sql_tk);
+            // Check if search form is submitted
+            // if (isset($_GET['submit_search'])) 
+            // {
+            //    $search = $_GET['text_search'];
+            //    // Modify the SQL query to include search functionality
+            //     $sql_tk .= " WHERE name LIKE '%" . $search . "%'";
+            //     $sql_search = mysqli_query($conn, $sql_tk);
+            //    $row_count = mysqli_num_rows($sql_search);
+            //    $max = ceil($row_count / $products_per_page); // Tính lại số lượng trang dựa trên kết quả tìm kiếm
+
+            // }
+            // else
+            // {
+            //    $row_count = mysqli_num_rows($sql_page);
+            //     $max = ceil($row_count / $products_per_page); // tìm tổng số lượng trang
+
+            // }
+            // Calculate pagination variables
+            //    $start = 1;
+            //       // Kiểm tra và lấy giá trị của tham số 'page'
+            //    $pagee = isset($_GET['page']) ? $_GET['page'] : 1;
+            //    if ($pagee == "" || $pagee == 1) 
+            //    {
+            //        $begin = 0;
+            //    } 
+            //    else 
+            //    {
+            //       $begin = ($pagee * $products_per_page) - $products_per_page;
+            //    }
+            //  // Modify the SQL query to include pagination
+            //    $sql_tk .= " LIMIT $begin, $products_per_page";
+            //     $sql_search = mysqli_query($conn, $sql_tk);
             ?>
 
             <div class="table">
@@ -249,113 +260,113 @@ if (isset($_GET['unblock'])) {
                   </thead>
                   <tbody id="show-user">
                      <?php
-                     $stt = 1;
-                     while ($fetch_users = mysqli_fetch_assoc($sql_search))
-                     {
-                        if ($fetch_users['user_type']!='admin')
-                     {   
+                     
+                     if(mysqli_num_rows($select_products))
+                     while ($fetch_users = mysqli_fetch_assoc($select_products)) {
+                        if ($fetch_users['user_type'] === "user") {
+
                      ?>
-                        <tr>
-                           <td><?php echo $stt ?></td>
-                           <td><?php echo $fetch_users['name']; ?></td>
-                           <td><?php echo $fetch_users['phone_number']; ?></td>
-                           <td><?php echo $fetch_users['date_time']; ?></td>
-                           <td>
-                                                <form method="GET">
-                                                <?php 
-                                                    if ($fetch_users['status'] == 1) 
-                                                    { 
-                                                        ?>
-                                                        <a id="btn-add-user" class="btn-control-large" type="submit" name="delete" href="admin_users.php?delete=<?php echo $fetch_users['id']; ?>" onclick="return confirm('delete this user?');" class="delete-btn">Xóa</a>
-                                                        <a id="btn-add-user" class="btn-control-large" type="submit" name="block" href="admin_users.php?block=<?php echo $fetch_users['id']; ?>" onclick="return confirm('Block this user?');" class="delete-btn">Chặn</a>
-                                                        <?php 
-                                                    } 
-                                                    else 
-                                                    { 
-                                                        ?>
-                                                        <a id="btn-add-user" class="btn-control-large" type="submit" name="delete" href="admin_users.php?delete=<?php echo $fetch_users['id']; ?>" onclick="return confirm('delete this user?');" class="delete-btn">Xóa</a>
-                                                        <a id="btn-add-user" class="btn-control-large" type="submit" name="unblock" href="admin_users.php?unblock=<?php echo $fetch_users['id']; ?>" onclick="return confirm('Unblock this user?');" class="delete-btn">Gỡ chặn</a>
-                                                        <?php 
-                                                    } 
-                                                ?>
-                                            </td>
-                        </tr>
+                           <tr>
+
+                              <td><?php echo $stt ?></td>
+                              <?php $stt++ ?>
+                              <td><?php echo $fetch_users['name']; ?></td>
+                              <td><?php echo $fetch_users['phone_number']; ?></td>
+                              <td><?php echo $fetch_users['date_time']; ?></td>
+                              <td>
+                                 <form method="GET">
+                                    <?php
+                                    if ($fetch_users['status'] == 1) {
+                                    ?>
+                                       <a id="btn-add-user" class="btn-control-large" type="submit" name="delete" href="admin_users.php?delete=<?php echo $fetch_users['id']; ?>" onclick="return confirm('delete this user?');" class="delete-btn">Xóa</a>
+                                       <a id="btn-add-user" class="btn-control-large" type="submit" name="block" href="admin_users.php?block=<?php echo $fetch_users['id']; ?>" onclick="return confirm('Block this user?');" class="delete-btn">Chặn</a>
+                                    <?php
+                                    } else {
+                                    ?>
+                                       <a id="btn-add-user" class="btn-control-large" type="submit" name="delete" href="admin_users.php?delete=<?php echo $fetch_users['id']; ?>" onclick="return confirm('delete this user?');" class="delete-btn">Xóa</a>
+                                       <a id="btn-add-user" class="btn-control-large" type="submit" name="unblock" href="admin_users.php?unblock=<?php echo $fetch_users['id']; ?>" onclick="return confirm('Unblock this user?');" class="delete-btn">Gỡ chặn</a>
+                                    <?php
+                                    }
+                                    ?>
+                              </td>
+                           </tr>
                      <?php
-                     }
-                        $stt++;
+                        }
                      }
                      ?>
                   </tbody>
                </table>
             </div>
             <!-- </div> -->
-            
-<div class="pagination">
-   <p>Page:</p>
-   <ul class="list_page">
-      <?php
-         for ($i = $start; $i <= $max; $i++) {
-          
-      ?>
-      <li><a href="admin_users.php?page=<?php echo $i ?>" class="page-link "><?php echo $i ?></a></li>
-      <?php
-         }
-      ?>
-   </ul>
-</div>
 
-<style>
-   .pagination {
-      text-align: center;
-      margin-top: 20px;
-   }
-   
-   .pagination p {
-      margin: 0;
-      font-weight: bold;
-      text-align: center;
-   }
-   
-   .list_page {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      list-style-type: none;
-      padding: 0;
-      margin: 0;
-   }
-   
-   .page-link {
-      display: inline-block;
-      padding: 8px 12px;
-      margin: 2px;
-      background-color: #f2f2f2;
-      color: #333;
-      text-decoration: none;
-      border-radius: 4px;
-      transition: background-color 0.3s ease;
-   }
-   
-   .page-link:hover {
-      background-color: #ddd;
-   }
-   
-   .page-link.active {
-      background-color: #007bff;
-      color: #fff;
-   }
-</style>
-        
+            <div class="pagination">
+               <p>Page:</p>
+               <ul class="list_page">
+                  <?php
+                  for ($page = 1; $page <= $total_pages; $page++) {
+                     // Kiểm tra xem có từ khóa tìm kiếm hay không
+                     if (!empty($search_keyword)) {
+                         echo '<li><a class="page-link" href="admin_users.php?page=' . $page . '&search=' . $search_keyword . '">' . $page . '</a></li>';
+                     } else {
+                         echo '<li><a class="page-link" href="admin_users.php?page=' . $page . '">' . $page . '</a></li>';
+                     }
+                 }
+                  ?>
+               </ul>
+            </div>
+
+            <style>
+               .pagination {
+                  text-align: center;
+                  margin-top: 20px;
+               }
+
+               .pagination p {
+                  margin: 0;
+                  font-weight: bold;
+                  text-align: center;
+               }
+
+               .list_page {
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  list-style-type: none;
+                  padding: 0;
+                  margin: 0;
+               }
+
+               .page-link {
+                  display: inline-block;
+                  padding: 8px 12px;
+                  margin: 2px;
+                  background-color: #f2f2f2;
+                  color: #333;
+                  text-decoration: none;
+                  border-radius: 4px;
+                  transition: background-color 0.3s ease;
+               }
+
+               .page-link:hover {
+                  background-color: #ddd;
+               }
+
+               .page-link.active {
+                  background-color: #007bff;
+                  color: #fff;
+               }
+            </style>
+
       </main>
       <div id="toast"></div>
       <script src="js/admin.js"></script>
 </body>
 
 </html>
-         </div>
-      </main>
-      <div id="toast"></div>
-      <script src="js/admin.js"></script>
+</div>
+</main>
+<div id="toast"></div>
+<script src="js/admin.js"></script>
 </body>
 
 </html>

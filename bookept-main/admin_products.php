@@ -189,7 +189,7 @@ if (isset($_GET['display'])) {
 
                     // Thêm điều kiện tìm kiếm vào truy vấn SQL
                     $sql_query = "SELECT * FROM products WHERE Name LIKE '%$search_keyword%'";
-                    $products_per_page = 2;
+                    $products_per_page = 8;
                     // Tính số trang dựa trên tổng số sản phẩm và số sản phẩm mỗi trang
                     $total_products = mysqli_num_rows(mysqli_query($conn, $sql_query));
                     $total_pages = ceil($total_products / $products_per_page);
