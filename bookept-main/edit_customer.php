@@ -16,12 +16,20 @@ if (isset($_POST['submit'])) {
 
     // Check if phone number is set and not empty in $_POST
 
-
+    $name = mysqli_real_escape_string($conn, $_POST['name']);
+    $email = mysqli_real_escape_string($conn, $_POST['email']);
     // Check if other form fields are set and not empty in $_POST
     $success = false; // Biến cờ để kiểm tra xem có truy vấn SQL thành công không
 
     $queries = array(); // Mảng để lưu các truy vấn SQL
-
+    if ($name != $check['name']) {
+      $query[] = "UPDATE `users` SET `name` = '$name' WHERE id = $user_id";
+      $_SESSION['name'] = $name;
+    } 
+    if ($email != $check['email']) {
+      $query[] = "UPDATE `users` SET `email` = '$email' WHERE id = $user_id";
+      $_SESSION['email']=$email;
+    }
     if (isset($_POST['phone_number'])) {
         $phone = mysqli_real_escape_string($conn, $_POST['phone_number']);
 

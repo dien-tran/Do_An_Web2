@@ -100,7 +100,7 @@ if (isset($_GET['unblock'])) {
    <div class="container">
       <aside class="sidebar open">
          <div class="top-sidebar">
-            <a href="admin_main.php" class="channel-logo"><img src="image/homelogo.jpeg" alt="Channel Logo"></a>
+            <a href="admin_main.php" class="channel-logo"><img src="image/Logo.jpg" alt="Channel Logo"></a>
             <div class="hidden-sidebar your-channel"><img src="" style="height: 30px;" alt="">
             </div>
          </div>
@@ -280,6 +280,8 @@ if (isset($_GET['unblock'])) {
                                     ?>
                                        <a id="btn-add-user" class="btn-control-large" type="submit" name="delete" href="admin_users.php?delete=<?php echo $fetch_users['id']; ?>" onclick="return confirm('delete this user?');" class="delete-btn">Xóa</a>
                                        <a id="btn-add-user" class="btn-control-large" type="submit" name="block" href="admin_users.php?block=<?php echo $fetch_users['id']; ?>" onclick="return confirm('Block this user?');" class="delete-btn">Chặn</a>
+                                       <a id="btn-edit-user" class="btn-control-large delete-btn" data-id="<?php echo $fetch_users['id']; ?>">Edit</a>
+
                                     <?php
                                     } else {
                                     ?>
@@ -362,7 +364,20 @@ if (isset($_GET['unblock'])) {
       <script src="js/admin.js"></script>
 </body>
 
-</html>
+</html><script>
+document.getElementById("btn-edit-user").addEventListener("click", function() {
+    // Lấy ID của user từ thuộc tính 'data-id' của thẻ <a>
+    var userId = this.getAttribute("data-id");
+    // Kiểm tra xem userId có tồn tại không
+    if (userId !== null) {
+        // Nếu tồn tại, chuyển hướng người dùng đến trang edit_user.php với ID của user
+        window.location.href = "edit_user.php?id=" + userId;
+    } else {
+        // Nếu không tồn tại, hiển thị thông báo hoặc xử lý phù hợp
+        console.log("Không tìm thấy ID của user.");
+    }
+});
+</script>
 </div>
 </main>
 <div id="toast"></div>
