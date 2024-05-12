@@ -4,71 +4,10 @@ session_start();
 $admin_id = $_SESSION['admin_id'];
 
 if (!isset($admin_id)) {
-    header('Location:login.php');
+    header('Location:login_admin.php');
     exit();
 }
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Lấy dữ liệu từ form
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $phone_number = $_POST['phone_number'];
-    $insert_query = "INSERT INTO `users` (name, email, password, user_type, phone_number) VALUES ('$name', '$email', '$password', '$user_type', '$phone_number')";
-    header('Location: admin.php');
-    exit();
-}
-//search
-// if (isset($_GET['submit_search'])) 
-// {
-//     $search=$_GET['text_search'];
-//     $sql_tk="SELECT * FROM `users` WHERE `name` LIKE '%" . $search . "%'";
-//     $sql_search= mysqli_query($conn,$sql_tk);
-// }
-// else
-// {
-//     $search='';
-//     $sql_tk="SELECT* FROM `users` limit 5";
-//     $sql_search= mysqli_query($conn,$sql_tk);
 
-// }
-// xóa 
-
-if (isset($_GET['delete'])) // kiểm tra xem có tồn tại tham số 'delete' trong mảng $_GET hay không nếu có gì có id
-{
-    $delete_id = $_GET['delete']; // nếu có thì lấy id 
-    mysqli_query($conn, "DELETE FROM `users` WHERE id = '$delete_id'") or die('query failed');
-}
-if (isset($_GET['block'])) {
-    $block_id = $_GET['block'];
-    $sql_block = mysqli_query($conn, "SELECT * FROM  `users` WHERE id=$block_id");
-    if (mysqli_num_rows($sql_block) > 0) {
-        $query = "UPDATE `users` SET `status` = 0 WHERE id = $block_id";
-    }
-}
-if (isset($_GET['block'])) {
-    $block_id = $_GET['block'];
-    $sql_block = mysqli_query($conn, "SELECT * FROM  `users` WHERE id=$block_id");
-    if (mysqli_num_rows($sql_block) > 0) {
-        $query = "UPDATE `users` SET `status` = 0 WHERE id = $block_id";
-        if (mysqli_query($conn, $query)) {
-            echo "<script>alert('Người dùng đã được chặn.');</script>";
-        } else {
-            echo "Cập nhật trạng thái thất bại: " . mysqli_error($conn);
-        }
-    }
-}
-if (isset($_GET['unblock'])) {
-    $unblock_id = $_GET['unblock'];
-    $sql_unblock = mysqli_query($conn, "SELECT * FROM  `users` WHERE id=$unblock_id");
-    if (mysqli_num_rows($sql_unblock) > 0) {
-        $query = "UPDATE `users` SET `status` = 1 WHERE id = $unblock_id";
-        if (mysqli_query($conn, $query)) {
-            echo "<script>alert('Người dùng đã gỡ chặn.');</script>";
-        } else {
-            echo "Cập nhật trạng thái thất bại: " . mysqli_error($conn);
-        }
-    }
-}
 
 
 ?>
@@ -168,15 +107,16 @@ if (isset($_GET['unblock'])) {
                         </form>
                     </div>
                     <div class="admin-control-right">
-                        <form action="" class="fillter-date">
+                        <form method="post" class="fillter-date">
                             <div>
-                                <label for="time-start">Từ</label>
-                                <input type="date" class="form-control-date" id="time-start-tk" onchange="thongKe()">
+                                <label for="start_date">Từ ngày:</label>
+                                <input class="form-control-date" type="date" id="start_date" name="start_date">
                             </div>
                             <div>
-                                <label for="time-end">Đến</label>
-                                <input type="date" class="form-control-date" id="time-end-tk" onchange="thongKe()">
+                                <label for="end_date">Đến ngày:</label>
+                                <input class="form-control-date" type="date" id="end_date" name="end_date">
                             </div>
+                            <button type="submit" name="submit">Search</button>
                         </form>
                         <button class="btn-reset-order" onclick="thongKe(1)"><i class="fa fa-arrow-circle-up"></i></i></button>
                         <button class="btn-reset-order" onclick="thongKe(2)"><i class="fa fa-arrow-circle-o-down"></i></button>
@@ -205,7 +145,8 @@ if (isset($_GET['unblock'])) {
                     <div class="order-statistical-item">
                         <div class="order-statistical-item-content">
                             <p class="order-statistical-item-content-desc">Số lượng bán ra</p>
-                            <h4 class="order-statistical-item-content-h" id="quantity-order"></h4>
+                            <h4 class="order-statistical-item-content-h" id="quantity-order">
+                            </h4>
                         </div>
                         <div class="order-statistical-item-icon">
                             <i class="fa-light fa-file-lines"></i>
@@ -214,7 +155,19 @@ if (isset($_GET['unblock'])) {
                     <div class="order-statistical-item">
                         <div class="order-statistical-item-content">
                             <p class="order-statistical-item-content-desc">Doanh thu</p>
-                            <h4 class="order-statistical-item-content-h" id="quantity-sale"></h4>
+                            <h4 class="order-statistical-item-content-h" id="quantity-sale">
+                                <?php
+                                $total_pendings = 0;
+                                $select_pending = mysqli_query($conn, "SELECT total_price FROM orders WHERE payment_status = 'Completed'") or die('query failed');
+                                if (mysqli_num_rows($select_pending) > 0) {
+                                    while ($fetch_pendings = mysqli_fetch_assoc($select_pending)) {
+                                        $total_price = $fetch_pendings['total_price'];
+                                        $total_pendings += $total_price;
+                                    }
+                                }
+                                echo $total_pendings . "$";
+                                ?>
+                            </h4>
                         </div>
                         <div class="order-statistical-item-icon">
                             <i class=""></i>
@@ -234,20 +187,55 @@ if (isset($_GET['unblock'])) {
                         </thead>
                         <tbody id="showTk">
                             <?php
-                            $select_orders = mysqli_query($conn, "SELECT * FROM orders") or die('query failed');
-                            if (mysqli_num_rows($select_orders) > 0) {
-                                while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+                                // Retrieve start and end date from the form
+                                $start_date = $_POST['start_date'];
+                                $end_date = $_POST['end_date'];
+                                echo $start_date. "+". $end_date;
+                                // Retrieve orders within the specified time range
+                                $select_orders = mysqli_query($conn, "SELECT * FROM orders WHERE placed_on BETWEEN '$start_date' AND '$end_date' ORDER BY total_price DESC LIMIT 0, 5") or die('query failed');
+                                if(mysqli_num_rows($select_orders) > 0)
+                                {
+                                    while($fetch_orders = mysqli_fetch_assoc($select_orders))
+                                    {
+                                        ?>
+                                            <td><?php echo $fetch_orders['name'] ?></td>
+                                            <td><?php echo $fetch_orders['placed_on'] ?></td>
+                                            <td><?php echo $fetch_orders['number'] ?></td>
+                                            <td>$<?php echo $fetch_orders['total_price'] ?></td>
+                                            <td class="control">
+                                                <form method="post">
+                                                    <a style="color:black" href="admin_stats_details.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Chi tiết</a>
+                                                </form>
+                                    </tr>
+                                        <?php
+                                    }
+                                }
+                                // Array to store customer total purchases
+                                // Process each order
+                                // while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                                //     // Calculate total purchase amount for each order
+                                //     $total_price = $fetch_orders['total_price'];
+                                //     $customer_id = $fetch_orders['user_id'];
+                                //     $customer_orders_query = mysqli_query($conn, "SELECT * FROM orders WHERE user_id = $customer_id AND placed_on BETWEEN '$start_date' AND '$end_date'");
+                                // }
+                                } else {
+                                $select_orders = mysqli_query($conn, "SELECT * FROM orders") or die('query failed');
+                                if (mysqli_num_rows($select_orders) > 0) {
+                                    while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
                             ?>
-                                    <tr>
-                                        <td><?php echo $fetch_orders['name'] ?></td>
-                                        <td><?php echo $fetch_orders['placed_on'] ?></td>
-                                        <td><?php echo $fetch_orders['total_products'] ?></td>
-                                        <td><?php echo $fetch_orders['total_price'] ?>$</td>
-                                        <td class="control">
-                                            <form method="post">
-                                                <a style="color:black" href="admin_orderdetail.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Chi tiết</a>
-                                            </form>
+                                        <tr>
+                                            <td><?php echo $fetch_orders['name'] ?></td>
+                                            <td><?php echo $fetch_orders['placed_on'] ?></td>
+                                            <td><?php echo $fetch_orders['number'] ?></td>
+                                            <td><?php echo $fetch_orders['total_price'] ?>$</td>
+                                            <td class="control">
+                                                <form method="post">
+                                                    <a style="color:black" href="admin_stats_details.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Chi tiết</a>
+                                                </form>
+                                    </tr>
                                     <?php
+                                    }
                                 }
                             }
 

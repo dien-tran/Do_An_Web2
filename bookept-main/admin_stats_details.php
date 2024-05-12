@@ -189,16 +189,14 @@ if (isset($_GET['unblock'])) {
 
                             <p class="order-statistical-item-content-desc">Sản phẩm được bán nhiều nhất</p>
                             <?php $most_sold = mysqli_query($conn, "SELECT p.Name AS ProductName, SUM(db.ProductAmount) AS TotalSold FROM detailsbill db INNER JOIN products p ON db.IdProduct = p.Id GROUP BY db.IdProduct ORDER BY TotalSold DESC LIMIT 3");
-                            if(mysqli_num_rows($most_sold) > 0)
-                            {
+                            if (mysqli_num_rows($most_sold) > 0) {
                                 $i = 1;
-                                while ($fetch_sold = mysqli_fetch_assoc($most_sold)) 
-                                {
-                                    echo '<h4 class="order-statistical-item-content-h">#'.$i++.' '.$fetch_sold['name'].'</h4>';
+                                while ($fetch_sold = mysqli_fetch_assoc($most_sold)) {
+                                    echo '<h4 class="order-statistical-item-content-h">#' . $i++ . ' ' . $fetch_sold['name'] . '</h4>';
                                 }
                             }
                             ?>
-                        </h4>
+                            </h4>
                         </div>
                         <div class="order-statistical-item-icon">
                             <i class="fa-light fa-salad"></i>
@@ -207,7 +205,8 @@ if (isset($_GET['unblock'])) {
                     <div class="order-statistical-item">
                         <div class="order-statistical-item-content">
                             <p class="order-statistical-item-content-desc">Số lượng bán ra</p>
-                            <h4 class="order-statistical-item-content-h" id="quantity-order"></h4>
+                            <h4 class="order-statistical-item-content-h" id="quantity-order">
+                            </h4>
                         </div>
                         <div class="order-statistical-item-icon">
                             <i class="fa-light fa-file-lines"></i>
@@ -216,7 +215,19 @@ if (isset($_GET['unblock'])) {
                     <div class="order-statistical-item">
                         <div class="order-statistical-item-content">
                             <p class="order-statistical-item-content-desc">Doanh thu</p>
-                            <h4 class="order-statistical-item-content-h" id="quantity-sale"></h4>
+                            <h4 class="order-statistical-item-content-h" id="quantity-sale">
+                            <?php 
+                                $total_pendings = 0;
+                                $select_pending = mysqli_query($conn, "SELECT total_price FROM orders WHERE payment_status = 'Completed'") or die('query failed');
+                                if (mysqli_num_rows($select_pending) > 0) {
+                                    while ($fetch_pendings = mysqli_fetch_assoc($select_pending)) {
+                                        $total_price = $fetch_pendings['total_price'];
+                                        $total_pendings += $total_price;
+                                    }
+                                }
+                                echo $total_pendings."$";
+                                ?>
+                            </h4>
                         </div>
                         <div class="order-statistical-item-icon">
                             <i class=""></i>
@@ -227,14 +238,33 @@ if (isset($_GET['unblock'])) {
                     <table width="100%">
                         <thead>
                             <tr>
-                                <td>STT</td>
-                                <td>Tên món</td>
-                                <td>Số lượng bán</td>
+                                <td>Khách hàng</td>
+                                <td>Ngày đặt hàng</td>
+                                <td>Sản phẩm</td>
                                 <td>Doanh thu</td>
                                 <td></td>
                             </tr>
                         </thead>
                         <tbody id="showTk">
+                            <?php
+                            $select_orders = mysqli_query($conn, "SELECT * FROM orders") or die('query failed');
+                            if (mysqli_num_rows($select_orders) > 0) {
+                                while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                            ?>
+                                    <tr>
+                                        <td><?php echo $fetch_orders['name'] ?></td>
+                                        <td><?php echo $fetch_orders['placed_on'] ?></td>
+                                        <td><?php echo $fetch_orders['total_products'] ?></td>
+                                        <td><?php echo $fetch_orders['total_price'] ?>$</td>
+                                        <td class="control">
+                                            <form method="post">
+                                                <a style="color:black" href="admin_stats_details.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Chi tiết</a>
+                                            </form>
+                                    <?php
+                                }
+                            }
+
+                                    ?>
                         </tbody>
                     </table>
                 </div>
@@ -254,12 +284,12 @@ if (isset($_GET['unblock'])) {
             $sql_order = mysqli_query($conn, "SELECT * FROM orders where id = '$order_id'");
             $result_order = mysqli_fetch_assoc($sql_order);
             
-
+            
             // Kiểm tra xem có đơn hàng nào được tìm thấy không
             if ($result_order) {
             ?>
                 <div class="modal-detail-order">
-                    <a href="admin_orders.php"><button class="modal-close"><i class="fa fa-close"></i></button></a>
+                    <a href="admin_stats.php"><button class="modal-close"><i class="fa fa-close"></i></button></a>
                     <div class="modal-detail-left">
                         <div class="order-item-group">
                             <?php
@@ -327,10 +357,6 @@ if (isset($_GET['unblock'])) {
                     <span class="detail-order-item-left"><i class="fa fa-phone"></i> Số điện thoại</span>
                     <span class="detail-order-item-right"><?php echo $result_order['number'] ?></span>
                 </li>
-                <li class="detail-order-item">
-                    <span class="detail-order-item-left"><i class="fa fa-credit-card"></i> Phương thức</span>
-                    <span class="detail-order-item-right"><?php echo $result_order['method'] ?></span>
-                </li>
                 <li class="detail-order-item tb">
                     <span class="detail-order-item-t"><i class="fa fa-location-arrow"></i> Địa chỉ nhận</span>
                     <p class="detail-order-item-b"><?php echo $result_order['address'] ?></p>
@@ -346,27 +372,8 @@ if (isset($_GET['unblock'])) {
             </div>
         </div>
         <div class="modal-detail-bottom-right">
-            <form method="POST">
-            <!-- <button name="cancel" style="background-color: red;" class="btn-cancel modal-detail-btn" <?php if($result_order['payment_status'] == 'Completed'){
-                 echo 'style="cursor: not-allowed;';} ?>>Cancel</button> -->
-                <button name="cancel" class="btn-cancel modal-detail-btn" <?php if($result_order['payment_status'] == 'Completed' || $result_order['payment_status'] == "Cancel")
-                 echo 'style="cursor: not-allowed;"';?>>Cancel</button>
-                <?php
-                if ($result_order['payment_status'] == "pending") {
-                ?>
-            
-
-                    <button name="payment" class="btn-chuaxuly modal-detail-btn"><?php echo $result_order['payment_status'] ?></button>
-                </form>
-                <?php
-                } elseif($result_order['payment_status'] == "Completed") {
-                ?>
-                    
-                    <button style="cursor: not-allowed;" name="payment" class="btn-daxuly modal-detail-btn"><?php echo $result_order['payment_status'] ?></button>
-                    </form>
             <?php
                 }
-            }
             ?>
         </div>
     </div>

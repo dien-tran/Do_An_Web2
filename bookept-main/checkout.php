@@ -23,7 +23,7 @@ if (isset($_POST['order_btn'])) {
    $city = mysqli_real_escape_string($conn, $_POST['city']);
 
    $address = "flat no. $house_number, $road, $ward, $district, $city, $country";
-   $placed_on = date('d-M-Y');
+   $placed_on = date('Y-m-d');
 
    $cart_total = 0;
    $cart_products[] = '';

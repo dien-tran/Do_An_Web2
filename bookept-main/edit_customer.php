@@ -24,11 +24,13 @@ if (isset($_POST['submit'])) {
 
     if (isset($_POST['phone_number'])) {
         $phone = mysqli_real_escape_string($conn, $_POST['phone_number']);
+
         // Rest of your code for handling phone number goes here
         if (!empty($phone)) {
             if (preg_match('/^[0-9]+$/', $phone)) {
+              echo $phone;
                 // Kiểm tra độ dài của số điện thoại
-                if (strlen($phone) == 10) {
+                if (strlen($phone) === 10) {
                     $queries[] = "UPDATE `users` SET `phone_number` = '$phone' WHERE id = $user_id";
                     $_SESSION['phone_number'] = $phone;
                 } else {

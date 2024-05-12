@@ -199,10 +199,12 @@ if (isset($_GET['unblock'])) {
                                 while ($fetch_pendings = mysqli_fetch_assoc($select_pending)) {
                                     $total_price = $fetch_pendings['total_price'];
                                     $total_pendings += $total_price;
-                                };
-                            };
+                                }
+                            }
                             ?>
                             <h2>$<?php echo $total_pendings; ?>/-</h2>
+                            <?php
+                            ?>
                             <div class="on-box">
                                 <img src="" alt="" style=" width: 200px;">
                                 <h3>Doanh thu</h3>
