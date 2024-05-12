@@ -245,6 +245,7 @@ if (isset($message) && is_array($message)) {
   <div class="button_form" style="font-size:15px;">
   <input type="submit" name="submit" id ="submitBtn" value="Submit">
   <input type="submit" name="reload" id="return" value="Reset" form="form">
+  <input type="button" name="finish" value="Return" onclick="window.location.href='admin_users.php';">
 
   </div>
 
