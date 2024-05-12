@@ -241,6 +241,7 @@ $search_keyword = isset($_GET['search']) ? $_GET['search'] : '';
                   <?php
                }
                ?>
+               </div>
                <div class="page-nav">
                      <ul class="page-nav-list">
                <?php
