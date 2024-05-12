@@ -12,69 +12,71 @@ if (!isset($user_id)) {
 
 
 if (isset($_POST['submit'])) {
-    $name = mysqli_real_escape_string($conn, $_POST['name_change']);
-    $email = mysqli_real_escape_string($conn, $_POST['email_change']);
-    $phone = mysqli_real_escape_string($conn, $_POST['phone_number']);
-    $address = mysqli_real_escape_string($conn, $_POST['address']);
-    $city = $_POST['city'];
-    $ward = $_POST['ward'];
-     $road = mysqli_real_escape_string($conn, $_POST['road']);
-    $district = $_POST['district'];
+  $phone = $name = $email = $address = $city = $road = $district = $ward = "";
+
+    // Check if phone number is set and not empty in $_POST
+
+
+    // Check if other form fields are set and not empty in $_POST
     $success = false; // Biến cờ để kiểm tra xem có truy vấn SQL thành công không
 
     $queries = array(); // Mảng để lưu các truy vấn SQL
 
-    if ($name != $_SESSION['name'] ) {
-        $queries[] = "UPDATE `users` SET `name` = '$name' WHERE id = $user_id";
-        $_SESSION['name'] = $name;
-    }
-
-    if ($email != $_SESSION['email']) {
-        $queries[] = "UPDATE `users` SET `email` = '$email' WHERE id = $user_id";
-        $_SESSION['email'] = $email;
-    }
-
-    if ($phone != $_SESSION['phone_number']) {
-      if (preg_match('/^[0-9]+$/', $phone)) {
-          // Kiểm tra độ dài của số điện thoại
-          if (strlen($phone) == 10) {
-              $queries[] = "UPDATE `users` SET `phone_number` = '$phone' WHERE id = $user_id";
-              $_SESSION['phone_number'] = $phone;
-          } else {
-              $message[] = 'The phone number must be 10 digits.';
+    if (isset($_POST['phone_number'])) {
+        $phone = mysqli_real_escape_string($conn, $_POST['phone_number']);
+        // Rest of your code for handling phone number goes here
+        if (!empty($phone)) {
+            if (preg_match('/^[0-9]+$/', $phone)) {
+                // Kiểm tra độ dài của số điện thoại
+                if (strlen($phone) == 10) {
+                    $queries[] = "UPDATE `users` SET `phone_number` = '$phone' WHERE id = $user_id";
+                    $_SESSION['phone_number'] = $phone;
+                } else {
+                    $message[] = 'The phone number must be 10 digits.';
+                }
+            } else {
+                $message[] = 'The phone number is invalid. Please check!';
+            }
           }
-      } else {
-          $message[] = 'The phone number is invalid. Please check!';
+        }
+          if (isset($_POST['address'])) {
+            $address = mysqli_real_escape_string($conn, $_POST['address']);
+            if ($address != $_SESSION['house_number']) {
+                $queries[] = "UPDATE `users` SET `house_number` = '$address' WHERE id = $user_id";
+                $_SESSION['house_number'] = $address;
+            }
+        }
+    
+        // Check if road is set in $_POST
+        if (isset($_POST['road'])) {
+            $road = mysqli_real_escape_string($conn, $_POST['road']);
+            if ($road != $_SESSION['road']) {
+                $queries[] = "UPDATE `users` SET `road` = '$road' WHERE id = $user_id";
+                $_SESSION['road'] = $road;
+            }
+        }
+    
+        // Check if ward is set and not empty in $_POST
+        if (isset($_POST['ward'])) {
+          $ward = $_POST['ward'];
+              $queries[] = "UPDATE `users` SET `ward` = '$ward' WHERE id = $user_id";
+              $_SESSION['ward'] = $ward;
       }
-  }
   
-
-    if ($address != $_SESSION['house_number']) {
-        
-            $queries[] = "UPDATE `users` SET `house_number` = '$address' WHERE id = $user_id";
-            $_SESSION['house_number'] = $address;
-       
-    }
-
-    if ($road != $_SESSION['road']) {
-        $queries[] = "UPDATE `users` SET `road` = '$road' WHERE id = $user_id";
-        $_SESSION['road'] = $road;
-    }
-
-    if ($ward != $_SESSION['ward'] ) {
-      $queries[] = "UPDATE `users` SET `ward` = '$ward' WHERE id = $user_id";
-      $_SESSION['ward'] = $ward; // Sửa thành $_SESSION['ward'] = $ward;
-  } 
+      // Check if district is set and not empty in $_POST
+      if (isset($_POST['district'])) {
+          $district = $_POST['district'];
+              $queries[] = "UPDATE `users` SET `district` = '$district' WHERE id = $user_id";
+              $_SESSION['district'] = $district;
+      }
   
-  if ($district != $_SESSION['district']) {
-      $queries[] = "UPDATE `users` SET `district` = '$district' WHERE id = $user_id";
-      $_SESSION['district'] = $district;
-  }
-  
-  if ($city != $_SESSION['city'] ) {
-      $queries[] = "UPDATE `users` SET `city` = '$city' WHERE id = $user_id";
-      $_SESSION['city'] = $city;
-  }
+      // Check if city is set and not empty in $_POST
+      if (isset($_POST['city'])) {
+          $city = $_POST['city'];
+              $queries[] = "UPDATE `users` SET `city` = '$city' WHERE id = $user_id";
+              $_SESSION['city'] = $city;
+      }
+    
 
  
         foreach ($queries as $query) {
@@ -86,12 +88,10 @@ if (isset($_POST['submit'])) {
               // }
           }
       }
-  
-      if ($success) {
-          $message[] = 'Update data successfully.';
-      }
-
     }
+    if ($success) {
+      $message[] = 'Update data successfully.';
+  }
 }
 
 
@@ -135,17 +135,18 @@ if (isset($_POST["finish"])) {
    <p> <a href="home.php">home</a></p>
 </div>
 <?php
-if(isset($message) && is_array($message)) // Kiểm tra nếu $message là một mảng
-{
-    foreach($message as $msg)
-    {
-        echo '
-        <div class="message">
-        <span>' . $msg . '</span>
-        <i class="fas fa-times" onclick="this.parentElement.remove();"></i>
-        </div>'; // Thêm </div> ở cuối để đóng div.message
-    }
-}
+// if(isset($message) && is_array($message)) // Kiểm tra nếu $message là một mảng
+// {
+//     foreach($message as $msg)
+//     {
+//         echo '
+//         <div class="message">
+//         <span>' . $msg . '</span>
+//         <i class="fas fa-times" onclick="this.parentElement.remove();"></i>
+//         </div>'; // Thêm </div> ở cuối để đóng div.message
+//         break;
+//     }
+// }
 ?>
 
 
