@@ -55,59 +55,40 @@ $search_keyword = isset($_GET['search']) ? $_GET['search'] : '';
       }
    </style>
    <style>
-      .action {
-         display: flex;
-         justify-content: center;
-         /* Canh giữa theo chiều ngang */
-         align-items: center;
-         /* Canh giữa theo chiều dọc */
-      }
+      .page-nav {
+    text-align: center; /* Canh giữa nội dung */
+    margin-top: 20px; /* Khoảng cách từ phần trên cùng */
+}
 
-      .action button {
-         margin: 0 auto;
-         /* Đảm bảo các nút button nằm chính giữa */
-      }
+.page-nav-list {
+    list-style-type: none; /* Loại bỏ dấu chấm đầu dòng */
+    padding: 0;
+    margin: 0;
+}
 
-      .pagination-justify-content-center {
-         display: flex;
-         justify-content: center;
-         margin-top: 20px;
-         margin-bottom: 20px;
-         font-size: 15px;
-      }
+.page-nav-item {
+    display: inline-block; /* Hiển thị các mục trên cùng một dòng */
+    margin-right: 5px; /* Khoảng cách giữa các mục */
+    font-size: 18px;
+}
 
-      .pagination-justify-content-center .page-item {
-         display: inline-block;
-         margin-right: 5px;
-         background-color: #ddd;
-         /* Màu nền xám */
-         padding: 15px 30px;
-         /* Kích thước padding */
-         border-radius: 10px;
-      }
+.page-nav-item a {
+    text-decoration: none; /* Loại bỏ đường gạch chân */
+    padding: 5px 10px; /* Kích thước phần padding cho mỗi mục */
+    border: 1px solid #ccc; /* Viền xung quanh mỗi mục */
+    border-radius: 5px; /* Bo tròn góc */
+    background-color: #f0f0f0; /* Màu nền mặc định */
+    color: #333; /* Màu chữ mặc định */
+}
 
-      .pagination-justify-content-center .page-item.disabled .page-link {
-         color: #6c757d;
-         pointer-events: none;
-         background-color: #ddd;
-         /* Màu nền xám */
-      }
+.page-nav-item a:hover,
+.page-nav-item a:focus,
+.page-nav-item a:active { /* Khi được chọn hoặc di chuột qua */
+    background-color: #ff0000; /* Màu nền màu đỏ */
+    color: #fff; /* Màu chữ màu trắng */
+}
 
-      .pagination-justify-content-center .page-item.active .page-link {
-         /* color: #613d8a; màu nút khi được bấm */
-         color: red;
-      }
 
-      .pagination-justify-content-center .page-link {
-         color: black;
-      }
-
-      .pagination-justify-content-center .page-link:hover {
-         color: purple;
-         /* Màu chữ khi hover */
-         text-decoration: none;
-
-      }
    </style>
 </head>
 
@@ -227,7 +208,7 @@ $search_keyword = isset($_GET['search']) ? $_GET['search'] : '';
    <section class="products" style="padding-top: 0;">
       <div class="box-container">
          <?php
-         $limit = 2;
+         $limit = 4;
          $getquery = "SELECT * FROM products";
          $result = mysqli_query($conn, $getquery);
          $total_rows = mysqli_num_rows($result);
