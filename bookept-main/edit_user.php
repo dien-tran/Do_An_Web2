@@ -17,8 +17,6 @@ if(isset($_GET['id']))
     $success = false; // Biến cờ để kiểm tra xem có truy vấn SQL thành công không
 
     $queries = array(); // Mảng để lưu các truy vấn SQL
-<<<<<<< HEAD
-=======
     if (isset( $_POST['name_change'])) {
         $name = mysqli_real_escape_string($conn, $_POST['name_change']);
         $queries[] .= "UPDATE `users` SET `name` = '$name' WHERE id = $user_id";
@@ -29,7 +27,6 @@ if(isset($_GET['id']))
         $queries[] .= "UPDATE `users` SET `email` = '$email' WHERE id = $user_id";
         $_SESSION['email'] = $email;
       }
->>>>>>> db7900443e0c4b57d9d25831a237cd55b2957c03
     
     if (isset($_POST['phone_number'])) {
         $phone = mysqli_real_escape_string($conn, $_POST['phone_number']);
@@ -46,18 +43,6 @@ if(isset($_GET['id']))
             } else {
                 $message[] = 'The phone number is invalid. Please check!';
             }
-          }
-        }
-        if (isset($_POST['name'])) {
-          $name = mysqli_real_escape_string($conn, $_POST['name']);
-          if ($name != $check['name']) {
-          $queries[] = "UPDATE `users` SET `name` = '$name' WHERE id = $user_id";
-          }
-        } 
-        if (isset($_POST['email'])) {
-          $email = mysqli_real_escape_string($conn, $_POST['email']);
-          if ($email != $check['email']) {
-          $queries[] = "UPDATE `users` SET `email` = '$email' WHERE id = $user_id";
           }
         }
           if (isset($_POST['address'])) {
