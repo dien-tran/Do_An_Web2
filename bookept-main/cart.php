@@ -24,7 +24,7 @@ if(isset($_POST['update_cart'])){
    $current_cart_quantity = $fetch_cart_info['quantity'];
 
    // Lấy thông tin số lượng sản phẩm trong bảng products
-   $sql_product_quantity_table = "SELECT Quantity FROM products WHERE Name = '$product_name'";
+   $sql_product_quantity_table = "SELECT * FROM products WHERE Name = '$product_name'";
    $result_product_quantity = mysqli_query($conn, $sql_product_quantity_table);
    if ($result_product_quantity) {
       $row = mysqli_fetch_assoc($result_product_quantity);
@@ -40,6 +40,7 @@ if(isset($_POST['update_cart'])){
       } else {
          // Trừ số lượng sản phẩm nếu sự khác biệt là số dương
          $new_quantity_after_update = $current_product_quantity - $quantity_difference_after_update + ($cart_quantity);
+         mysqli_query($conn, "UPDATE products SET SoldYet = 'Yes' WHERE Name = '$product_name'") or die('query failed');
       }
 
       // Cập nhật số lượng mới vào bảng products
@@ -225,7 +226,7 @@ if(isset($_GET['delete_all'])){
       <li class="cart-action">
          <div class="cart-btn">
             <a href="shop.php" class="option-btn"><img src="./public/cart/continue.svg" alt="continue_icon">continue shopping</a>
-            <a href="checkout.php"  class="btn <?php echo ($grand_total > 1)?'':'disabled'; ?>"><img src="./public/cart/checkout.svg" alt="checkout_icon">proceed to checkout</a>
+            <a href="checkout.php" class="btn <?php echo ($grand_total > 1)?'':'disabled'; ?>"><img src="./public/cart/checkout.svg" alt="checkout_icon">proceed to checkout</a>
             <a href="cart.php?delete_all" class="delete-btn <?php echo ($grand_total > 1)?'':'disabled'; ?>" onclick="return confirm('delete all from cart?');"><img src="./public/cart/remove.svg" alt="delete_all_icon">delete all</a>
          </div>
          <div class="cart-total">

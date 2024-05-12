@@ -190,7 +190,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Truy vấn để lấy thông tin đơn hàng từ CSDL
             $sql_order = mysqli_query($conn, "SELECT * FROM orders where id = '$order_id'");
             $result_order = mysqli_fetch_assoc($sql_order);
-
+            
 
             // Kiểm tra xem có đơn hàng nào được tìm thấy không
             if ($result_order) {

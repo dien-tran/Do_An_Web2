@@ -1,4 +1,3 @@
-
 <?php
 
 include 'config.php';
@@ -22,7 +21,7 @@ if (isset($_POST['order_btn'])) {
    $ward = mysqli_real_escape_string($conn, $_POST['ward']);
    $district =  mysqli_real_escape_string($conn, $_POST['district']);
    $city = mysqli_real_escape_string($conn, $_POST['city']);
-   
+
    $address = "flat no. $house_number, $road, $ward, $district, $city, $country";
    $placed_on = date('d-M-Y');
 
@@ -76,16 +75,18 @@ if (isset($_POST['order_btn'])) {
    <link rel="stylesheet" href="styles/main.css">
    <link rel="stylesheet" href="./styles/customers/checkout.css">
    <style>
-  .form-select {
-    
-    font-size: 16px;
-    display: inline-block;
-    width: 33.33%;
-    margin-right: 20px;
-    width: 100%; /* Đặt chiều rộng là 100% để các select box dài hết chiều rộng của cột */
-        max-width: 400px; /* Tùy chỉnh chiều rộng tối đa của các select box */
-  }
-</style>
+      .form-select {
+
+         font-size: 16px;
+         display: inline-block;
+         width: 33.33%;
+         margin-right: 20px;
+         width: 100%;
+         /* Đặt chiều rộng là 100% để các select box dài hết chiều rộng của cột */
+         max-width: 400px;
+         /* Tùy chỉnh chiều rộng tối đa của các select box */
+      }
+   </style>
 </head>
 
 <body>
@@ -97,9 +98,9 @@ if (isset($_POST['order_btn'])) {
       <p> <a href="home.php">home</a> / checkout </p>
    </div>
    <?php
-        $user_id = $_SESSION['user_id'];
-        $sql=mysqli_query($conn, "SELECT * FROM  `users` WHERE id=$user_id");
-        $check=mysqli_fetch_assoc($sql);
+   $user_id = $_SESSION['user_id'];
+   $sql = mysqli_query($conn, "SELECT * FROM  `users` WHERE id=$user_id");
+   $check = mysqli_fetch_assoc($sql);
    ?>
    <section class="checkout-container">
       <form action="" method="post">
@@ -129,17 +130,17 @@ if (isset($_POST['order_btn'])) {
             </div>
             <div class="inputBox">
                <span><i class="fa-solid fa-house"></i> house number :</span>
-               <input required type="text" min="0" name="house-num" value="<?php echo $check['house_number']; ?>" >
+               <input required type="text" min="0" name="house-num" value="<?php echo $check['house_number']; ?>">
             </div>
             <div class="inputBox">
                <span><i class="fa-solid fa-location-dot"></i> road :</span>
-               <input required type="text" name="road" value="<?php echo $check['road']; ?>" >
+               <input required type="text" name="road" value="<?php echo $check['road']; ?>">
             </div>
             <div class="inputBox">
                <span><i class="fa-solid fa-location-dot"></i> ward :</span>
                <br>
-               <select required class="" name="ward" id="ward" >
-                  <option value="" selected disabled >Choose ward</option>
+               <select required class="" name="ward" id="ward">
+                  <option value="" selected disabled>Choose ward</option>
                   <?php
                   for ($i = 1; $i <= 12; $i++) {
                      $selected = ($_POST['ward'] == "Ward $i") ? 'selected' : '';
@@ -154,7 +155,7 @@ if (isset($_POST['order_btn'])) {
                <span><i class="fa-solid fa-location-dot"></i> district :</span>
                <br>
                <select required class="" name="district" id="district" aria-label=".form-select-sm">
-                  <option value=""  selected disabled>Choose district</option>
+                  <option value="" selected disabled>Choose district</option>
                   <?php
                   for ($i = 1; $i <= 12; $i++) {
                      $selected = ($_POST['district'] == "District $i") ? 'selected' : '';
@@ -168,13 +169,13 @@ if (isset($_POST['order_btn'])) {
             <div class="inputBox">
                <span><i class="fa-solid fa-location-dot"></i> city :</span>
                <br>
-               <select required class="" name="city" id="city" style = "width: 49.3%;">
-                  <option value="" selected disabled >Choose city</option>
+               <select required class="" name="city" id="city" style="width: 49.3%;">
+                  <option value="" selected disabled>Choose city</option>
                   <option value="Hồ Chí Minh" selected>Ho Chi Minh city</option>
                </select>
             </div>
          </div>
-         
+
          <div style="display: flex; justify-content:end">
             <input type="submit" value="🚩 order now" class="btn" name="order_btn">
          </div>
@@ -182,13 +183,14 @@ if (isset($_POST['order_btn'])) {
 
       <?php
       $grand_total = 0;
+
       $select_cart = mysqli_query($conn, "SELECT * FROM `cart` WHERE user_id = '$user_id'") or die('query failed');
       ?>
 
-<?php
+      <?php
 
 
-      if(isset($_POST['order_btn'])) {
+      if (isset($_POST['order_btn'])) {
          // Lấy thông tin từ form
          $number = mysqli_real_escape_string($conn, $_POST['number']);
          $email = mysqli_real_escape_string($conn, $_POST['email']);
@@ -202,15 +204,15 @@ if (isset($_POST['order_btn'])) {
          $sql_check_email = "SELECT * FROM users WHERE email = '$email'";
          $result_check_email = mysqli_query($conn, $sql_check_email);
 
-         if(mysqli_num_rows($result_check_email) > 0) {
+         if (mysqli_num_rows($result_check_email) > 0) {
             // Cập nhật thông tin người dùng nếu email đã tồn tại
             $sql_update_user = "UPDATE users SET  phone_number = '$number',  house_number = '$house_number', road = '$road', city = '$city', district = '$district', ward = '$ward' WHERE email = '$email'";
-            if(mysqli_query($conn, $sql_update_user)) {
+            if (mysqli_query($conn, $sql_update_user)) {
                echo "<strong style='font-size:14px;'>Thông tin người dùng đã được cập nhật thành công !</strong>";
             } else {
-                  echo "Lỗi: " . mysqli_error($conn);
+               echo "Lỗi: " . mysqli_error($conn);
             }
-         } 
+         }
       }
       ?>
       <div class="summary-order">
@@ -224,10 +226,12 @@ if (isset($_POST['order_btn'])) {
                while ($fetch_cart = mysqli_fetch_assoc($select_cart)) {
                   $total_price = ($fetch_cart['price'] * $fetch_cart['quantity']);
                   $grand_total += $total_price;
+                  $name = $fetch_cart['name'];
+                  mysqli_query($conn, "UPDATE products SET SoldYet = 'Yes' WHERE Name = '$name'") or die('query failed');
             ?>
                   <div class="summary-item">
                      <p><?php echo $fetch_cart['name']; ?></p>
-                     <p><?php echo '$' . $fetch_cart['price']; ?> &bull; <?php echo $fetch_cart['quantity']; ?></p>
+                     <p><?php echo '$' . $fetch_cart['price']; ?> &bull; <?php echo $fetch_cart['quantity']; ?></p>4
                   </div>
             <?php
                }
@@ -248,27 +252,6 @@ if (isset($_POST['order_btn'])) {
    <!-- custom js file link  -->
    <script src="js/script.js">
 
-document.addEventListener("DOMContentLoaded", function() {
-    // Lấy form
-    var form = document.querySelector('form');
-
-    form.addEventListener('submit', function(event) {
-      alert("Hello");
-        var houseNum = document.querySelector('input[name="house-num"]').value.trim();
-        var road = document.querySelector('input[name="road"]').value.trim();
-        var ward = document.querySelector('select[name="ward"]').value.trim();
-        var district = document.querySelector('select[name="district"]').value.trim();
-        alert("Hello");
-        // Kiểm tra nếu bất kỳ trường nào là trống
-        if (houseNum === '' || road === '' || ward === '' || district === '') {
-            // Ngăn chặn việc gửi biểu mẫu
-            event.preventDefault();
-            
-            // Hiển thị thông báo lỗi
-            alert('Vui lòng điền đầy đủ thông tin cho house number, road, ward và district.');
-        }
-    });
-});
    </script>
 
 </body>
