@@ -4,20 +4,27 @@ include 'config.php';
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
-  echo "User ID not set in session. Redirecting to login page...";
-  header('location:login_customer.php');
+  echo  '<script>alert("User ID not set in session. Redirecting to login page...");</script>';
+  header('refresh:0;url=login_customer.php');
   exit();
 }
 $user_id = $_SESSION['user_id'];
 if ($user_id === null) {
-  echo "User ID is null. Redirecting to login page...";
   header('location:login_customer.php');
+  exit();
+}
+$sql_check_order = mysqli_query($conn, "SELECT * FROM `orders` WHERE user_id = $user_id");
+
+if (mysqli_num_rows($sql_check_order) == 0) {
+  echo  '<script>alert("User has no order. Redirecting to shop page...");</script>';
+  header('refresh:0;url=shop.php');
   exit();
 }
 if (isset($_POST["bill_details"])) {
   header("location:bill_details.php");
   exit();
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -143,7 +150,7 @@ if (isset($_POST["bill_details"])) {
       </form>
     </div>
   </div>
-  <script src="js/admin_script.js"></script>
+  <script src="js/script.js"></script>
 
 </body>
 

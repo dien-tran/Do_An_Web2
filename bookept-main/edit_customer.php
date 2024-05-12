@@ -134,20 +134,7 @@ if (isset($_POST["finish"])) {
    <h3>EDIT INFORMATION</h3>
    <p> <a href="home.php">home</a></p>
 </div>
-<?php
-// if(isset($message) && is_array($message)) // Kiểm tra nếu $message là một mảng
-// {
-//     foreach($message as $msg)
-//     {
-//         echo '
-//         <div class="message">
-//         <span>' . $msg . '</span>
-//         <i class="fas fa-times" onclick="this.parentElement.remove();"></i>
-//         </div>'; // Thêm </div> ở cuối để đóng div.message
-//         break;
-//     }
-// }
-?>
+
 
 
 <div class="from_container">
@@ -238,6 +225,7 @@ if (isset($_POST["finish"])) {
 
 </body>
 
+<script src="js/script.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('form').addEventListener('submit', function(event) {
