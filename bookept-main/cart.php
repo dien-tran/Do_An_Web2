@@ -225,7 +225,7 @@ if(isset($_GET['delete_all'])){
       <li class="cart-action">
          <div class="cart-btn">
             <a href="shop.php" class="option-btn"><img src="./public/cart/continue.svg" alt="continue_icon">continue shopping</a>
-            <a href="checkout.php" class="btn <?php echo ($grand_total > 1)?'':'disabled'; ?>"><img src="./public/cart/checkout.svg" alt="checkout_icon">proceed to checkout</a>
+            <a href="checkout.php"  class="btn <?php echo ($grand_total > 1)?'':'disabled'; ?>"><img src="./public/cart/checkout.svg" alt="checkout_icon">proceed to checkout</a>
             <a href="cart.php?delete_all" class="delete-btn <?php echo ($grand_total > 1)?'':'disabled'; ?>" onclick="return confirm('delete all from cart?');"><img src="./public/cart/remove.svg" alt="delete_all_icon">delete all</a>
          </div>
          <div class="cart-total">

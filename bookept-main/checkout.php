@@ -129,16 +129,16 @@ if (isset($_POST['order_btn'])) {
             </div>
             <div class="inputBox">
                <span><i class="fa-solid fa-house"></i> house number :</span>
-               <input type="text" min="0" name="house-num" value="<?php echo $check['house_number']; ?>" >
+               <input required type="text" min="0" name="house-num" value="<?php echo $check['house_number']; ?>" >
             </div>
             <div class="inputBox">
                <span><i class="fa-solid fa-location-dot"></i> road :</span>
-               <input type="text" name="road" value="<?php echo $check['road']; ?>" >
+               <input required type="text" name="road" value="<?php echo $check['road']; ?>" >
             </div>
             <div class="inputBox">
                <span><i class="fa-solid fa-location-dot"></i> ward :</span>
                <br>
-               <select class="" name="ward" id="ward" >
+               <select required class="" name="ward" id="ward" >
                   <option value="" selected disabled >Choose ward</option>
                   <?php
                   for ($i = 1; $i <= 12; $i++) {
@@ -153,7 +153,7 @@ if (isset($_POST['order_btn'])) {
             <div class="inputBox">
                <span><i class="fa-solid fa-location-dot"></i> district :</span>
                <br>
-               <select class="" name="district" id="district" aria-label=".form-select-sm">
+               <select required class="" name="district" id="district" aria-label=".form-select-sm">
                   <option value=""  selected disabled>Choose district</option>
                   <?php
                   for ($i = 1; $i <= 12; $i++) {
@@ -168,7 +168,7 @@ if (isset($_POST['order_btn'])) {
             <div class="inputBox">
                <span><i class="fa-solid fa-location-dot"></i> city :</span>
                <br>
-               <select class="" name="city" id="city" style = "width: 49.3%;">
+               <select required class="" name="city" id="city" style = "width: 49.3%;">
                   <option value="" selected disabled >Choose city</option>
                   <option value="Hồ Chí Minh" selected>Ho Chi Minh city</option>
                </select>
@@ -246,7 +246,30 @@ if (isset($_POST['order_btn'])) {
    <?php include 'footer.php'; ?>
 
    <!-- custom js file link  -->
-   <script src="js/script.js"></script>
+   <script src="js/script.js">
+
+document.addEventListener("DOMContentLoaded", function() {
+    // Lấy form
+    var form = document.querySelector('form');
+
+    form.addEventListener('submit', function(event) {
+      alert("Hello");
+        var houseNum = document.querySelector('input[name="house-num"]').value.trim();
+        var road = document.querySelector('input[name="road"]').value.trim();
+        var ward = document.querySelector('select[name="ward"]').value.trim();
+        var district = document.querySelector('select[name="district"]').value.trim();
+        alert("Hello");
+        // Kiểm tra nếu bất kỳ trường nào là trống
+        if (houseNum === '' || road === '' || ward === '' || district === '') {
+            // Ngăn chặn việc gửi biểu mẫu
+            event.preventDefault();
+            
+            // Hiển thị thông báo lỗi
+            alert('Vui lòng điền đầy đủ thông tin cho house number, road, ward và district.');
+        }
+    });
+});
+   </script>
 
 </body>
 

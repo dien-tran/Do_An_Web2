@@ -218,12 +218,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 // $sql_product_image = mysqli_query($conn,"SELECT Image FROM products  JOIN orders ON products.name =   $product_name ");
 
                                 // $product_img = mysqli_fetch_assoc($sql_product_image);    
-                                $sql_product_image = mysqli_query($conn, "SELECT Image FROM products WHERE Name = '$product_name'");
+                                $sql_product_image = mysqli_query($conn, "SELECT * FROM products WHERE Name = '$product_name'");
                                 $product_img_data = mysqli_fetch_assoc($sql_product_image);
                                 $product_img_url = $product_img_data['Image'];
 
                                 // Truy vấn cơ sở dữ liệu để lấy thông tin về sản phẩm
-                                $sql_product = mysqli_query($conn, "SELECT * FROM products WHERE name='$product_name'");
+                                $sql_product = mysqli_query($conn, "SELECT * FROM products WHERE Name = '$product_name'");
                                 $product_detail = mysqli_fetch_assoc($sql_product);
 
                                 // Tính toán tổng tiền cho sản phẩm
