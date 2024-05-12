@@ -14,95 +14,106 @@ if (!isset($user_id)) {
 if (isset($_POST['submit'])) {
   $phone = $name = $email = $address = $city = $road = $district = $ward = "";
 
-    // Check if phone number is set and not empty in $_POST
-
-    $name = mysqli_real_escape_string($conn, $_POST['name']);
-    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    // Check if phone number is set and not empty in $_POSt
+  
     // Check if other form fields are set and not empty in $_POST
     $success = false; // Biến cờ để kiểm tra xem có truy vấn SQL thành công không
 
     $queries = array(); // Mảng để lưu các truy vấn SQL
-    if ($name != $check['name']) {
-      $query[] = "UPDATE `users` SET `name` = '$name' WHERE id = $user_id";
+    if (isset( $_POST['name_change'])) {
+      $name = mysqli_real_escape_string($conn, $_POST['name_change']);
+      $queries[] .= "UPDATE `users` SET `name` = '$name' WHERE id = $user_id";
       $_SESSION['name'] = $name;
     } 
-    if ($email != $check['email']) {
-      $query[] = "UPDATE `users` SET `email` = '$email' WHERE id = $user_id";
-      $_SESSION['email']=$email;
+    if (isset($_POST['email_change'])) {
+      $email = mysqli_real_escape_string($conn, $_POST['email_change']);
+      $queries[] .= "UPDATE `users` SET `email` = '$email' WHERE id = $user_id";
+      $_SESSION['email'] = $email;
     }
+  
     if (isset($_POST['phone_number'])) {
-        $phone = mysqli_real_escape_string($conn, $_POST['phone_number']);
-
-        // Rest of your code for handling phone number goes here
-        if (!empty($phone)) {
-            if (preg_match('/^[0-9]+$/', $phone)) {
-              echo $phone;
-                // Kiểm tra độ dài của số điện thoại
-                if (strlen($phone) === 10) {
-                    $queries[] = "UPDATE `users` SET `phone_number` = '$phone' WHERE id = $user_id";
-                    $_SESSION['phone_number'] = $phone;
-                } else {
-                    $message[] = 'The phone number must be 10 digits.';
-                }
-            } else {
-                $message[] = 'The phone number is invalid. Please check!';
-            }
+      $phone = mysqli_real_escape_string($conn, $_POST['phone_number']);
+      // Rest of your code for handling phone number goes here
+      if (!empty($phone)) {
+          if (preg_match('/^[0-9]+$/', $phone)) {
+              // Kiểm tra độ dài của số điện thoại
+              if (strlen($phone) == 10) {
+                  $queries[] .= "UPDATE `users` SET `phone_number` = '$phone' WHERE id = $user_id";
+                 
+              } else {
+                  $message[] = 'The phone number must be 10 digits.';
+              }
+          } else {
+              $message[] = 'The phone number is invalid. Please check!';
           }
         }
+      }
           if (isset($_POST['address'])) {
             $address = mysqli_real_escape_string($conn, $_POST['address']);
-            if ($address != $_SESSION['house_number']) {
-                $queries[] = "UPDATE `users` SET `house_number` = '$address' WHERE id = $user_id";
+                $queries[] .= "UPDATE `users` SET `house_number` = '$address' WHERE id = $user_id";
                 $_SESSION['house_number'] = $address;
-            }
+            
         }
     
         // Check if road is set in $_POST
         if (isset($_POST['road'])) {
             $road = mysqli_real_escape_string($conn, $_POST['road']);
-            if ($road != $_SESSION['road']) {
-                $queries[] = "UPDATE `users` SET `road` = '$road' WHERE id = $user_id";
+          
+                $queries[] .= "UPDATE `users` SET `road` = '$road' WHERE id = $user_id";
                 $_SESSION['road'] = $road;
-            }
+            
         }
     
         // Check if ward is set and not empty in $_POST
         if (isset($_POST['ward'])) {
           $ward = $_POST['ward'];
-              $queries[] = "UPDATE `users` SET `ward` = '$ward' WHERE id = $user_id";
+              $queries[] .= "UPDATE `users` SET `ward` = '$ward' WHERE id = $user_id";
               $_SESSION['ward'] = $ward;
       }
   
       // Check if district is set and not empty in $_POST
       if (isset($_POST['district'])) {
           $district = $_POST['district'];
-              $queries[] = "UPDATE `users` SET `district` = '$district' WHERE id = $user_id";
+              $queries[] .= "UPDATE `users` SET `district` = '$district' WHERE id = $user_id";
               $_SESSION['district'] = $district;
       }
   
       // Check if city is set and not empty in $_POST
       if (isset($_POST['city'])) {
           $city = $_POST['city'];
-              $queries[] = "UPDATE `users` SET `city` = '$city' WHERE id = $user_id";
+              $queries[] .= "UPDATE `users` SET `city` = '$city' WHERE id = $user_id";
               $_SESSION['city'] = $city;
       }
-    
+      
+      $updateSuccess = false;
+foreach($queries as $query)
+{
+  if (!empty($query))
+  {
+    if (mysqli_query($conn,$query))
+    {
+      $updateSuccess =$updateSuccess && true;
 
- 
-        foreach ($queries as $query) {
-          if (!empty($query)) {
-              if (mysqli_query($conn, $query)) {
-                  $success = true;
-              // } else {
-              //     // $message[] = 'Error: ' . mysqli_error($conn);
-              // }
-          }
-      }
     }
-    if ($success) {
-      $message[] = 'Update data successfully.';
+    else
+    {
+      $updateSuccess=false;
+      echo "error: " . mysqli_error($conn) . "<br>";
+      exit();
+    }
   }
 }
+if ($updateSuccess) {
+  // Nếu đã thành công, hiển thị thông báo
+  $message[] = 'Update data successfully';
+}
+
+}
+    
+       
+   
+
+
 
 
 if (isset($_POST["finish"])) {
@@ -140,12 +151,21 @@ if (isset($_POST["finish"])) {
 <body>
 
 <?php include 'header.php'; ?>
+<?php
+if (isset($message) && is_array($message)) {
+   foreach ($message as $msg) {
+      echo '
+      <div class="message">
+         <span>' . $msg . '</span>
+         <i class="fas fa-times" onclick="this.parentElement.remove();"></i>
+      </div>';
+   }
+}
+?>
 <div class="heading">
    <h3>EDIT INFORMATION</h3>
    <p> <a href="home.php">home</a></p>
 </div>
-
-
 
 <div class="from_container">
 
@@ -168,8 +188,14 @@ if (isset($_POST["finish"])) {
     </tr>
     <tr>
       <td><label for="phone">Phone Number:</label></td>
-      <td><input type="tel" id="phone" name="phone_number" value="<?php echo $check['phone_number']; ?>" class="box"></td>
-    </tr>
+      <td><input type="tel" id="phone" name="phone_number" value="<?php echo isset($phone) ? $phone : $check['phone_number']; ?>" class="box"></td>   
+     </tr>
+    
+    <script>
+    <?php if (isset($_POST['phone_number']) && (strlen($phone) != 10 || !preg_match('/^[0-9]+$/', $phone))) : ?>
+    document.getElementById('phone').focus();
+    <?php endif; ?>
+</script>
     <tr>
       <td><label for="address">House Number:</label></td>
       <td><input type="text" id="address" name="address" value="<?php echo $check['house_number']; ?>" class="box"></td>

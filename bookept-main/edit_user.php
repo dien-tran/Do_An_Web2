@@ -84,22 +84,28 @@ if(isset($_GET['id']))
 
  
 }
+$updateSuccess = false;
 foreach($queries as $query)
 {
   if (!empty($query))
   {
     if (mysqli_query($conn,$query))
     {
-      $message[] = 'Update data successfully';
+      $updateSuccess =$updateSuccess && true;
 
     }
     else
     {
+      $updateSuccess=false;
       echo "error: " . mysqli_error($conn) . "<br>";
+      exit();
     }
   }
 }
-
+if ($updateSuccess) {
+  // Nếu đã thành công, hiển thị thông báo
+  $message[] = 'Update data successfully';
+}
 }
 }
 
