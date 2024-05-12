@@ -132,7 +132,7 @@ $search_keyword = isset($_GET['search']) ? $_GET['search'] : '';
          // Kiểm tra xem có kết quả trả về không
          if (mysqli_num_rows($result_product) > 0) {
             // Bắt đầu select box
-            echo "<select name='author' id='author'>";
+            echo "<select name='author' id='author' style='width:75%;'>";
             echo "<option value='' selected disabled >Author</option>"; // Option mặc định
 
             // Lặp qua kết quả và tạo các option
@@ -144,7 +144,7 @@ $search_keyword = isset($_GET['search']) ? $_GET['search'] : '';
 
             $sql_product = "SELECT Publisher FROM products"; // Thay 'table_name' bằng tên bảng thực tế của bạn
             $result_product = mysqli_query($conn, $sql_product);
-            echo "<select name='publisher' id='publisher'>";
+            echo "<select name='publisher' id='publisher' style='width:75%;'>";
             echo "<option value='' selected disabled >Publisher</option>"; // Option mặc định
 
             // Lặp qua kết quả và tạo các option
