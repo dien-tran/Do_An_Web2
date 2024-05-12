@@ -1262,6 +1262,15 @@ label a {
     position: absolute;
     left: 22px;
 }
+.btn-cancel{
+    background-color: var(--red);
+}
+.btn-cancel::before{
+    content: "\f05e";
+    font-family: FontAwesome;
+    position: absolute;
+    left: 22px;
+}
 
 .btn-daxuly {
     background-color: #27ae60;

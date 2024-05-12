@@ -12,16 +12,17 @@ $admin_id = $_SESSION['admin_id'];
 if (!isset($admin_id)) {
     header('location:login_admin.php');
 }
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Lấy orderId từ yêu cầu POST
     $orderId = $_GET['order_id'];
+    if(isset($_POST['payment'])){
+  
     $sql = "UPDATE orders SET payment_status = 'Completed' WHERE id = '$orderId'";
-    if (mysqli_query($conn, $sql)) {
-        echo 'success';
-    } else {
-        echo 'error';
+    mysqli_query($conn,$sql);
     }
-}
+    if(isset($_POST['cancel'])){
+    $sql = "UPDATE orders SET payment_status = 'Cancel' WHERE id = '$orderId'";
+    mysqli_query($conn,$sql);
+    }
 
 ?>
 <!DOCTYPE html>
@@ -284,19 +285,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
         <div class="modal-detail-bottom-right">
             <form method="POST">
+            <!-- <button name="cancel" style="background-color: red;" class="btn-cancel modal-detail-btn" <?php if($result_order['payment_status'] == 'Completed'){
+                 echo 'style="cursor: not-allowed;';} ?>>Cancel</button> -->
+                <button name="cancel" class="btn-cancel modal-detail-btn" <?php if($result_order['payment_status'] == 'Completed' || $result_order['payment_status'] == "Cancel")
+                 echo 'style="cursor: not-allowed;"';?>>Cancel</button>
                 <?php
                 if ($result_order['payment_status'] == "pending") {
                 ?>
+            
 
-
-                    <button class="btn-chuaxuly modal-detail-btn"><?php echo $result_order['payment_status'] ?></button>
+                    <button name="payment" class="btn-chuaxuly modal-detail-btn"><?php echo $result_order['payment_status'] ?></button>
                 </form>
                 <?php
-                } else {
+                } elseif($result_order['payment_status'] == "Completed") {
                 ?>
-                </form>
-                    <button class="btn-daxuly modal-detail-btn"><?php echo $result_order['payment_status'] ?></button>
-
+                    
+                    <button style="cursor: not-allowed;" name="payment" class="btn-daxuly modal-detail-btn"><?php echo $result_order['payment_status'] ?></button>
+                    </form>
             <?php
                 }
             }
@@ -306,33 +311,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     </div>
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Bắt sự kiện click cho nút "Chưa xử lý"
-            var btnChuaXuLy = document.querySelector('.btn-chuaxuly');
-            if (btnChuaXuLy) {
-                btnChuaXuLy.addEventListener('click', function() {
-                    var orderId = <?php echo $order_id; ?>; // Lấy orderId từ PHP
-                    // Gửi yêu cầu AJAX
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('POST', 'update_payment_status.php', true);
-                    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-                    xhr.onreadystatechange = function() {
-                        if (xhr.readyState == 4 && xhr.status == 200) {
-                            // Xử lý phản hồi từ máy chủ
-                            var response = xhr.responseText;
-                            if (response == 'success') {
-                            } else {
-                                // Xử lý lỗi nếu có
-                                console.log('Có lỗi xảy ra: ' + response);
-                            }
-                        }
-                    };
-                    xhr.send('order_id=' + orderId);
-                });
-            }
-        });
-    </script>
 </body>
 
 </html>
