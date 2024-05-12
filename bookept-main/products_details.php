@@ -46,6 +46,7 @@ if (isset($_POST['add_to_cart'])) {
    <!-- custom css file link  -->
    <link rel="stylesheet" href="styles/main.css">
    <link rel="stylesheet" href="styles/customers/about.css">
+    <link rel="stylesheet" href="styles/customers/service.css">
     <style>
         #product_img {
             float: left; 
@@ -111,6 +112,10 @@ if (isset($_POST['add_to_cart'])) {
                                 <p style="font-size: 15px; color: black;"><b>Description: </b></p>
                                 <p style="font-size: 15px; color: black; white-space: pre-line; text-align: justify;"><?php echo $product['Description']; ?></p>
                             </div>
+                        </div>
+                        <div class="action">
+                                <button type="submit" name="add_to_cart"><img src="./public/card/cart.svg" alt="cart_icon">add to cart</button>
+                                <!-- <img src="./public/card/heart.svg" alt="favourite_icon"> -->
                         </div>
                     </div>
                 </div>

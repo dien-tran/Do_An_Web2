@@ -95,31 +95,30 @@ if (!isset($admin_id)) {
          <div class="section active">
             <div class="admin-control">
                <div class="admin-control-left">
-                  <select name="tinh-trang" id="tinh-trang" onchange="findOrder()">
-                     <option value="2">Tất cả</option>
-                     <option value="1">Đã xử lý</option>
-                     <option value="0">Chưa xử lý</option>
+                  <select name="districts" id="district" onchange="findOrderPlace()">
+                     <option value="2" selected disabled >District</option>
+                     <?php
+                     for ($i = 1; $i <= 12; $i++) {
+                        $selected = ($_POST['district'] == "District $i") ? 'selected' : '';
+                        "<option value='District $i' $selected>District $i</option>";
+                        $selected = ($check['district'] == "District $i") ? 'selected' : '';
+                        echo "<option value='District $i' $selected>District $i</option>";
+                     }
+                  ?>
+                  </select>
+                  <select name="ward" id="ward" onchange="findOrderPlace()">
+                  <option value="2" selected disabled>Ward</option>
+                     <?php
+                     for ($i = 1; $i <= 12; $i++) {
+                        $selected = ($_POST['ward'] == "Ward $i") ? 'selected' : '';
+                        "<option value='Ward $i' $selected>Ward $i</option>";
+                        $selected = ($check['ward'] == "Ward $i") ? 'selected' : '';
+                        echo "<option value='Ward $i' $selected>Ward $i</option>";
+                     }
+                     ?>
                   </select>
                </div>
-               <div class="admin-control-center">
-                  <form action="" class="form-search">
-                     <span class="search-btn"><i class="fa fa-search"></i></span>
-                     <input id="form-search-order" type="text" class="form-search-input" placeholder="Tìm kiếm mã đơn, khách hàng..." oninput="findOrder()">
-                  </form>
-               </div>
-               <div class="admin-control-right">
-                  <form action="" class="fillter-date">
-                     <div>
-                        <label for="time-start">Từ</label>
-                        <input type="date" class="form-control-date" id="time-start" onchange="findOrder()">
-                     </div>
-                     <div>
-                        <label for="time-end">Đến</label>
-                        <input type="date" class="form-control-date" id="time-end" onchange="findOrder()">
-                     </div>
-                  </form>
-                  <button class="btn-reset-order" onclick="cancelSearchOrder()"><i class="fa fa-refresh fa-spin"></i></button>
-               </div>
+               
             </div>
             <div class="table">
                <table width="100%">

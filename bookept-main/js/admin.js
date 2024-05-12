@@ -261,6 +261,8 @@ function previewImage(event) {
 function findOrder() {
     let tinhTrang = parseInt(document.getElementById("tinh-trang").value);
     let ct = document.getElementById("form-search-order").value;
+    let ward = document.getElementById("ward").value;
+    let district = document.getElementById("district").value;
     let timeStart = document.getElementById("time-start").value;
     let timeEnd = document.getElementById("time-end").value;
     

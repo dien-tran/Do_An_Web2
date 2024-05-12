@@ -80,7 +80,7 @@ if (isset($_POST["bill_details"])) {
         $check = mysqli_fetch_assoc($sql); // lấy từng cột giá trị trên bảng users
         $sql_bill = mysqli_query($conn, "SELECT * FROM `orders` WHERE user_id = $user_id ORDER BY id DESC LIMIT 1");
         $order_info = mysqli_fetch_assoc($sql_bill);
-        $delivery_date = date('d-M-Y', strtotime($order_info['placed_on'] . ' +3 days'));
+        $delivery_date = date('Y-m-d', strtotime($order_info['placed_on'] . ' +3 days'));
         ?>
         <table>
 
