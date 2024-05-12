@@ -8,24 +8,26 @@ if(isset($_GET['id']))
     {
         if(mysqli_num_rows($sql)>0)
     {
-        $check= $check = mysqli_fetch_assoc($sql);
+        $check= mysqli_fetch_assoc($sql);
         $phone = $name = $email = $address = $city = $road = $district = $ward = "";
 
     // Check if phone number is set and not empty in $_POST
-
 
     // Check if other form fields are set and not empty in $_POST
     $success = false; // Biến cờ để kiểm tra xem có truy vấn SQL thành công không
 
     $queries = array(); // Mảng để lưu các truy vấn SQL
-    if ($name != $check['name']) {
-        $query[] = "UPDATE `users` SET `name` = '$name' WHERE id = $user_id";
-       
+    if (isset( $_POST['name_change'])) {
+        $name = mysqli_real_escape_string($conn, $_POST['name_change']);
+        $queries[] .= "UPDATE `users` SET `name` = '$name' WHERE id = $user_id";
+        $_SESSION['name'] = $name;
       } 
-      if ($email != $check['email']) {
-        $query[] = "UPDATE `users` SET `email` = '$email' WHERE id = $user_id";
-        
+      if (isset($_POST['email_change'])) {
+        $email = mysqli_real_escape_string($conn, $_POST['email_change']);
+        $queries[] .= "UPDATE `users` SET `email` = '$email' WHERE id = $user_id";
+        $_SESSION['email'] = $email;
       }
+    
     if (isset($_POST['phone_number'])) {
         $phone = mysqli_real_escape_string($conn, $_POST['phone_number']);
         // Rest of your code for handling phone number goes here
@@ -81,20 +83,23 @@ if(isset($_GET['id']))
     
 
  
-        foreach ($queries as $query) {
-          if (!empty($query)) {
-              if (mysqli_query($conn, $query)) {
-                  $success = true;
-              // } else {
-              //     // $message[] = 'Error: ' . mysqli_error($conn);
-              // }
-          }
-      }
+}
+foreach($queries as $query)
+{
+  if (!empty($query))
+  {
+    if (mysqli_query($conn,$query))
+    {
+      $message[] = 'Update data successfully';
+
     }
-    if ($success) {
-      $message[] = 'Update data successfully.';
+    else
+    {
+      echo "error: " . mysqli_error($conn) . "<br>";
+    }
   }
 }
+
 }
 }
 
@@ -131,7 +136,17 @@ if (isset($_POST["finish"])) {
 </style>
 </head>
 <body>
-
+<?php
+if (isset($message) && is_array($message)) {
+   foreach ($message as $msg) {
+      echo '
+      <div class="message">
+         <span>' . $msg . '</span>
+         <i class="fas fa-times" onclick="this.parentElement.remove();"></i>
+      </div>';
+   }
+}
+?>
 <div class="heading">
    <h3>EDIT INFORMATION</h3>
 </div>
@@ -159,8 +174,9 @@ if (isset($_POST["finish"])) {
     </tr>
     <tr>
       <td><label for="phone">Phone Number:</label></td>
-      <td><input type="tel" id="phone" name="phone_number" value="<?php echo isset($phone) ? $phone : $check['phone_number']; ?>" class="box"></td>    </tr>
-    <tr>
+      <td><input type="tel" id="phone" name="phone_number" value="<?php echo isset($phone) ? $phone : $check['phone_number']; ?>" class="box"></td>   
+     </tr>
+    
     <script>
     <?php if (isset($_POST['phone_number']) && (strlen($phone) != 10 || !preg_match('/^[0-9]+$/', $phone))) : ?>
     document.getElementById('phone').focus();
