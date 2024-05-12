@@ -1,0 +1,168 @@
+@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap");
+
+body
+{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height: 100vh;
+    /* background-image: url("bookept-main/public/form/river.svg"); */
+    background-repeat: no-repeat;                                                                                                                                                                                         
+    background-size: cover;
+    background-position: center;
+    
+}
+.container
+{
+    width: 420px;
+    background:transparent ;
+    border:2px solid rgba(255,255,255,.2); 
+    color: #fff;
+    border-radius: 10px;
+    backdrop-filter:blur(20px);
+    box-shadow: 0 0 10px rgba(0,0,0,.2);
+    padding: 30px 40px 10px 10px;
+}
+.container h2
+{
+    font-size: 36px; /* Giảm kích thước font */
+    text-align: center;
+    margin: 10px;
+    font-family: 'Arial', sans-serif; /* Thay đổi font chữ */
+}
+.container.input-form
+{
+    position: relative;
+    width: 100%;
+    height: 50px;
+    background:salmon ;
+    margin: 20px 0;
+    
+}
+.input-form input
+{
+    width: 90%;
+    height: 100%;
+    background: transparent;
+    outline: none;
+    border: 2px solid rgba(255,255,255,.2);
+    border-radius: 40px;
+    font-size: 16px;
+    color: #fff;
+    padding: 15px 45px 15px 15px;
+    margin: 10px;
+    
+}
+.input-form input::placeholder
+{
+    color: #fff;
+}
+
+.icon img
+{
+    float:left;
+   margin-top: 20px;
+   height: 40px;
+
+}
+.fill
+{
+    margin-left: 40px;
+}
+.btn
+{
+    width: 50%;
+    height: 45px;
+    background: #fff;
+    border: none;
+    outline: none;
+    border-radius: 40px;  
+    justify-content:center;
+    padding: 12px 24px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+    font-weight: 20px;
+}
+.btn-group {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+  
+.container.register
+{
+    font-size: 14.5px;
+    text-align: center;
+    margin: 20px 0 15px;
+     
+}
+.register p a
+{
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+}
+.register p a:hover
+{
+    text-decoration: underline;
+}
+
+.icon i
+{
+    float:left;
+   margin-top: 20px;
+   height: 40px;
+
+}
+.eye img
+{
+    float:right;
+   margin-top: -45px;
+   height: 20px;
+
+}
+.input-form-row {
+    display: flex;
+    justify-content: space-between;
+    /* margin-bottom: 2rem; */
+    margin-right:100px;
+}
+
+.input-form {
+    flex: 1;
+    margin-right: 2rem; /* Tăng khoảng cách ngang */
+}
+
+.input-form:last-child {
+    margin-right: 0;
+}
+.message {
+    position: sticky;
+    top: 0;
+    margin: 0 auto;
+    max-width: 1200px;
+    background-color: var(--white);
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 10000;
+    gap: 1.5rem;
+}
+
+.message span {
+    font-size: 2rem;
+    color: var(--black);
+}
+
+.message i {
+    cursor: pointer;
+    color: var(--red);
+    font-size: 2.5rem;
+}
+
+.message i:hover {
+    transform: rotate(90deg);
+}
