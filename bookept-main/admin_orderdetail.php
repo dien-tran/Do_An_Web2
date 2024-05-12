@@ -12,7 +12,16 @@ $admin_id = $_SESSION['admin_id'];
 if (!isset($admin_id)) {
     header('location:login_admin.php');
 }
-
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Lấy orderId từ yêu cầu POST
+    $orderId = $_GET['order_id'];
+    $sql = "UPDATE orders SET payment_status = 'Completed' WHERE id = '$orderId'";
+    if (mysqli_query($conn, $sql)) {
+        echo 'success';
+    } else {
+        echo 'error';
+    }
+}
 
 ?>
 <!DOCTYPE html>
@@ -174,20 +183,20 @@ if (!isset($admin_id)) {
             <form name="form" action="" method="post">
                 <input type="hidden" id="order_id_input" name="order_id">
             </form>
-                <?php
-                // Lấy order_id từ tham số GET
-                $order_id = $_GET['order_id'];
+            <?php
+            // Lấy order_id từ tham số GET
+            $order_id = $_GET['order_id'];
 
-                // Truy vấn để lấy thông tin đơn hàng từ CSDL
-                $sql_order = mysqli_query($conn, "SELECT * FROM orders where id = '$order_id'");
-                $result_order = mysqli_fetch_assoc($sql_order);
+            // Truy vấn để lấy thông tin đơn hàng từ CSDL
+            $sql_order = mysqli_query($conn, "SELECT * FROM orders where id = '$order_id'");
+            $result_order = mysqli_fetch_assoc($sql_order);
 
-                
-                // Kiểm tra xem có đơn hàng nào được tìm thấy không
-                if ($result_order) {
-                    ?>
+
+            // Kiểm tra xem có đơn hàng nào được tìm thấy không
+            if ($result_order) {
+            ?>
                 <div class="modal-detail-order">
-                    <button class="modal-close"><i class="fa fa-close"></i></button>
+                    <a href="admin_orders.php"><button class="modal-close"><i class="fa fa-close"></i></button></a>
                     <div class="modal-detail-left">
                         <div class="order-item-group">
                             <?php
@@ -205,104 +214,125 @@ if (!isset($admin_id)) {
                                 $product_data = explode('(', $product_string);
                                 $product_name = trim($product_data[0]); // Tên sản phẩm
                                 $product_quantity = intval($product_data[1]); // Số lượng sản phẩm
-                                
+
                                 // $sql_product_image = mysqli_query($conn,"SELECT Image FROM products  JOIN orders ON products.name =   $product_name ");
-                                
+
                                 // $product_img = mysqli_fetch_assoc($sql_product_image);    
                                 $sql_product_image = mysqli_query($conn, "SELECT Image FROM products WHERE Name = '$product_name'");
                                 $product_img_data = mysqli_fetch_assoc($sql_product_image);
                                 $product_img_url = $product_img_data['Image'];
-                                
+
                                 // Truy vấn cơ sở dữ liệu để lấy thông tin về sản phẩm
                                 $sql_product = mysqli_query($conn, "SELECT * FROM products WHERE name='$product_name'");
                                 $product_detail = mysqli_fetch_assoc($sql_product);
-                        
+
                                 // Tính toán tổng tiền cho sản phẩm
                                 $product_price = $product_detail['Price']; // Giá của sản phẩm
                                 $total_price = $product_price * $product_quantity; // Tổng tiền cho sản phẩm
-                        
+
                                 $product_number++;
-                            
+
                                 echo '<div class="order-product">';
                                 echo '<div class="order-product-left">';
                                 echo '<div class="order-product-left">';
                                 echo '<img src="image/' . $product_img_url . '" alt="">';
 
-                                
-                                echo '<div class="order-product-info">';
-                                echo '<h4>' . $product_name.'</h4> ';
-                                echo '<h4> Price: $' .$total_price .'</h4>'; 
-                                echo '<p class="order-product-quantity">SL: '. $product_quantity .'<p>';
-                                echo '</div>';
-                                echo '</div>';
-                            ?>            
-                                    </div>
-                                </div>
-                            <?php } ?>
-                        </div>
-                    </div>
-                    <div class="modal-detail-right">
-                        <ul class="detail-order-group">
-                            <li class="detail-order-item">
-                                <span class="detail-order-item-left"><i class="fa fa-calendar"></i> Ngày đặt hàng</span>
-                                <span class="detail-order-item-right"><?php echo $result_order['placed_on']; ?></span>
-                            </li>
-                            <li class="detail-order-item">
-                                    <span class="detail-order-item-left"><i class="fa fa-user"></i> Người nhận</span>
-                                    <span class="detail-order-item-right"><?php echo $result_order['name'] ?></span>
-                                </li>
-                                <li class="detail-order-item">
-                                    <span class="detail-order-item-left"><i class="fa fa-phone"></i> Số điện thoại</span>
-                                    <span class="detail-order-item-right"><?php echo $result_order['number'] ?></span>
-                                </li>
-                                <li class="detail-order-item">
-                                    <span class="detail-order-item-left"><i class="fa fa-credit-card"></i> Phương thức</span>
-                                    <span class="detail-order-item-right"><?php echo$result_order['method'] ?></span>
-                                </li>
-                                <li class="detail-order-item tb">
-                                    <span class="detail-order-item-t"><i class="fa fa-location-arrow"></i> Địa chỉ nhận</span>
-                                    <p class="detail-order-item-b"><?php echo $result_order['address'] ?></p>
-                                </li>
-                        </ul>
-                    </div>
-                </div>
-                    <div class="modal-detail-bottom">                                                    
-                        <div class="modal-detail-bottom-left">
-                            <div class="price-total">
-                                <span class="thanhtien">Thành tiền</span>
-                                <span class="price">$<?php echo $result_order['total_price']; ?></span>
-                            </div>
-                        </div>
-                        <div class="modal-detail-bottom-right">
-                            <!-- <button class="modal-detail-btn ${classDetailBtn}" onclick="changeStatus('${order.id}',this)">${textDetailBtn}</button> -->
-                        </div>
-                    </div>
-            <?php 
-                } 
-            ?>
 
-    <div class="modal detail-order-product">
-        <div class="modal-container">
-            <button class="modal-close"><i class="fa fa-close"></i></button>
-            <div class="table">
-                <table width="100%">
-                    <thead>
-                        <tr>
-                            <td>Mã đơn</td>
-                            <td>Số lượng</td>
-                            <td>Đơn giá</td>
-                            <td>Ngày đặt</td>
-                        </tr>
-                    </thead>
-                    <tbody id="show-product-order-detail">
-                    </tbody>
-                </table>
+                                echo '<div class="order-product-info">';
+                                echo '<h4>' . $product_name . '</h4> ';
+                                echo '<h4> Price: $' . $total_price . '</h4>';
+                                echo '<p class="order-product-quantity">SL: ' . $product_quantity . '<p>';
+                                echo '</div>';
+                                echo '</div>';
+                            ?>
+                        </div>
+                    </div>
+                <?php } ?>
+                </div>
+        </div>
+        <div class="modal-detail-right">
+            <ul class="detail-order-group">
+                <li class="detail-order-item">
+                    <span class="detail-order-item-left"><i class="fa fa-calendar"></i> Ngày đặt hàng</span>
+                    <span class="detail-order-item-right"><?php echo $result_order['placed_on']; ?></span>
+                </li>
+                <li class="detail-order-item">
+                    <span class="detail-order-item-left"><i class="fa fa-user"></i> Người nhận</span>
+                    <span class="detail-order-item-right"><?php echo $result_order['name'] ?></span>
+                </li>
+                <li class="detail-order-item">
+                    <span class="detail-order-item-left"><i class="fa fa-phone"></i> Số điện thoại</span>
+                    <span class="detail-order-item-right"><?php echo $result_order['number'] ?></span>
+                </li>
+                <li class="detail-order-item">
+                    <span class="detail-order-item-left"><i class="fa fa-credit-card"></i> Phương thức</span>
+                    <span class="detail-order-item-right"><?php echo $result_order['method'] ?></span>
+                </li>
+                <li class="detail-order-item tb">
+                    <span class="detail-order-item-t"><i class="fa fa-location-arrow"></i> Địa chỉ nhận</span>
+                    <p class="detail-order-item-b"><?php echo $result_order['address'] ?></p>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="modal-detail-bottom">
+        <div class="modal-detail-bottom-left">
+            <div class="price-total">
+                <span class="thanhtien">Thành tiền</span>
+                <span class="price">$<?php echo $result_order['total_price']; ?></span>
             </div>
-            </form>
+        </div>
+        <div class="modal-detail-bottom-right">
+            <form method="POST">
+                <?php
+                if ($result_order['payment_status'] == "pending") {
+                ?>
+
+
+                    <button class="btn-chuaxuly modal-detail-btn"><?php echo $result_order['payment_status'] ?></button>
+                </form>
+                <?php
+                } else {
+                ?>
+                </form>
+                    <button class="btn-daxuly modal-detail-btn"><?php echo $result_order['payment_status'] ?></button>
+
+            <?php
+                }
+            }
+            ?>
         </div>
     </div>
 
-    <script src="js/admin.js"></script>
+    </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Bắt sự kiện click cho nút "Chưa xử lý"
+            var btnChuaXuLy = document.querySelector('.btn-chuaxuly');
+            if (btnChuaXuLy) {
+                btnChuaXuLy.addEventListener('click', function() {
+                    var orderId = <?php echo $order_id; ?>; // Lấy orderId từ PHP
+                    // Gửi yêu cầu AJAX
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', 'update_payment_status.php', true);
+                    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                    xhr.onreadystatechange = function() {
+                        if (xhr.readyState == 4 && xhr.status == 200) {
+                            // Xử lý phản hồi từ máy chủ
+                            var response = xhr.responseText;
+                            if (response == 'success') {
+                            } else {
+                                // Xử lý lỗi nếu có
+                                console.log('Có lỗi xảy ra: ' + response);
+                            }
+                        }
+                    };
+                    xhr.send('order_id=' + orderId);
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>
