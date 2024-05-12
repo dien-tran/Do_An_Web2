@@ -181,7 +181,6 @@ if (isset($_POST['edit'])) {
                     $select_products = mysqli_query($conn, "SELECT * FROM `products` LIMIT $offset, $products_per_page") or die('query failed');
 
 
-
                     if (mysqli_num_rows($select_products) > 0) {
                         while ($fetch_products = mysqli_fetch_assoc($select_products)) {
                     ?>
@@ -266,16 +265,10 @@ if (isset($_POST['edit'])) {
                                 <label for="category" class="form-label">Chọn thể loại</label>
                                 <select name="CategoryId" id="chon-mon">
                                     <?php
-                                    $id = $_GET['edit_product'];
-                                    $old_cate = mysqli_query($conn, "SELECT * FROM products WHERE Id = '$id'") or die('query failed');
-                                    $fetch_old = mysqli_fetch_assoc($old_cate);
                                     $sql_cate = "SELECT * FROM category";
                                     $result = mysqli_query($conn, $sql_cate);
                                     if (mysqli_num_rows($result) > 0) {
                                         while ($row = mysqli_fetch_assoc($result)) {
-                                            if($fetch_old['CategoryId'] == $row['CateId'])
-                                            echo '<option selected value="' . $row['CateId'] . '">' . $row['CateName'] . '</option>';
-                                        else
                                             echo '<option value="' . $row['CateId'] . '">' . $row['CateName'] . '</option>';
                                         }
                                         echo '</select>';
