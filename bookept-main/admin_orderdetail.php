@@ -174,72 +174,113 @@ if (!isset($admin_id)) {
             <form name="form" action="" method="post">
                 <input type="hidden" id="order_id_input" name="order_id">
             </form>
-            <?php     
-            // $order_id = '<script>document.writeln(orderId);</script>';
-            $order_id = $_GET['order_id'];
-            $sql = mysqli_query($conn, "SELECT * FROM orders where id = '$order_id'");
-            $sql_productname = mysqli_query($conn, "SELECT Name from products");
-            $fetch_sql = mysqli_fetch_assoc($sql);
-            echo $fetch_sql['total_products'];
-            $fetch_productname = mysqli_fetch_assoc($sql_productname);
-            // if($fetch_sql['name'] == $fetch_productname['Name'])
-            // {}
-            if (mysqli_num_rows($sql) > 0) {
-                while ($fetch = mysqli_fetch_assoc($sql)) {
-            ?>
+                <?php
+                // Lấy order_id từ tham số GET
+                $order_id = $_GET['order_id'];
+
+                // Truy vấn để lấy thông tin đơn hàng từ CSDL
+                $sql_order = mysqli_query($conn, "SELECT * FROM orders where id = '$order_id'");
+                $result_order = mysqli_fetch_assoc($sql_order);
+
+                
+                // Kiểm tra xem có đơn hàng nào được tìm thấy không
+                if ($result_order) {
+                    ?>
+                <div class="modal-detail-order">
                     <button class="modal-close"><i class="fa fa-close"></i></button>
-                    <div class="modal-detail-order">
-                        <div class="modal-detail-left">
-                            <div class="order-product">
-                                <div class="order-product-left">
-                                    <img src="<?php echo $fetch['Image'] ?>" alt="">
-                                    <div class="order-product-info">
-                                        <h4></h4>
-                                        <p class="order-product-quantity">SL:
-                                        <p>
+                    <div class="modal-detail-left">
+                        <div class="order-item-group">
+                            <?php
+                            // Truy vấn để lấy thông tin chi tiết sản phẩm trong đơn hàng
+                            $total_products = $result_order['total_products']; // Lấy giá trị từ cột total_products
+                            $products_array = explode(',', $total_products); // Tách các sản phẩm thành mảng
+                            $product_number = 1;
+
+                            if (count($products_array) > 0) {
+                                array_shift($products_array); // Bỏ qua phần tử đầu tiên của mảng
+                            }
+
+                            foreach ($products_array as $product_string) {
+                                // Tách tên sản phẩm và số lượng
+                                $product_data = explode('(', $product_string);
+                                $product_name = trim($product_data[0]); // Tên sản phẩm
+                                $product_quantity = intval($product_data[1]); // Số lượng sản phẩm
+                                
+                                // $sql_product_image = mysqli_query($conn,"SELECT Image FROM products  JOIN orders ON products.name =   $product_name ");
+                                
+                                // $product_img = mysqli_fetch_assoc($sql_product_image);    
+                                $sql_product_image = mysqli_query($conn, "SELECT Image FROM products WHERE Name = '$product_name'");
+                                $product_img_data = mysqli_fetch_assoc($sql_product_image);
+                                $product_img_url = $product_img_data['Image'];
+                                
+                                // Truy vấn cơ sở dữ liệu để lấy thông tin về sản phẩm
+                                $sql_product = mysqli_query($conn, "SELECT * FROM products WHERE name='$product_name'");
+                                $product_detail = mysqli_fetch_assoc($sql_product);
+                        
+                                // Tính toán tổng tiền cho sản phẩm
+                                $product_price = $product_detail['Price']; // Giá của sản phẩm
+                                $total_price = $product_price * $product_quantity; // Tổng tiền cho sản phẩm
+                        
+                                $product_number++;
+                            
+                                echo '<div class="order-product">';
+                                echo '<div class="order-product-left">';
+                                echo '<div class="order-product-left">';
+                                echo '<img src="image/' . $product_img_url . '" alt="">';
+
+                                
+                                echo '<div class="order-product-info">';
+                                echo '<h4>' . $product_name.'</h4> ';
+                                echo '<h4> Price: $' .$total_price .'</h4>'; 
+                                echo '<p class="order-product-quantity">SL: '. $product_quantity .'<p>';
+                                echo '</div>';
+                                echo '</div>';
+                            ?>            
                                     </div>
                                 </div>
-                            </div>
-                            <div class="order-product-right">
-                                <div class="order-product-price">
-                                    <span class="order-product-current-price"><?php echo $fetch['Price'] ?></span>
-                                </div>
-                            </div>
+                            <?php } ?>
                         </div>
-                        <div class="modal-detail-right">
-                            <ul class="detail-order-group">
-                                <li class="detail-order-item">
-                                    <span class="detail-order-item-left"><i class="fa fa-calendar"></i> Ngày đặt hàng</span>
-                                    <span class="detail-order-item-right"> <?php echo $fetch['placed_on'] ?></span>
-                                </li>
-                                <li class="detail-order-item">
+                    </div>
+                    <div class="modal-detail-right">
+                        <ul class="detail-order-group">
+                            <li class="detail-order-item">
+                                <span class="detail-order-item-left"><i class="fa fa-calendar"></i> Ngày đặt hàng</span>
+                                <span class="detail-order-item-right"><?php echo $result_order['placed_on']; ?></span>
+                            </li>
+                            <li class="detail-order-item">
                                     <span class="detail-order-item-left"><i class="fa fa-user"></i> Người nhận</span>
-                                    <span class="detail-order-item-right"><?php echo $fetch['name'] ?></span>
+                                    <span class="detail-order-item-right"><?php echo $result_order['name'] ?></span>
                                 </li>
                                 <li class="detail-order-item">
                                     <span class="detail-order-item-left"><i class="fa fa-phone"></i> Số điện thoại</span>
-                                    <span class="detail-order-item-right"><?php echo $fetch['number'] ?></span>
+                                    <span class="detail-order-item-right"><?php echo $result_order['number'] ?></span>
                                 </li>
                                 <li class="detail-order-item">
                                     <span class="detail-order-item-left"><i class="fa fa-credit-card"></i> Phương thức</span>
-                                    <span class="detail-order-item-right"><?php echo $fetch['method'] ?></span>
+                                    <span class="detail-order-item-right"><?php echo$result_order['method'] ?></span>
                                 </li>
                                 <li class="detail-order-item tb">
                                     <span class="detail-order-item-t"><i class="fa fa-location-arrow"></i> Địa chỉ nhận</span>
-                                    <p class="detail-order-item-b"><?php echo $fetch['address'] ?></p>
+                                    <p class="detail-order-item-b"><?php echo $result_order['address'] ?></p>
                                 </li>
-                            </ul>
+                        </ul>
+                    </div>
+                </div>
+                    <div class="modal-detail-bottom">                                                    
+                        <div class="modal-detail-bottom-left">
+                            <div class="price-total">
+                                <span class="thanhtien">Thành tiền</span>
+                                <span class="price">$<?php echo $result_order['total_price']; ?></span>
+                            </div>
+                        </div>
+                        <div class="modal-detail-bottom-right">
+                            <!-- <button class="modal-detail-btn ${classDetailBtn}" onclick="changeStatus('${order.id}',this)">${textDetailBtn}</button> -->
                         </div>
                     </div>
-            <?php
-                }
-            } ?>
-            <div class="modal-detail-bottom">
-            </div>
+            <?php 
+                } 
+            ?>
 
-            </form>
-        </div>
-    </div>
     <div class="modal detail-order-product">
         <div class="modal-container">
             <button class="modal-close"><i class="fa fa-close"></i></button>
