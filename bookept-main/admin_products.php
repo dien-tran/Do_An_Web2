@@ -70,14 +70,15 @@ if (isset($_GET['delete'])) // kiểm tra xem có tồn tại tham số 'delete'
     $check_sold_query = mysqli_query($conn, "SELECT * FROM products WHERE '$delete_id' = Id");
     $fetch_delete = mysqli_fetch_assoc($check_sold_query);
     if ($fetch_delete['SoldYet'] == "Yes" && $fetch_delete['Status'] == 0) {
-        echo '<script>alert("Hello")';
-        echo $fetch_delete;
         mysqli_query($conn, "DELETE FROM products WHERE id = '$delete_id'") or die('query failed');
+        header("Location:admin_products.php");
     } elseif ($fetch_delete['SoldYet'] == "Yes") {
-        echo $fetch_delete['SoldYet'];
         mysqli_query($conn, "UPDATE products SET STATUS = 0 WHERE id = '$delete_id'");
     } else
+    {
         mysqli_query($conn, "DELETE FROM products WHERE id = '$delete_id'") or die('query failed');
+        header("Location:admin_products.php");
+    }
 }
 
 if (isset($_GET['display'])) {
