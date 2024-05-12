@@ -307,7 +307,7 @@ $search_keyword = isset($_GET['search']) ? $_GET['search'] : '';
                } else {
                   $page_number = $_GET['page'];
                }
-               $result = mysqli_query($conn, $sql .= " LIMIT $initial_page , $limit") or die("query failed");
+               $result = mysqli_query($conn, $sql) or die("query failed");
                if (mysqli_num_rows($result) > 0) {
                   while ($fetch_product = mysqli_fetch_assoc($result)) {
                   ?>
