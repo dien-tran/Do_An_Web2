@@ -18,14 +18,7 @@ if(isset($_GET['id']))
     $success = false; // Biến cờ để kiểm tra xem có truy vấn SQL thành công không
 
     $queries = array(); // Mảng để lưu các truy vấn SQL
-    if ($name != $check['name']) {
-        $query[] = "UPDATE `users` SET `name` = '$name' WHERE id = $user_id";
-       
-      } 
-      if ($email != $check['email']) {
-        $query[] = "UPDATE `users` SET `email` = '$email' WHERE id = $user_id";
-        
-      }
+    
     if (isset($_POST['phone_number'])) {
         $phone = mysqli_real_escape_string($conn, $_POST['phone_number']);
         // Rest of your code for handling phone number goes here
@@ -41,6 +34,18 @@ if(isset($_GET['id']))
             } else {
                 $message[] = 'The phone number is invalid. Please check!';
             }
+          }
+        }
+        if (isset($_POST['name'])) {
+          $name = mysqli_real_escape_string($conn, $_POST['name']);
+          if ($name != $check['name']) {
+          $queries[] = "UPDATE `users` SET `name` = '$name' WHERE id = $user_id";
+          }
+        } 
+        if (isset($_POST['email'])) {
+          $email = mysqli_real_escape_string($conn, $_POST['email']);
+          if ($email != $check['email']) {
+          $queries[] = "UPDATE `users` SET `email` = '$email' WHERE id = $user_id";
           }
         }
           if (isset($_POST['address'])) {

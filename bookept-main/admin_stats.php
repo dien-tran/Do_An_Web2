@@ -91,21 +91,6 @@ if (!isset($admin_id)) {
         <main class="content">
             <div class="section active">
                 <div class="admin-control">
-                    <div class="admin-control-left">
-                        <select name="the-loai-tk" id="the-loai-tk" onchange="thongKe()">
-                            <option>Tất cả</option>
-                            <option>Tiểu thuyết</option>
-                            <option>Truyện ngắn</option>
-                            <option>Kinh dị</option>
-                            <option>Self Help</option>
-                        </select>
-                    </div>
-                    <div class="admin-control-center">
-                        <form action="" class="form-search">
-                            <span class="search-btn"><i class="fa fa-search"></i></span>
-                            <input id="form-search-tk" type="text" class="form-search-input" placeholder="Tìm kiếm tên sách..." oninput="thongKe()">
-                        </form>
-                    </div>
                     <div class="admin-control-right">
                         <form method="post" class="fillter-date">
                             <div>
@@ -116,45 +101,14 @@ if (!isset($admin_id)) {
                                 <label for="end_date">Đến ngày:</label>
                                 <input class="form-control-date" type="date" id="end_date" name="end_date">
                             </div>
-                            <button type="submit" name="submit">Search</button>
+                            <button class="btn-control-large" type="submit" name="submit">Search</button>
                         </form>
-                        <button class="btn-reset-order" onclick="thongKe(1)"><i class="fa fa-arrow-circle-up"></i></i></button>
-                        <button class="btn-reset-order" onclick="thongKe(2)"><i class="fa fa-arrow-circle-o-down"></i></button>
-                        <button class="btn-reset-order" onclick="thongKe(0)"><i class="fa fa-circle-o-notch fa-spin"></i></button>
                     </div>
                 </div>
                 <div class="order-statistical" id="order-statistical">
                     <div class="order-statistical-item">
                         <div class="order-statistical-item-content">
-
-                            <p class="order-statistical-item-content-desc">Sản phẩm được bán nhiều nhất</p>
-                            <?php $most_sold = mysqli_query($conn, "SELECT p.Name AS ProductName, SUM(db.ProductAmount) AS TotalSold FROM detailsbill db INNER JOIN products p ON db.IdProduct = p.Id GROUP BY db.IdProduct ORDER BY TotalSold DESC LIMIT 3");
-                            if (mysqli_num_rows($most_sold) > 0) {
-                                $i = 1;
-                                while ($fetch_sold = mysqli_fetch_assoc($most_sold)) {
-                                    echo '<h4 class="order-statistical-item-content-h">#' . $i++ . ' ' . $fetch_sold['name'] . '</h4>';
-                                }
-                            }
-                            ?>
-                            </h4>
-                        </div>
-                        <div class="order-statistical-item-icon">
-                            <i class="fa-light fa-salad"></i>
-                        </div>
-                    </div>
-                    <div class="order-statistical-item">
-                        <div class="order-statistical-item-content">
-                            <p class="order-statistical-item-content-desc">Số lượng bán ra</p>
-                            <h4 class="order-statistical-item-content-h" id="quantity-order">
-                            </h4>
-                        </div>
-                        <div class="order-statistical-item-icon">
-                            <i class="fa-light fa-file-lines"></i>
-                        </div>
-                    </div>
-                    <div class="order-statistical-item">
-                        <div class="order-statistical-item-content">
-                            <p class="order-statistical-item-content-desc">Doanh thu</p>
+                            <p class="order-statistical-item-content-desc">Tổng doanh thu</p>
                             <h4 class="order-statistical-item-content-h" id="quantity-sale">
                                 <?php
                                 $total_pendings = 0;
@@ -180,7 +134,7 @@ if (!isset($admin_id)) {
                             <tr>
                                 <td>Khách hàng</td>
                                 <td>Ngày đặt hàng</td>
-                                <td>Sản phẩm</td>
+                                <td>SDT</td>
                                 <td>Doanh thu</td>
                                 <td></td>
                             </tr>
@@ -191,7 +145,6 @@ if (!isset($admin_id)) {
                                 // Retrieve start and end date from the form
                                 $start_date = $_POST['start_date'];
                                 $end_date = $_POST['end_date'];
-                                echo $start_date. "+". $end_date;
                                 // Retrieve orders within the specified time range
                                 $select_orders = mysqli_query($conn, "SELECT * FROM orders WHERE placed_on BETWEEN '$start_date' AND '$end_date' ORDER BY total_price DESC LIMIT 0, 5") or die('query failed');
                                 if(mysqli_num_rows($select_orders) > 0)
@@ -205,7 +158,7 @@ if (!isset($admin_id)) {
                                             <td>$<?php echo $fetch_orders['total_price'] ?></td>
                                             <td class="control">
                                                 <form method="post">
-                                                    <a style="color:black" href="admin_stats_details.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Chi tiết</a>
+                                                    <a style="color:black" href="admin_stats_details.php?start_date= <?php echo $start_date?>&end_date=<?php echo $end_date ?>&order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Chi tiết</a>
                                                 </form>
                                     </tr>
                                         <?php

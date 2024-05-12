@@ -45,7 +45,16 @@ for(let i=0;i<closeBtn.length;i++){
         sidebar.classList.add("open");
     })
 }
+const closeModalBtn = document.querySelector('.modal-close');
 
+// Add an event listener to the close button
+closeModalBtn.addEventListener('click', function() {
+    // Get the modal element
+    const modal = document.querySelector('.modal.detail-order');
+
+    // Remove the "open" class from the modal
+    modal.classList.remove('open');
+});
 
 function openEditPopup(productId) {
     // Set the value of a hidden input field in your form with the edit ID

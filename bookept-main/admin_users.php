@@ -280,7 +280,7 @@ if (isset($_GET['unblock'])) {
                                     ?>
                                        <a id="btn-add-user" class="btn-control-large" type="submit" name="delete" href="admin_users.php?delete=<?php echo $fetch_users['id']; ?>" onclick="return confirm('delete this user?');" class="delete-btn">Xóa</a>
                                        <a id="btn-add-user" class="btn-control-large" type="submit" name="block" href="admin_users.php?block=<?php echo $fetch_users['id']; ?>" onclick="return confirm('Block this user?');" class="delete-btn">Chặn</a>
-                                       <a id="btn-edit-user" class="btn-control-large delete-btn" data-id="<?php echo $fetch_users['id']; ?>">Edit</a>
+                                       <a id="btn-edit-user"class="btn-control-large" type="submit" name="edit" href="edit_user.php?id= <?php echo $fetch_users['id']; ?>">Edit</a>
 
                                     <?php
                                     } else {

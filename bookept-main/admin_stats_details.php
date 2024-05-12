@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'];
     $phone_number = $_POST['phone_number'];
     $insert_query = "INSERT INTO `users` (name, email, password, user_type, phone_number) VALUES ('$name', '$email', '$password', '$user_type', '$phone_number')";
-    header('Location: admin.php');
+    header('Location: admin_stats.php');
     exit();
 }
 //search
@@ -152,35 +152,18 @@ if (isset($_GET['unblock'])) {
         <main class="content">
             <div class="section active">
                 <div class="admin-control">
-                    <div class="admin-control-left">
-                        <select name="the-loai-tk" id="the-loai-tk" onchange="thongKe()">
-                            <option>Tất cả</option>
-                            <option>Tiểu thuyết</option>
-                            <option>Truyện ngắn</option>
-                            <option>Kinh dị</option>
-                            <option>Self Help</option>
-                        </select>
-                    </div>
-                    <div class="admin-control-center">
-                        <form action="" class="form-search">
-                            <span class="search-btn"><i class="fa fa-search"></i></span>
-                            <input id="form-search-tk" type="text" class="form-search-input" placeholder="Tìm kiếm tên sách..." oninput="thongKe()">
-                        </form>
-                    </div>
                     <div class="admin-control-right">
-                        <form action="" class="fillter-date">
+                        <form method="post" class="fillter-date">
                             <div>
-                                <label for="time-start">Từ</label>
-                                <input type="date" class="form-control-date" id="time-start-tk" onchange="thongKe()">
+                                <label for="start_date">Từ ngày:</label>
+                                <input class="form-control-date" type="date" id="start_date" name="start_date">
                             </div>
                             <div>
-                                <label for="time-end">Đến</label>
-                                <input type="date" class="form-control-date" id="time-end-tk" onchange="thongKe()">
+                                <label for="end_date">Đến ngày:</label>
+                                <input class="form-control-date" type="date" id="end_date" name="end_date">
                             </div>
+                            <button class="btn-control-large" type="submit" name="submit">Search</button>
                         </form>
-                        <button class="btn-reset-order" onclick="thongKe(1)"><i class="fa fa-arrow-circle-up"></i></i></button>
-                        <button class="btn-reset-order" onclick="thongKe(2)"><i class="fa fa-arrow-circle-o-down"></i></button>
-                        <button class="btn-reset-order" onclick="thongKe(0)"><i class="fa fa-circle-o-notch fa-spin"></i></button>
                     </div>
                 </div>
                 <div class="order-statistical" id="order-statistical">
@@ -216,7 +199,7 @@ if (isset($_GET['unblock'])) {
                         <div class="order-statistical-item-content">
                             <p class="order-statistical-item-content-desc">Doanh thu</p>
                             <h4 class="order-statistical-item-content-h" id="quantity-sale">
-                            <?php 
+                                <?php
                                 $total_pendings = 0;
                                 $select_pending = mysqli_query($conn, "SELECT total_price FROM orders WHERE payment_status = 'Completed'") or die('query failed');
                                 if (mysqli_num_rows($select_pending) > 0) {
@@ -225,7 +208,7 @@ if (isset($_GET['unblock'])) {
                                         $total_pendings += $total_price;
                                     }
                                 }
-                                echo $total_pendings."$";
+                                echo $total_pendings . "$";
                                 ?>
                             </h4>
                         </div>
@@ -240,147 +223,192 @@ if (isset($_GET['unblock'])) {
                             <tr>
                                 <td>Khách hàng</td>
                                 <td>Ngày đặt hàng</td>
-                                <td>Sản phẩm</td>
+                                <td>SDT</td>
                                 <td>Doanh thu</td>
                                 <td></td>
                             </tr>
                         </thead>
                         <tbody id="showTk">
                             <?php
-                            $select_orders = mysqli_query($conn, "SELECT * FROM orders") or die('query failed');
-                            if (mysqli_num_rows($select_orders) > 0) {
-                                while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+                                // Retrieve start and end date from the form
+                                $start_date = $_POST['start_date'];
+                                $end_date = $_POST['end_date'];
+                                // Retrieve orders within the specified time range
+                                $select_orders = mysqli_query($conn, "SELECT * FROM orders WHERE placed_on BETWEEN '$start_date' AND '$end_date' ORDER BY total_price DESC LIMIT 0, 5") or die('query failed');
+                                if (mysqli_num_rows($select_orders) > 0) {
+                                    while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
                             ?>
-                                    <tr>
                                         <td><?php echo $fetch_orders['name'] ?></td>
                                         <td><?php echo $fetch_orders['placed_on'] ?></td>
-                                        <td><?php echo $fetch_orders['total_products'] ?></td>
-                                        <td><?php echo $fetch_orders['total_price'] ?>$</td>
+                                        <td><?php echo $fetch_orders['number'] ?></td>
+                                        <td>$<?php echo $fetch_orders['total_price'] ?></td>
                                         <td class="control">
                                             <form method="post">
-                                                <a style="color:black" href="admin_stats_details.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Chi tiết</a>
+                                                <a style="color:black" href="admin_stats_details.php?start_date= <?php echo $start_date ?>&end_date=<?php echo $end_date ?>&order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Chi tiết</a>
                                             </form>
-                                    <?php
+                                            </tr>
+                                        <?php
+                                    }
+                                }
+                                // Array to store customer total purchases
+                                // Process each order
+                                // while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                                //     // Calculate total purchase amount for each order
+                                //     $total_price = $fetch_orders['total_price'];
+                                //     $customer_id = $fetch_orders['user_id'];
+                                //     $customer_orders_query = mysqli_query($conn, "SELECT * FROM orders WHERE user_id = $customer_id AND placed_on BETWEEN '$start_date' AND '$end_date'");
+                                // }
+                            } else {
+                                $start_date = $_GET['start_date'];
+                                $end_date = $_GET['end_date'];
+                                $select_orders = mysqli_query($conn, "SELECT * FROM orders WHERE placed_on BETWEEN '$start_date' AND '$end_date' ORDER BY total_price DESC LIMIT 0, 5") or die('query failed');
+                                if (mysqli_num_rows($select_orders) > 0) {
+                                    while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                                        ?>
+                                            <tr>
+                                                <td><?php echo $fetch_orders['name'] ?></td>
+                                                <td><?php echo $fetch_orders['placed_on'] ?></td>
+                                                <td><?php echo $fetch_orders['number'] ?></td>
+                                                <td><?php echo $fetch_orders['total_price'] ?>$</td>
+                                                <td class="control">
+                                                    <form method="post">
+                                                        <a style="color:black" href="admin_stats_details.php?start_date= <?php echo $start_date ?>&end_date=<?php echo $end_date ?>&order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Chi tiết</a>
+                                                    </form>
+                                            </tr>
+                                <?php
+                                    }
                                 }
                             }
 
-                                    ?>
+                                ?>
                         </tbody>
                     </table>
                 </div>
             </div>
         </main>
         <div class="modal detail-order open" id="a">
-        <div class="modal-container">
-            <h3 class="modal-container-title">CHI TIẾT ĐƠN HÀNG</h3>
-            <form name="form" action="" method="post">
-                <input type="hidden" id="order_id_input" name="order_id">
-            </form>
-            <?php
-            // Lấy order_id từ tham số GET
-            $order_id = $_GET['order_id'];
+            <div class="modal-container">
+                <h3 class="modal-container-title">CHI TIẾT ĐƠN HÀNG</h3>
+                <form name="form" action="" method="post">
+                    <input type="hidden" id="order_id_input" name="order_id">
+                </form>
+                <?php
+                // Lấy order_id từ tham số GET
+                $order_id = $_GET['order_id'];
 
-            // Truy vấn để lấy thông tin đơn hàng từ CSDL
-            $sql_order = mysqli_query($conn, "SELECT * FROM orders where id = '$order_id'");
-            $result_order = mysqli_fetch_assoc($sql_order);
-            
-            
-            // Kiểm tra xem có đơn hàng nào được tìm thấy không
-            if ($result_order) {
-            ?>
-                <div class="modal-detail-order">
-                    <a href="admin_stats.php"><button class="modal-close"><i class="fa fa-close"></i></button></a>
-                    <div class="modal-detail-left">
-                        <div class="order-item-group">
-                            <?php
-                            // Truy vấn để lấy thông tin chi tiết sản phẩm trong đơn hàng
-                            $total_products = $result_order['total_products']; // Lấy giá trị từ cột total_products
-                            $products_array = explode(',', $total_products); // Tách các sản phẩm thành mảng
-                            $product_number = 1;
-
-                            if (count($products_array) > 0) {
-                                array_shift($products_array); // Bỏ qua phần tử đầu tiên của mảng
-                            }
-
-                            foreach ($products_array as $product_string) {
-                                // Tách tên sản phẩm và số lượng
-                                $product_data = explode('(', $product_string);
-                                $product_name = trim($product_data[0]); // Tên sản phẩm
-                                $product_quantity = intval($product_data[1]); // Số lượng sản phẩm
-
-                                // $sql_product_image = mysqli_query($conn,"SELECT Image FROM products  JOIN orders ON products.name =   $product_name ");
-
-                                // $product_img = mysqli_fetch_assoc($sql_product_image);    
-                                $sql_product_image = mysqli_query($conn, "SELECT * FROM products WHERE Name = '$product_name'");
-                                $product_img_data = mysqli_fetch_assoc($sql_product_image);
-                                $product_img_url = $product_img_data['Image'];
-
-                                // Truy vấn cơ sở dữ liệu để lấy thông tin về sản phẩm
-                                $sql_product = mysqli_query($conn, "SELECT * FROM products WHERE Name = '$product_name'");
-                                $product_detail = mysqli_fetch_assoc($sql_product);
-
-                                // Tính toán tổng tiền cho sản phẩm
-                                $product_price = $product_detail['Price']; // Giá của sản phẩm
-                                $total_price = $product_price * $product_quantity; // Tổng tiền cho sản phẩm
-
-                                $product_number++;
-
-                                echo '<div class="order-product">';
-                                echo '<div class="order-product-left">';
-                                echo '<div class="order-product-left">';
-                                echo '<img src="image/' . $product_img_url . '" alt="">';
+                // Truy vấn để lấy thông tin đơn hàng từ CSDL
+                $sql_order = mysqli_query($conn, "SELECT * FROM orders where id = '$order_id'");
+                $result_order = mysqli_fetch_assoc($sql_order);
 
 
-                                echo '<div class="order-product-info">';
-                                echo '<h4>' . $product_name . '</h4> ';
-                                echo '<h4> Price: $' . $total_price . '</h4>';
-                                echo '<p class="order-product-quantity">SL: ' . $product_quantity . '<p>';
-                                echo '</div>';
-                                echo '</div>';
-                            ?>
+                // Kiểm tra xem có đơn hàng nào được tìm thấy không
+                if ($result_order) {
+                ?>
+                    <div class="modal-detail-order">
+                        <button class="modal-close"><i class="fa fa-close"></i></button>
+                        <div class="modal-detail-left">
+                            <div class="order-item-group">
+                                <?php
+                                // Truy vấn để lấy thông tin chi tiết sản phẩm trong đơn hàng
+                                $total_products = $result_order['total_products']; // Lấy giá trị từ cột total_products
+                                $products_array = explode(',', $total_products); // Tách các sản phẩm thành mảng
+                                $product_number = 1;
+
+                                if (count($products_array) > 0) {
+                                    array_shift($products_array); // Bỏ qua phần tử đầu tiên của mảng
+                                }
+
+                                foreach ($products_array as $product_string) {
+                                    // Tách tên sản phẩm và số lượng
+                                    $product_data = explode('(', $product_string);
+                                    $product_name = trim($product_data[0]); // Tên sản phẩm
+                                    $product_quantity = intval($product_data[1]); // Số lượng sản phẩm
+
+                                    // $sql_product_image = mysqli_query($conn,"SELECT Image FROM products  JOIN orders ON products.name =   $product_name ");
+
+                                    // $product_img = mysqli_fetch_assoc($sql_product_image);    
+                                    $sql_product_image = mysqli_query($conn, "SELECT * FROM products WHERE Name = '$product_name'");
+                                    $product_img_data = mysqli_fetch_assoc($sql_product_image);
+                                    $product_img_url = $product_img_data['Image'];
+
+                                    // Truy vấn cơ sở dữ liệu để lấy thông tin về sản phẩm
+                                    $sql_product = mysqli_query($conn, "SELECT * FROM products WHERE Name = '$product_name'");
+                                    $product_detail = mysqli_fetch_assoc($sql_product);
+
+                                    // Tính toán tổng tiền cho sản phẩm
+                                    $product_price = $product_detail['Price']; // Giá của sản phẩm
+                                    $total_price = $product_price * $product_quantity; // Tổng tiền cho sản phẩm
+
+                                    $product_number++;
+
+                                    echo '<div class="order-product">';
+                                    echo '<div class="order-product-left">';
+                                    echo '<div class="order-product-left">';
+                                    echo '<img src="image/' . $product_img_url . '" alt="">';
+
+
+                                    echo '<div class="order-product-info">';
+                                    echo '<h4>' . $product_name . '</h4> ';
+                                    echo '<h4> Price: $' . $total_price . '</h4>';
+                                    echo '<p class="order-product-quantity">SL: ' . $product_quantity . '<p>';
+                                    echo '</div>';
+                                    echo '</div>';
+                                ?>
+                            </div>
                         </div>
+                    <?php } ?>
                     </div>
-                <?php } ?>
-                </div>
-        </div>
-        <div class="modal-detail-right">
-            <ul class="detail-order-group">
-                <li class="detail-order-item">
-                    <span class="detail-order-item-left"><i class="fa fa-calendar"></i> Ngày đặt hàng</span>
-                    <span class="detail-order-item-right"><?php echo $result_order['placed_on']; ?></span>
-                </li>
-                <li class="detail-order-item">
-                    <span class="detail-order-item-left"><i class="fa fa-user"></i> Người nhận</span>
-                    <span class="detail-order-item-right"><?php echo $result_order['name'] ?></span>
-                </li>
-                <li class="detail-order-item">
-                    <span class="detail-order-item-left"><i class="fa fa-phone"></i> Số điện thoại</span>
-                    <span class="detail-order-item-right"><?php echo $result_order['number'] ?></span>
-                </li>
-                <li class="detail-order-item tb">
-                    <span class="detail-order-item-t"><i class="fa fa-location-arrow"></i> Địa chỉ nhận</span>
-                    <p class="detail-order-item-b"><?php echo $result_order['address'] ?></p>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <div class="modal-detail-bottom">
-        <div class="modal-detail-bottom-left">
-            <div class="price-total">
-                <span class="thanhtien">Thành tiền</span>
-                <span class="price">$<?php echo $result_order['total_price']; ?></span>
+            </div>
+            <div class="modal-detail-right">
+                <ul class="detail-order-group">
+                    <li class="detail-order-item">
+                        <span class="detail-order-item-left"><i class="fa fa-calendar"></i> Ngày đặt hàng</span>
+                        <span class="detail-order-item-right"><?php echo $result_order['placed_on']; ?></span>
+                    </li>
+                    <li class="detail-order-item">
+                        <span class="detail-order-item-left"><i class="fa fa-user"></i> Người nhận</span>
+                        <span class="detail-order-item-right"><?php echo $result_order['name'] ?></span>
+                    </li>
+                    <li class="detail-order-item">
+                        <span class="detail-order-item-left"><i class="fa fa-phone"></i> Số điện thoại</span>
+                        <span class="detail-order-item-right"><?php echo $result_order['number'] ?></span>
+                    </li>
+                    <li class="detail-order-item tb">
+                        <span class="detail-order-item-t"><i class="fa fa-location-arrow"></i> Địa chỉ nhận</span>
+                        <p class="detail-order-item-b"><?php echo $result_order['address'] ?></p>
+                    </li>
+                </ul>
             </div>
         </div>
-        <div class="modal-detail-bottom-right">
+        <div class="modal-detail-bottom">
+            <div class="modal-detail-bottom-left">
+                <div class="price-total">
+                    <span class="thanhtien">Thành tiền</span>
+                    <span class="price">$<?php echo $result_order['total_price']; ?></span>
+                </div>
+            </div>
+            <div class="modal-detail-bottom-right">
             <?php
                 }
             ?>
+            </div>
         </div>
     </div>
     </div>
-    </div>
     <div id="toast"></div>
-    <script src="js/admin.js"></script>
+    <script>
+        const closeModalBtn = document.querySelector('.modal-close');
+
+        // Add an event listener to the close button
+        closeModalBtn.addEventListener('click', function() {
+            // Get the modal element
+            const modal = document.querySelector('.modal.detail-order');
+
+            // Remove the "open" class from the modal
+            modal.classList.remove('open');
+        });
+    </script>
 </body>
 
 </html>
