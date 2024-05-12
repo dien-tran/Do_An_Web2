@@ -154,7 +154,7 @@ $search_keyword = isset($_GET['search']) ? $_GET['search'] : '';
             echo "</select>";
 
 
-            $sql_product = "SELECT PublicationYear FROM products"; // Thay 'table_name' bằng tên bảng thực tế của bạn
+            $sql_product = "SELECT PublicationYear FROM products ORDER BY PublicationYear ASC"; // Thay 'table_name' bằng tên bảng thực tế của bạn
             $result_product = mysqli_query($conn, $sql_product);
             echo "<select name='year' id='year'>";
             echo "<option value='' selected disabled >Publication Year</option>"; // Option mặc định
@@ -166,7 +166,7 @@ $search_keyword = isset($_GET['search']) ? $_GET['search'] : '';
             // Kết thúc select box
             echo "</select>";
 
-            $sql_product = "SELECT Language FROM products"; // Thay 'table_name' bằng tên bảng thực tế của bạn
+            $sql_product = "SELECT DISTINCT Language FROM products"; // Thay 'table_name' bằng tên bảng thực tế của bạn
             $result_product = mysqli_query($conn, $sql_product);
             echo "<select name='language' id='language-select'>";
             echo "<option value='' selected disabled >Language</option>"; // Option mặc định
@@ -178,7 +178,7 @@ $search_keyword = isset($_GET['search']) ? $_GET['search'] : '';
             // Kết thúc select box
             echo "</select>";
 
-            $sql_product = "SELECT CoverType FROM products"; // Thay 'table_name' bằng tên bảng thực tế của bạn
+            $sql_product = "SELECT DISTINCT CoverType FROM products"; // Thay 'table_name' bằng tên bảng thực tế của bạn
             $result_product = mysqli_query($conn, $sql_product);
             echo "<select name='cover' id='cover'>";
             echo "<option value='' selected disabled >Cover Type</option>"; // Option mặc định
