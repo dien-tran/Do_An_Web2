@@ -80,7 +80,7 @@ if (isset($_POST['add_to_cart'])) {
                 $product = mysqli_fetch_assoc($result);
         ?>
                 <div class="image">
-                    <img id="product_img" src="uploaded_img/<?php echo $product['Image']; ?>" alt="">
+                    <img id="product_img" src="image/<?php echo $product['Image']; ?>" alt="">
                 </div>
                 
                 <div class="content">

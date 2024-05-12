@@ -32,7 +32,7 @@ if (!isset($admin_id)) {
 
 // }
 // xóa 
-
+$update_id = $_GET['edit_product'];
 if (isset($_POST['edit'])) {
     $update_name = $_POST['Name'];
     $update_price = $_POST['Price'];
@@ -46,9 +46,10 @@ if (isset($_POST['edit'])) {
     $update_quantity = $_POST['Quantity'];
     $update_des = $_POST['Description'];
     $update_cate = $_POST['CategoryId'];
+
     mysqli_query($conn, "UPDATE products SET CategoryId = '$update_cate',Name = '$update_name', Price = '$update_price', MainAuthor = '$update_author',
     Publisher = '$update_publisher', PublicationYear = '$update_pub_year', Language = '$update_language', CoverType = '$update_cover', Quantity = '$update_quantity',
-    Description = '$update_des'");
+    Description = '$update_des' WHERE Id = '$update_id'");
 
     if (!empty($update_image)) {
         mysqli_query($conn, "UPDATE products SET Image = '$update_image' WHERE id = '$update_id'") or die('query failed');
@@ -161,7 +162,6 @@ if (isset($_POST['edit'])) {
                         </form>
                     </div>
                     <div class="admin-control-right">
-                        <button class="btn-control-large" id="btn-cancel-product" onclick="cancelSearchProduct()"><i class="fa fa-refresh fa-spin"></i> Làm mới</button>
                         <button class="btn-control-large" id="btn-add-product"><i class="fa fa-plus"></i> Thêm sách mới</button>
                     </div>
                 </div>
@@ -179,12 +179,6 @@ if (isset($_POST['edit'])) {
                     // Tính offset (bắt đầu lấy từ vị trí nào trong cơ sở dữ liệu)
                     $offset = ($current_page - 1) * $products_per_page;
                     $select_products = mysqli_query($conn, "SELECT * FROM `products` LIMIT $offset, $products_per_page") or die('query failed');
-
-
-
-
-
-
 
 
 
@@ -334,7 +328,6 @@ if (isset($_POST['edit'])) {
                             <button name="edit" class="form-submit btn-update-product-form edit-product-e" id="update-product-button">
                                 <i class="fa fa-floppy-o"></i>
                                 <span>LƯU THAY ĐỔI</span>
-
                             </button>
                     <?php
                                 }

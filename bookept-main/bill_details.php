@@ -61,7 +61,6 @@ if(isset($message) && is_array($message)) // Kiểm tra nếu $message là một
     <br>
     <form action="" method="POST" id="form">
       <?php
-      $user_id = $_SESSION['user_id'];
       $sql = mysqli_query($conn, "SELECT * FROM `users` WHERE id=$user_id");
       $check = mysqli_fetch_assoc($sql); // lấy từng cột giá trị trên bảng users
       $sql_bill = mysqli_query($conn, "SELECT * FROM `orders` WHERE user_id=$user_id ORDER BY id DESC LIMIT 1");
@@ -69,8 +68,6 @@ if(isset($message) && is_array($message)) // Kiểm tra nếu $message là một
         
       $sql_detailsbill = mysqli_query($conn, "SELECT * FROM `bill`  WHERE IdUser =$user_id ORDER BY IdBill DESC LIMIT 1 ");
       $bill_info = mysqli_fetch_assoc($sql_detailsbill);
-
-
       ?>
       <table>
     <?php

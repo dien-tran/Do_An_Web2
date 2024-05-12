@@ -69,16 +69,13 @@ if (isset($_GET['delete'])) // kiểm tra xem có tồn tại tham số 'delete'
     $delete_id = $_GET['delete']; // nếu có thì lấy id 
     $check_sold_query = mysqli_query($conn, "SELECT * FROM products WHERE '$delete_id' = Id");
     $fetch_delete = mysqli_fetch_assoc($check_sold_query);
-    if($fetch_delete['SoldYet'] == "Yes" && $fetch_delete['Status'] == 0)
-    {
+    if ($fetch_delete['SoldYet'] == "Yes" && $fetch_delete['Status'] == 0) {
         echo '<script>alert("Hello")';
         echo $fetch_delete;
         mysqli_query($conn, "DELETE FROM products WHERE id = '$delete_id'") or die('query failed');
-    }
-    elseif ($fetch_delete['SoldYet'] == "Yes") {
+    } elseif ($fetch_delete['SoldYet'] == "Yes") {
         mysqli_query($conn, "UPDATE products SET STATUS = 0");
-    }
-     else
+    } else
         mysqli_query($conn, "DELETE FROM products WHERE id = '$delete_id'") or die('query failed');
 }
 
@@ -176,6 +173,7 @@ if (isset($_GET['display'])) {
 
                     <div class="admin-control-center">
                         <form method="get" class="form-search">
+                            <input type="hidden" name="search" value="<?php echo isset($_GET['search']) ? $_GET['search'] : ''; ?>">
                             <span class="search-btn"><i class="fa fa-search"></i></span>
                             <input id="form-search-product" type="text" name="search" class="form-search-input" placeholder="Tìm kiếm tên sách...">
                             <button type="submit" name="submit_search" class="btn-control-large ">Search</button>
@@ -191,7 +189,7 @@ if (isset($_GET['display'])) {
 
                     // Thêm điều kiện tìm kiếm vào truy vấn SQL
                     $sql_query = "SELECT * FROM products WHERE Name LIKE '%$search_keyword%'";
-                    $products_per_page = 8;
+                    $products_per_page = 2;
                     // Tính số trang dựa trên tổng số sản phẩm và số sản phẩm mỗi trang
                     $total_products = mysqli_num_rows(mysqli_query($conn, $sql_query));
                     $total_pages = ceil($total_products / $products_per_page);
@@ -241,7 +239,6 @@ if (isset($_GET['display'])) {
                                                 ?>
                                                 <a href="admin_products_edit.php?edit_product=<?php echo $fetch_products['Id']; ?>" style="color:black;"><button id="edit-product" name="edit" class="btn-edit"><i class="fa fa-pencil"></i></button></a>
                                                 <a href="admin_products.php?delete=<?php echo $fetch_products['Id']; ?>"><button class="btn-delete" name="delete" onclick="return confirm('Delete this product?')"><i class="fa fa-trash"></i></button> </a>
-
                                         </div>
                                     </div>
                                 </div>
@@ -257,7 +254,12 @@ if (isset($_GET['display'])) {
                             <?php
                             // Hiển thị các nút phân trang
                             for ($page = 1; $page <= $total_pages; $page++) {
-                                echo '<li class="page-nav-item"><a href="admin_products.php?page=' . $page . '">' . $page . '</li></a>';
+                                // Kiểm tra xem có từ khóa tìm kiếm hay không
+                                if (!empty($search_keyword)) {
+                                    echo '<li class="page-nav-item"><a href="admin_products.php?page=' . $page . '&search=' . $search_keyword . '">' . $page . '</a></li>';
+                                } else {
+                                    echo '<li class="page-nav-item"><a href="admin_products.php?page=' . $page . '">' . $page . '</a></li>';
+                                }
                             }
                             ?>
                         </ul>
@@ -357,15 +359,14 @@ if (isset($_GET['display'])) {
         <script src="js/admin.js">
         </script>
         <script>
-            if (typeof window.history.pushState === 'function') {
-            // Remove GET parameters from the URL
-            window.history.pushState({}, '', window.location.href.split('?')[0]);
-        }
+            // if (typeof window.history.pushState === 'function') {
+            //     // Remove GET parameters from the URL
+            //     window.history.pushState({}, '', window.location.href.split('?')[0]);
+            // }
             let links = document.querySelectorAll('.page-nav-item');
             let bodyId = parseInt(document.body.id) - 1;
             console.log(links + "as" + bodyId);
             links[bodyId].classList.add('active');
-            
         </script>
         <?php
 

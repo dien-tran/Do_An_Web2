@@ -135,7 +135,7 @@ $offset = ($current_page - 1) * $products_per_page;
 
                         <a href="products_details.php?product_id=<?php echo $fetch_products['Id']; ?>">
                             <div class="image">
-                                <img src="uploaded_img/<?php echo $fetch_products['Image']; ?>" alt="">
+                                <img src="image/<?php echo $fetch_products['Image']; ?>" alt="">
                             </div>
                         </a>
                         <div class="details">
