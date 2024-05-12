@@ -259,9 +259,15 @@ $search_keyword = isset($_GET['search']) ? $_GET['search'] : '';
                   </form>
                   <?php
                }
+               ?>
+               <div class="page-nav">
+                     <ul class="page-nav-list">
+               <?php
                for ($page_number = 1; $page_number <= $total_pages; $page_number++) {
-                  echo '<a href="search_page.php?page=' . $page_number . '">' . $page_number . '</a>';
+                  echo '<li class="page-nav-item"><a href="search_page.php?page=' . $page_number . '">' . $page_number . '</a></li>';
+                     // Kiểm tra xem có từ khóa tìm kiếm hay không
                }
+               echo '</ul> </div>';
             }
          } else {
             if (isset($_POST['submit'])) {
@@ -314,20 +320,12 @@ $search_keyword = isset($_GET['search']) ? $_GET['search'] : '';
                   $search_item = mysqli_real_escape_string($conn, $_POST['search']);
                   $sql = "SELECT * FROM `products` WHERE name LIKE '%$search_item%'";
                }
-               $limit = 2;
-               
-               $result = mysqli_query($conn, $sql);
-               $total_rows = mysqli_num_rows($result);
-               $total_pages = ceil($total_rows / $limit);
-               echo $total_rows;
                if (!isset($_GET['page'])) {
                   $page_number = 1;
                } else {
                   $page_number = $_GET['page'];
                }
-               $page_number = isset($_GET['page']) ? $_GET['page'] : 1;
-               $initial_page = ($page_number - 1) * $limit;
-               $result = mysqli_query($conn, $sql . "LIMIT $initial_page, $limit") or die("query failed");
+               $result = mysqli_query($conn, $sql) or die("query failed");
                if (mysqli_num_rows($result) > 0) {
                   while ($fetch_product = mysqli_fetch_assoc($result)) {
                   ?>
@@ -345,11 +343,6 @@ $search_keyword = isset($_GET['search']) ? $_GET['search'] : '';
                      </form>
 
          <?php
-                  }
-
-                  for ($page_number = 1; $page_number <= $total_pages; $page_number++) {
-                     if(!empty($search_keyword))
-                     echo '<a href="search_page.php?page=' . $page_number . '&'.http_build_query($_POST). '">'. $page_number . '</a>';
                   }
                }
             }
