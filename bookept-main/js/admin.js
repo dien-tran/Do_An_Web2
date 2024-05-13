@@ -1,3 +1,20 @@
+function redirectToSearch() {
+    var districtValue = document.getElementById("district").value;
+    var wardValue = document.getElementById("ward").value;
+    // Xây dựng URL tìm kiếm dựa trên giá trị đã chọn từ cả hai select box
+    var searchURL = "admin_orders.php?";
+    if (districtValue) {
+        searchURL += "district=" + districtValue;
+        if (wardValue) {
+            searchURL += "&ward=" + wardValue;
+        }
+    } else if (wardValue) {
+        searchURL += "ward=" + wardValue;
+    }
+
+    // Chuyển hướng trang tới URL tìm kiếm mới
+    window.location = searchURL;
+}
 // function checkLogin() {
 //     let currentUser = JSON.parse(localStorage.getItem("currentuser"));
 //     if(currentUser == null || currentUser.userType == 0) {
