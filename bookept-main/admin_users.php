@@ -190,7 +190,7 @@ if (isset($_GET['unblock'])) {
                   <script>
                      // chuyển sang trang register . khi thêm khách hàng
                      function register() {
-                        window.location.href = "register.php";
+                        window.location.href = "addcustomer.php";
                         // window.location.href="admin.php"; đang ghi đè nên không thành côngh
 
                      }
