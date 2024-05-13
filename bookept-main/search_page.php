@@ -183,7 +183,7 @@ $search_keyword = isset($_GET['search']) ? $_GET['search'] : '';
 
             // Lặp qua kết quả và tạo các option
             while ($row = mysqli_fetch_assoc($result_product)) {
-               
+               echo "<option value='" . $row['CoverType'] . "'>" . $row['CoverType'] . "</option>";
             }
             // Kết thúc select box
             echo "</select>";
@@ -293,7 +293,7 @@ $search_keyword = isset($_GET['search']) ? $_GET['search'] : '';
                   $language = mysqli_real_escape_string($conn, $_POST['language']);
                   $sql .= " AND Language = '$language'";
                }
-               if (!empty($_GET['cover'])) {
+               if (!empty($_POST['cover'])) {
                   $cover = mysqli_real_escape_string($conn, $_POST['cover']);
                   $sql .= " AND CoverType = '$cover'";
                }
@@ -347,42 +347,8 @@ $search_keyword = isset($_GET['search']) ? $_GET['search'] : '';
    <?php include 'footer.php'; ?>
 
    <!-- custom js file link  -->
-   <scriptscript src="js/script.js"></scriptscript>
+   <script src="js/script.js"></script>
 
 </body>
-<select name='year' onchange='getData(this.value)' id='year'>
-    <option value='' selected disabled>Publication Year</option>
-    <option value='1800-1900'>1800-1900</option>
-    <option value='1900-2000'>1900-2000</option>
-    <option value='Above_2000'>Above 2000</option>
-</select>
-<script>
-    function getData(selectYear) {
-        var xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-                // Receive the response from the server and do something with it
-                console.log(this.responseText);
-            }
-        };
-        // Send the query to the server
-        var sqlQuery = "";
-        switch (selectYear) {
-            case "1800-1900":
-                sqlQuery = " SELECT * FROM `products` WHERE PublicationYear BETWEEN 1800 AND 1900;";
-                break;
-            case "1900-2000":
-                sqlQuery = " SELECT * FROM `products` WHERE PublicationYear BETWEEN 1900 AND 2000;";
-                break;
-            case "Above_2000":
-                sqlQuery = "SELECT * FROM `products` WHERE PublicationYear > 2000";
-                break;
-            default:
-                break;
-        }
-        xhttp.open("GET", "search.php?query=" + encodeURIComponent(sqlQuery), true);
-        xhttp.send();
-    }
-</script>
 
 </html>
