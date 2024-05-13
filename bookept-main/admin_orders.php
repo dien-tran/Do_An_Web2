@@ -118,8 +118,25 @@ if (!isset($admin_id)) {
                         }
                         ?>
                      </select>
-                     <button class="btn-control-large">Search</button>
+                     <select name="payment_status">
+                        <option disabled selected>Payment Status</option>
+                        <option value="Cancel">Cancel</option>
+                        <option value="pending">pending</option>
+                        <option value="Completed">Completed</option>
+                     </select>
                </div>
+               <div class="admin-control-right">
+                  <div>
+                     <label for="start_date">From:</label>
+                     <input class="form-control-date" type="date" id="start_date" name="start_date">
+                  </div>
+                  <div>
+                     <label for="end_date">To:</label>
+                     <input class="form-control-date" type="date" id="end_date" name="end_date">
+                  </div>
+                  
+               </div>
+               <button class="btn-control-large" type="submit" name="submit">Search</button>
                </form>
             </div>
             <div class="table">
@@ -136,7 +153,8 @@ if (!isset($admin_id)) {
                   </thead>
                   <tbody id="showOrder">
                      <?php
-                     if (isset($_GET['district']) && isset($_GET['ward'])) {
+                     
+                     if (isset($_GET['district']) && isset($_GET['ward']) && !isset($_GET['payment_status']) && $_GET['start_date'] == "") {
                         $district = $_GET['district'];
                         $ward = $_GET['ward'];
                         $select_orders = mysqli_query($conn, "SELECT * FROM orders o INNER JOIN users u ON o.user_id = u.id WHERE ward = '$ward' AND district = '$district'") or die('query failed');
@@ -156,7 +174,7 @@ if (!isset($admin_id)) {
                                  <?php
                               }
                            }
-                        } elseif (isset($_GET['district'])) {
+                        } elseif (isset($_GET['district']) && !isset($_GET['ward']) && !isset($_GET['payment_status']) && $_GET['start_date'] == "") {
                            $district = $_GET['district'];
                            $select_orders = mysqli_query($conn, "SELECT * FROM orders o INNER JOIN users u ON o.user_id = u.id WHERE district = '$district'") or die('query failed');
                            if (mysqli_num_rows($select_orders) > 0) {
@@ -175,7 +193,7 @@ if (!isset($admin_id)) {
                                  <?php
                               }
                            }
-                        } elseif (isset($_GET['ward'])) {
+                        } elseif (isset($_GET['ward']) && !isset($_GET['district']) && !isset($_GET['payment_status']) && $_GET['start_date'] == "") {
                            $ward = $_GET['ward'];
                            $select_orders = mysqli_query($conn, "SELECT * FROM orders o INNER JOIN users u ON o.user_id = u.id WHERE ward = '$ward'") or die('query failed');
                            if (mysqli_num_rows($select_orders) > 0) {
@@ -194,7 +212,250 @@ if (!isset($admin_id)) {
                                  <?php
                               }
                            }
-                        } else {
+                        } 
+                        elseif (isset($_GET['payment_status']) && !isset($_GET['ward']) && !isset($_GET['district']) && $_GET['start_date'] == "") {
+                           $pay = $_GET['payment_status'];
+                           $select_orders = mysqli_query($conn, "SELECT * FROM orders o INNER JOIN users u ON o.user_id = u.id WHERE payment_status = '$pay'") or die('query failed');
+                           if (mysqli_num_rows($select_orders) > 0) {
+                              while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                                 ?>
+                              <tr>
+                                 <td value="<?php echo $fetch_orders['id'] ?>">DH-<?php echo $fetch_orders['id']; ?></td>
+                                 <td><?php echo $fetch_orders['name'] ?></td>
+                                 <td><?php echo $fetch_orders['placed_on'] ?></td>
+                                 <td><?php echo $fetch_orders['total_price'] ?>$</td>
+                                 <td><?php echo $fetch_orders['payment_status'] ?></td>
+                                 <td class="control">
+                                    <form method="post">
+                                       <button class='btn-detail'><a style="color:black" href="admin_orderdetail.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Details</a></button>
+                                    </form>
+                                 <?php
+                              }
+                           }
+                        } 
+                        elseif (isset($_GET['district']) && isset($_GET['payment_status']) && !isset($_GET['ward']) && $_GET['start_date'] == "") {
+                           $district = $_GET['district'];
+                           $pay = $_GET['payment_status'];
+                           $select_orders = mysqli_query($conn, "SELECT * FROM orders o INNER JOIN users u ON o.user_id = u.id WHERE district = '$district' AND payment_status = '$pay'") or die('query failed');
+                           if (mysqli_num_rows($select_orders) > 0) {
+                              while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                                 ?>
+                              <tr>
+                                 <td value="<?php echo $fetch_orders['id'] ?>">DH-<?php echo $fetch_orders['id']; ?></td>
+                                 <td><?php echo $fetch_orders['name'] ?></td>
+                                 <td><?php echo $fetch_orders['placed_on'] ?></td>
+                                 <td><?php echo $fetch_orders['total_price'] ?>$</td>
+                                 <td><?php echo $fetch_orders['payment_status'] ?></td>
+                                 <td class="control">
+                                    <form method="post">
+                                       <button class='btn-detail'><a style="color:black" href="admin_orderdetail.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Details</a></button>
+                                    </form>
+                                 <?php
+                              }
+                           }
+                        }
+                        elseif (isset($_GET['ward']) && isset($_GET['payment_status']) && !isset($_GET['district']) && $_GET['start_date'] == "") {
+
+                           $ward = $_GET['ward'];
+                           $pay = $_GET['payment_status'];
+                           $select_orders = mysqli_query($conn, "SELECT * FROM orders o INNER JOIN users u ON o.user_id = u.id WHERE ward = '$ward' AND payment_status = '$pay'") or die('query failed');
+                           if (mysqli_num_rows($select_orders) > 0) {
+                              while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                                 ?>
+                              <tr>
+                                 <td value="<?php echo $fetch_orders['id'] ?>">DH-<?php echo $fetch_orders['id']; ?></td>
+                                 <td><?php echo $fetch_orders['name'] ?></td>
+                                 <td><?php echo $fetch_orders['placed_on'] ?></td>
+                                 <td><?php echo $fetch_orders['total_price'] ?>$</td>
+                                 <td><?php echo $fetch_orders['payment_status'] ?></td>
+                                 <td class="control">
+                                    <form method="post">
+                                       <button class='btn-detail'><a style="color:black" href="admin_orderdetail.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Details</a></button>
+                                    </form>
+                                 <?php
+                              }
+                           }
+                        }
+                        elseif (isset($_GET['district']) && isset($_GET['ward']) && isset($_GET['payment_status']) && $_GET['start_date'] == "") {
+                           $district = $_GET['district'];
+                           $ward = $_GET['ward'];
+                           $pay = $_GET['payment_status'];
+                           $select_orders = mysqli_query($conn, "SELECT * FROM orders o INNER JOIN users u ON o.user_id = u.id WHERE district = '$district' AND ward = '$ward' AND payment_status = '$pay'") or die('query failed');
+                           if (mysqli_num_rows($select_orders) > 0) {
+                              while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                                 ?>
+                              <tr>
+                                 <td value="<?php echo $fetch_orders['id'] ?>">DH-<?php echo $fetch_orders['id']; ?></td>
+                                 <td><?php echo $fetch_orders['name'] ?></td>
+                                 <td><?php echo $fetch_orders['placed_on'] ?></td>
+                                 <td><?php echo $fetch_orders['total_price'] ?>$</td>
+                                 <td><?php echo $fetch_orders['payment_status'] ?></td>
+                                 <td class="control">
+                                    <form method="post">
+                                       <button class='btn-detail'><a style="color:black" href="admin_orderdetail.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Details</a></button>
+                                    </form>
+                                 <?php
+                              }
+                           }
+                        }
+                        elseif (isset($_GET['start_date']) && $_GET['start_date'] != "" && !isset($_GET['payment_status']) && !isset($_GET['ward']) && !isset($_GET['district'])) {
+                           $start_date = $_GET['start_date'];
+                           $end_date = $_GET['end_date'];
+                           $select_orders = mysqli_query($conn, "SELECT * FROM orders o INNER JOIN users u ON o.user_id = u.id WHERE placed_on BETWEEN '$start_date' AND '$end_date'") or die('query failed');
+                           if (mysqli_num_rows($select_orders) > 0) {
+                              while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                                 ?>
+                              <tr>
+                                 <td value="<?php echo $fetch_orders['id'] ?>">DH-<?php echo $fetch_orders['id']; ?></td>
+                                 <td><?php echo $fetch_orders['name'] ?></td>
+                                 <td><?php echo $fetch_orders['placed_on'] ?></td>
+                                 <td><?php echo $fetch_orders['total_price'] ?>$</td>
+                                 <td><?php echo $fetch_orders['payment_status'] ?></td>
+                                 <td class="control">
+                                    <form method="post">
+                                       <button class='btn-detail'><a style="color:black" href="admin_orderdetail.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Details</a></button>
+                                    </form>
+                                 <?php
+                              }
+                           }
+                        }
+                        elseif (isset($_GET['ward']) && isset($_GET['start_date']) && isset($_GET['end_date']) && !isset($_GET['payment_status']) && !isset($_GET['district'])) {
+                           $ward = $_GET['ward'];
+                           $start = $_GET['start_date'];
+                           $end = $_GET['end_date'];
+                           $select_orders = mysqli_query($conn, "SELECT * FROM orders o INNER JOIN users u ON o.user_id = u.id WHERE ward = '$ward' AND placed_on BETWEEN '$start' AND '$end'") or die('query failed');
+                           if (mysqli_num_rows($select_orders) > 0) {
+                              while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                                 ?>
+                              <tr>
+                                 <td value="<?php echo $fetch_orders['id'] ?>">DH-<?php echo $fetch_orders['id']; ?></td>
+                                 <td><?php echo $fetch_orders['name'] ?></td>
+                                 <td><?php echo $fetch_orders['placed_on'] ?></td>
+                                 <td><?php echo $fetch_orders['total_price'] ?>$</td>
+                                 <td><?php echo $fetch_orders['payment_status'] ?></td>
+                                 <td class="control">
+                                    <form method="post">
+                                       <button class='btn-detail'><a style="color:black" href="admin_orderdetail.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Details</a></button>
+                                    </form>
+                                 <?php
+                              }
+                           }
+                        }
+                        elseif (isset($_GET['district']) && isset($_GET['start_date']) && !isset($_GET['payment_status']) && !isset($_GET['ward']) && isset($_GET['end_date'])) {
+                           $district = $_GET['district'];
+                           $start = $_GET['start_date'];
+                           $end = $_GET['end_date'];
+                           $select_orders = mysqli_query($conn, "SELECT * FROM orders o INNER JOIN users u ON o.user_id = u.id WHERE district = '$district' AND placed_on BETWEEN '$start' AND '$end'") or die('query failed');
+                           if (mysqli_num_rows($select_orders) > 0) {
+                              while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                                 ?>
+                              <tr>
+                                 <td value="<?php echo $fetch_orders['id'] ?>">DH-<?php echo $fetch_orders['id']; ?></td>
+                                 <td><?php echo $fetch_orders['name'] ?></td>
+                                 <td><?php echo $fetch_orders['placed_on'] ?></td>
+                                 <td><?php echo $fetch_orders['total_price'] ?>$</td>
+                                 <td><?php echo $fetch_orders['payment_status'] ?></td>
+                                 <td class="control">
+                                    <form method="post">
+                                       <button class='btn-detail'><a style="color:black" href="admin_orderdetail.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Details</a></button>
+                                    </form>
+                                 <?php
+                              }
+                           }
+                        }
+                        elseif (isset($_GET['payment_status']) && isset($_GET['start_date']) && !isset($_GET['ward']) && !isset($_GET['district']) && isset($_GET['end_date'])) {
+                           $pay = $_GET['payment_status'];
+                           $start = $_GET['start_date'];
+                           $end = $_GET['end_date'];
+                           $select_orders = mysqli_query($conn, "SELECT * FROM orders o INNER JOIN users u ON o.user_id = u.id WHERE payment_status = '$pay' AND placed_on BETWEEN '$start' AND '$end'") or die('query failed');
+                           if (mysqli_num_rows($select_orders) > 0) {
+                              while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                                 ?>
+                              <tr>
+                                 <td value="<?php echo $fetch_orders['id'] ?>">DH-<?php echo $fetch_orders['id']; ?></td>
+                                 <td><?php echo $fetch_orders['name'] ?></td>
+                                 <td><?php echo $fetch_orders['placed_on'] ?></td>
+                                 <td><?php echo $fetch_orders['total_price'] ?>$</td>
+                                 <td><?php echo $fetch_orders['payment_status'] ?></td>
+                                 <td class="control">
+                                    <form method="post">
+                                       <button class='btn-detail'><a style="color:black" href="admin_orderdetail.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Details</a></button>
+                                    </form>
+                                 <?php
+                              }
+                           }
+                        }
+                        elseif (isset($_GET['district']) && isset($_GET['ward']) && isset($_GET['start_date']) && !isset($_GET['payment_status']) && isset($_GET['end_date'])) {
+                           $ward = $_GET['ward'];
+                           $district = $_GET['district'];
+                           $start = $_GET['start_date'];
+                           $end = $_GET['end_date'];
+                           $select_orders = mysqli_query($conn, "SELECT * FROM orders o INNER JOIN users u ON o.user_id = u.id WHERE district = '$district' AND ward = '$ward' AND placed_on BETWEEN '$start' AND '$end'") or die('query failed');
+                           if (mysqli_num_rows($select_orders) > 0) {
+                              while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                                 ?>
+                              <tr>
+                                 <td value="<?php echo $fetch_orders['id'] ?>">DH-<?php echo $fetch_orders['id']; ?></td>
+                                 <td><?php echo $fetch_orders['name'] ?></td>
+                                 <td><?php echo $fetch_orders['placed_on'] ?></td>
+                                 <td><?php echo $fetch_orders['total_price'] ?>$</td>
+                                 <td><?php echo $fetch_orders['payment_status'] ?></td>
+                                 <td class="control">
+                                    <form method="post">
+                                       <button class='btn-detail'><a style="color:black" href="admin_orderdetail.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Details</a></button>
+                                    </form>
+                                 <?php
+                              }
+                           }
+                        }
+                        elseif (isset($_GET['district']) && isset($_GET['ward']) && isset($_GET['payment_status']) && isset($_GET['start_date']) && isset($_GET['end_date'])) {
+                           $ward = $_GET['ward'];
+                           $district = $_GET['district'];
+                           $pay = $_GET['payment_status'];
+                           $start = $_GET['start_date'];
+                           $end = $_GET['end_date'];
+                           $select_orders = mysqli_query($conn, "SELECT * FROM orders o INNER JOIN users u ON o.user_id = u.id WHERE payment_status = '$pay' AND district = '$district' AND ward = '$ward' AND placed_on BETWEEN '$start' AND '$end'") or die('query failed');
+                           if (mysqli_num_rows($select_orders) > 0) {
+                              while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                                 ?>
+                              <tr>
+                                 <td value="<?php echo $fetch_orders['id'] ?>">DH-<?php echo $fetch_orders['id']; ?></td>
+                                 <td><?php echo $fetch_orders['name'] ?></td>
+                                 <td><?php echo $fetch_orders['placed_on'] ?></td>
+                                 <td><?php echo $fetch_orders['total_price'] ?>$</td>
+                                 <td><?php echo $fetch_orders['payment_status'] ?></td>
+                                 <td class="control">
+                                    <form method="post">
+                                       <button class='btn-detail'><a style="color:black" href="admin_orderdetail.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Details</a></button>
+                                    </form>
+                                 <?php
+                              }
+                           }
+                        }
+                        elseif (isset($_GET['district']) && !isset($_GET['ward']) && isset($_GET['payment_status']) && isset($_GET['start_date']) && isset($_GET['end_date'])) {
+                           $district = $_GET['district'];
+                           $pay = $_GET['payment_status'];
+                           $start = $_GET['start_date'];
+                           $end = $_GET['end_date'];
+                           $select_orders = mysqli_query($conn, "SELECT * FROM orders o INNER JOIN users u ON o.user_id = u.id WHERE payment_status = '$pay' AND district = '$district' AND placed_on BETWEEN '$start' AND '$end'") or die('query failed');
+                           if (mysqli_num_rows($select_orders) > 0) {
+                              while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                                 ?>
+                              <tr>
+                                 <td value="<?php echo $fetch_orders['id'] ?>">DH-<?php echo $fetch_orders['id']; ?></td>
+                                 <td><?php echo $fetch_orders['name'] ?></td>
+                                 <td><?php echo $fetch_orders['placed_on'] ?></td>
+                                 <td><?php echo $fetch_orders['total_price'] ?>$</td>
+                                 <td><?php echo $fetch_orders['payment_status'] ?></td>
+                                 <td class="control">
+                                    <form method="post">
+                                       <button class='btn-detail'><a style="color:black" href="admin_orderdetail.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Details</a></button>
+                                    </form>
+                                 <?php
+                              }
+                           }
+                        }
+                        elseif(!isset($_GET['district']) && !isset($_GET['ward']) && !isset($_GET['payment_status'])) {
                            $select_orders = mysqli_query($conn, "SELECT * FROM orders") or die('query failed');
                            if (mysqli_num_rows($select_orders) > 0) {
                               while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
