@@ -27,7 +27,7 @@ if (!isset($admin_id)) {
 
    <link rel="stylesheet" href="">
    <title>Quản lý cửa hàng</title>
-   
+
 </head>
 
 <body>
@@ -47,36 +47,36 @@ if (!isset($admin_id)) {
          </div>
          <div class="middle-sidebar">
             <ul class="sidebar-list">
-            <li id="main" class="sidebar-list-item tab-content">
-                        <a href="admin_main.php" class="sidebar-link">
-                            <div class="sidebar-icon"><i class="fa fa-home"></i></div>
-                            <div class="hidden-sidebar">Overview</div>
-                        </a>
-                    </li>
-                    <li class="sidebar-list-item tab-content">
-                        <a href="admin_products.php" class="sidebar-link">
-                            <div class="sidebar-icon"><i class="fa fa-book"></i></div>
-                            <div class="hidden-sidebar">Products</div>
-                        </a>
-                    </li>
-                    <li id="customers" class="sidebar-list-item tab-content">
-                        <a href="admin_users.php" class="sidebar-link">
-                            <div class="sidebar-icon"><i class="fa fa-group"></i></div>
-                            <div class="hidden-sidebar">Customer</div>
-                        </a>
-                    </li>
-                    <li class="sidebar-list-item tab-content active">
-                        <a href="admin_orders.php" class="sidebar-link">
-                            <div class="sidebar-icon"><i class="fa fa-shopping-cart"></i></div>
-                            <div class="hidden-sidebar">Order</div>
-                        </a>
-                    </li>
-                    <li class="sidebar-list-item tab-content">
-                        <a href="admin_stats.php" class="sidebar-link">
-                            <div class="sidebar-icon"><i class="fa fa-bar-chart"></i></div>
-                            <div class="hidden-sidebar">Statistical</div>
-                        </a>
-                    </li>
+               <li id="main" class="sidebar-list-item tab-content">
+                  <a href="admin_main.php" class="sidebar-link">
+                     <div class="sidebar-icon"><i class="fa fa-home"></i></div>
+                     <div class="hidden-sidebar">Overview</div>
+                  </a>
+               </li>
+               <li class="sidebar-list-item tab-content">
+                  <a href="admin_products.php" class="sidebar-link">
+                     <div class="sidebar-icon"><i class="fa fa-book"></i></div>
+                     <div class="hidden-sidebar">Products</div>
+                  </a>
+               </li>
+               <li id="customers" class="sidebar-list-item tab-content">
+                  <a href="admin_users.php" class="sidebar-link">
+                     <div class="sidebar-icon"><i class="fa fa-group"></i></div>
+                     <div class="hidden-sidebar">Customer</div>
+                  </a>
+               </li>
+               <li class="sidebar-list-item tab-content active">
+                  <a href="admin_orders.php" class="sidebar-link">
+                     <div class="sidebar-icon"><i class="fa fa-shopping-cart"></i></div>
+                     <div class="hidden-sidebar">Order</div>
+                  </a>
+               </li>
+               <li class="sidebar-list-item tab-content">
+                  <a href="admin_stats.php" class="sidebar-link">
+                     <div class="sidebar-icon"><i class="fa fa-bar-chart"></i></div>
+                     <div class="hidden-sidebar">Statistical</div>
+                  </a>
+               </li>
             </ul>
          </div>
          <div class="bottom-sidebar">
@@ -85,11 +85,11 @@ if (!isset($admin_id)) {
                   <a href="admin_stats.php" class="sidebar-link" id="logout-acc">
                      <div class="sidebar-icon"><i class="fa fa-arrow-right"></i></div>
                      <div class="hidden-sidebar" onclick="redirectToLogout()">Logout</div>
-                            <script>
-                                function redirectToLogout() {
-                                    window.location.href = "logout_admin.php";
-                                }
-                            </script>
+                     <script>
+                        function redirectToLogout() {
+                           window.location.href = "logout_admin.php";
+                        }
+                     </script>
                   </a>
                </li>
             </ul>
@@ -100,30 +100,27 @@ if (!isset($admin_id)) {
          <div class="section active">
             <div class="admin-control">
                <div class="admin-control-left">
-                  <select name="districts" id="district" onchange="findOrderPlace()">
-                     <option value="2" selected disabled >District</option>
-                     <?php
-                     for ($i = 1; $i <= 12; $i++) {
-                        $selected = ($_POST['district'] == "District $i") ? 'selected' : '';
-                        "<option value='District $i' $selected>District $i</option>";
-                        $selected = ($check['district'] == "District $i") ? 'selected' : '';
-                        echo "<option value='District $i' $selected>District $i</option>";
-                     }
-                  ?>
-                  </select>
-                  <select name="ward" id="ward" onchange="findOrderPlace()">
-                  <option value="2" selected disabled>Ward</option>
-                     <?php
-                     for ($i = 1; $i <= 12; $i++) {
-                        $selected = ($_POST['ward'] == "Ward $i") ? 'selected' : '';
-                        "<option value='Ward $i' $selected>Ward $i</option>";
-                        $selected = ($check['ward'] == "Ward $i") ? 'selected' : '';
-                        echo "<option value='Ward $i' $selected>Ward $i</option>";
-                     }
-                     ?>
-                  </select>
+                  <form method="get">
+                     <select name="district" id="district">
+                        <option value="2" selected disabled>District</option>
+                        <?php
+
+                        for ($i = 1; $i <= 12; $i++) {
+                           echo "<option value='District $i'>District $i</option>";
+                        }
+                        ?>
+                     </select>
+                     <select name="ward" id="ward">
+                        <option value="2" selected disabled>Ward</option>
+                        <?php
+                        for ($i = 1; $i <= 12; $i++) {
+                           echo "<option value='Ward $i'>Ward $i</option>";
+                        }
+                        ?>
+                     </select>
+                     <button class="btn-control-large">Search</button>
                </div>
-               
+               </form>
             </div>
             <div class="table">
                <table width="100%">
@@ -139,27 +136,87 @@ if (!isset($admin_id)) {
                   </thead>
                   <tbody id="showOrder">
                      <?php
-                     $select_orders = mysqli_query($conn, "SELECT * FROM orders") or die('query failed');
-                     if (mysqli_num_rows($select_orders) > 0) {
-                        while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                     if (isset($_GET['district']) && isset($_GET['ward'])) {
+                        $district = $_GET['district'];
+                        $ward = $_GET['ward'];
+                        $select_orders = mysqli_query($conn, "SELECT * FROM orders o INNER JOIN users u ON o.user_id = u.id WHERE ward = '$ward' AND district = '$district'") or die('query failed');
+                        if (mysqli_num_rows($select_orders) > 0) {
+                           while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
                      ?>
-                           <tr>
-                              <td value="<?php echo $fetch_orders['id'] ?>">DH-<?php echo $fetch_orders['id']; ?></td>
-                              <td><?php echo $fetch_orders['name'] ?></td>
-                              <td><?php echo $fetch_orders['placed_on'] ?></td>
-                              <td><?php echo $fetch_orders['total_price'] ?>$</td>
-                              <td><?php echo $fetch_orders['payment_status'] ?></td>
-                              <td class="control">
-                                 <form method="post">
-                                 <button class='btn-detail'><a style="color:black" href="admin_orderdetail.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Details</a></button>
-                                 </form>
-                          <?php
+                              <tr>
+                                 <td value="<?php echo $fetch_orders['id'] ?>">DH-<?php echo $fetch_orders['id']; ?></td>
+                                 <td><?php echo $fetch_orders['name'] ?></td>
+                                 <td><?php echo $fetch_orders['placed_on'] ?></td>
+                                 <td><?php echo $fetch_orders['total_price'] ?>$</td>
+                                 <td><?php echo $fetch_orders['payment_status'] ?></td>
+                                 <td class="control">
+                                    <form method="post">
+                                       <button class='btn-detail'><a style="color:black" href="admin_orderdetail.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Details</a></button>
+                                    </form>
+                                 <?php
+                              }
+                           }
+                        } elseif (isset($_GET['district'])) {
+                           $district = $_GET['district'];
+                           $select_orders = mysqli_query($conn, "SELECT * FROM orders o INNER JOIN users u ON o.user_id = u.id WHERE district = '$district'") or die('query failed');
+                           if (mysqli_num_rows($select_orders) > 0) {
+                              while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                                 ?>
+                              <tr>
+                                 <td value="<?php echo $fetch_orders['id'] ?>">DH-<?php echo $fetch_orders['id']; ?></td>
+                                 <td><?php echo $fetch_orders['name'] ?></td>
+                                 <td><?php echo $fetch_orders['placed_on'] ?></td>
+                                 <td><?php echo $fetch_orders['total_price'] ?>$</td>
+                                 <td><?php echo $fetch_orders['payment_status'] ?></td>
+                                 <td class="control">
+                                    <form method="post">
+                                       <button class='btn-detail'><a style="color:black" href="admin_orderdetail.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Details</a></button>
+                                    </form>
+                                 <?php
+                              }
+                           }
+                        } elseif (isset($_GET['ward'])) {
+                           $ward = $_GET['ward'];
+                           $select_orders = mysqli_query($conn, "SELECT * FROM orders o INNER JOIN users u ON o.user_id = u.id WHERE ward = '$ward'") or die('query failed');
+                           if (mysqli_num_rows($select_orders) > 0) {
+                              while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                                 ?>
+                              <tr>
+                                 <td value="<?php echo $fetch_orders['id'] ?>">DH-<?php echo $fetch_orders['id']; ?></td>
+                                 <td><?php echo $fetch_orders['name'] ?></td>
+                                 <td><?php echo $fetch_orders['placed_on'] ?></td>
+                                 <td><?php echo $fetch_orders['total_price'] ?>$</td>
+                                 <td><?php echo $fetch_orders['payment_status'] ?></td>
+                                 <td class="control">
+                                    <form method="post">
+                                       <button class='btn-detail'><a style="color:black" href="admin_orderdetail.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Details</a></button>
+                                    </form>
+                                 <?php
+                              }
+                           }
+                        } else {
+                           $select_orders = mysqli_query($conn, "SELECT * FROM orders") or die('query failed');
+                           if (mysqli_num_rows($select_orders) > 0) {
+                              while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                                 ?>
+                              <tr>
+                                 <td value="<?php echo $fetch_orders['id'] ?>">DH-<?php echo $fetch_orders['id']; ?></td>
+                                 <td><?php echo $fetch_orders['name'] ?></td>
+                                 <td><?php echo $fetch_orders['placed_on'] ?></td>
+                                 <td><?php echo $fetch_orders['total_price'] ?>$</td>
+                                 <td><?php echo $fetch_orders['payment_status'] ?></td>
+                                 <td class="control">
+                                    <form method="post">
+                                       <button class='btn-detail'><a style="color:black" href="admin_orderdetail.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Details</a></button>
+                                    </form>
+                           <?php
+                              }
+                           }
                         }
-                     }
 
                            ?>
-                              </td>
-                           </tr>
+                                 </td>
+                              </tr>
                   </tbody>
                </table>
             </div>
@@ -171,63 +228,64 @@ if (!isset($admin_id)) {
       <div class="modal-container">
          <h3 class="modal-container-title">CHI TIẾT ĐƠN HÀNG</h3>
          <?php
-         
-         // $order_id = '<script>document.writeln(orderId);</script>';
-         if($_SERVER["REQUEST_METHOD"] == "POST"){
-            $order_id = $_POST['order_id'];
-         echo "orderid" .$order_id;
-         $sql = mysqli_query($conn, "SELECT * FROM orders where id = '$order_id'");
 
-         if (mysqli_num_rows($sql) > 0) {
-            while ($fetch = mysqli_fetch_assoc($sql)) {
+         // $order_id = '<script>document.writeln(orderId);</script>';
+         if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $order_id = $_POST['order_id'];
+            echo "orderid" . $order_id;
+            $sql = mysqli_query($conn, "SELECT * FROM orders where id = '$order_id'");
+
+            if (mysqli_num_rows($sql) > 0) {
+               while ($fetch = mysqli_fetch_assoc($sql)) {
 
          ?>
-               <button class="modal-close"><i class="fa fa-close"></i></button>
-               <div class="modal-detail-order">
-                  <div class="modal-detail-left">
-                     <div class="order-product">
-                        <div class="order-product-left">
-                           <img src="<?php echo $fetch['Image'] ?>" alt="">
-                           <div class="order-product-info">
-                              <h4></h4>
-                              <p class="order-product-quantity">SL:
-                              <p>
+                  <button class="modal-close"><i class="fa fa-close"></i></button>
+                  <div class="modal-detail-order">
+                     <div class="modal-detail-left">
+                        <div class="order-product">
+                           <div class="order-product-left">
+                              <img src="<?php echo $fetch['Image'] ?>" alt="">
+                              <div class="order-product-info">
+                                 <h4></h4>
+                                 <p class="order-product-quantity">SL:
+                                 <p>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="order-product-right">
+                           <div class="order-product-price">
+                              <span class="order-product-current-price"><?php echo $fetch['Price'] ?></span>
                            </div>
                         </div>
                      </div>
-                     <div class="order-product-right">
-                        <div class="order-product-price">
-                           <span class="order-product-current-price"><?php echo $fetch['Price'] ?></span>
-                        </div>
+                     <div class="modal-detail-right">
+                        <ul class="detail-order-group">
+                           <li class="detail-order-item">
+                              <span class="detail-order-item-left"><i class="fa fa-calendar"></i> Ngày đặt hàng</span>
+                              <span class="detail-order-item-right"> <?php echo $fetch['placed_on'] ?></span>
+                           </li>
+                           <li class="detail-order-item">
+                              <span class="detail-order-item-left"><i class="fa fa-user"></i> Người nhận</span>
+                              <span class="detail-order-item-right"><?php echo $fetch['name'] ?></span>
+                           </li>
+                           <li class="detail-order-item">
+                              <span class="detail-order-item-left"><i class="fa fa-phone"></i> Số điện thoại</span>
+                              <span class="detail-order-item-right"><?php echo $fetch['number'] ?></span>
+                           </li>
+                           <li class="detail-order-item">
+                              <span class="detail-order-item-left"><i class="fa fa-credit-card"></i> Phương thức</span>
+                              <span class="detail-order-item-right"><?php echo $fetch['method'] ?></span>
+                           </li>
+                           <li class="detail-order-item tb">
+                              <span class="detail-order-item-t"><i class="fa fa-location-arrow"></i> Địa chỉ nhận</span>
+                              <p class="detail-order-item-b"><?php echo $fetch['address'] ?></p>
+                           </li>
+                        </ul>
                      </div>
                   </div>
-                  <div class="modal-detail-right">
-                     <ul class="detail-order-group">
-                        <li class="detail-order-item">
-                           <span class="detail-order-item-left"><i class="fa fa-calendar"></i> Ngày đặt hàng</span>
-                           <span class="detail-order-item-right"> <?php echo $fetch['placed_on'] ?></span>
-                        </li>
-                        <li class="detail-order-item">
-                           <span class="detail-order-item-left"><i class="fa fa-user"></i> Người nhận</span>
-                           <span class="detail-order-item-right"><?php echo $fetch['name'] ?></span>
-                        </li>
-                        <li class="detail-order-item">
-                           <span class="detail-order-item-left"><i class="fa fa-phone"></i> Số điện thoại</span>
-                           <span class="detail-order-item-right"><?php echo $fetch['number'] ?></span>
-                        </li>
-                        <li class="detail-order-item">
-                           <span class="detail-order-item-left"><i class="fa fa-credit-card"></i> Phương thức</span>
-                           <span class="detail-order-item-right"><?php echo $fetch['method'] ?></span>
-                        </li>
-                        <li class="detail-order-item tb">
-                           <span class="detail-order-item-t"><i class="fa fa-location-arrow"></i> Địa chỉ nhận</span>
-                           <p class="detail-order-item-b"><?php echo $fetch['address'] ?></p>
-                        </li>
-                     </ul>
-                  </div>
-               </div>
          <?php
-            }}
+               }
+            }
          } ?>
          <div class="modal-detail-bottom">
          </div>
@@ -256,7 +314,9 @@ if (!isset($admin_id)) {
       </div>
    </div>
 
-   <script src="js/admin.js"></script>
+   <script src="js/admin.js">
+
+   </script>
 </body>
 
 </html>
