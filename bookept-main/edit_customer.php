@@ -23,9 +23,18 @@ if (isset($_POST['submit'])) {
     $queries = array(); // Mảng để lưu các truy vấn SQL
     if (isset( $_POST['name_change'])) {
       $name = mysqli_real_escape_string($conn, $_POST['name_change']);
-      $queries[] .= "UPDATE `users` SET `name` = '$name' WHERE id = $user_id";
-      $_SESSION['name'] = $name;
-      $check1=true;
+      $check_name= mysqli_query($conn, "SELECT * FROM users WHERE name = '$name' AND id != $user_id");
+      if(mysqli_num_rows($check_name)>0)
+      {
+        $message[] = 'This name already exists, please update it.';
+        $check1=false;
+      }
+      else
+      {
+        $queries[] .= "UPDATE `users` SET `name` = '$name' WHERE id = $user_id";
+        $_SESSION['name'] = $name;
+        $check1=true;
+      }
     } 
     if (isset($_POST['email_change'])) {
       $email = mysqli_real_escape_string($conn, $_POST['email_change']);

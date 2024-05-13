@@ -10,7 +10,7 @@ if (isset($_POST['submit'])) {
    $phone_number = mysqli_real_escape_string($conn, $_POST['phone_number']);
    $invalidFields = array();
    // Kiểm tra xem người dùng đã tồn tại hay chưa
-   $select_users = mysqli_query($conn, "SELECT * FROM `users` WHERE email = '$email' ") or die('query failed');
+   $select_users = mysqli_query($conn, "SELECT * FROM `users` WHERE name='$name' or email = '$email' ") or die('query failed');
    if (mysqli_num_rows($select_users) > 0) {
       $message[] = 'User already exists!';
    
