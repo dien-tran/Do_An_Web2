@@ -231,7 +231,7 @@ if (isset($_POST['order_btn'])) {
             ?>
                   <div class="summary-item">
                      <p><?php echo $fetch_cart['name']; ?></p>
-                     <p><?php echo '$' . $fetch_cart['price']; ?> &bull; <?php echo $fetch_cart['quantity']; ?></p>4
+                     <p><?php echo '$' . $fetch_cart['price']; ?> &bull; <?php echo $fetch_cart['quantity']; ?></p>
                   </div>
             <?php
                }
