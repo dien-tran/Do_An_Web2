@@ -140,7 +140,17 @@ $search_keyword = isset($_GET['search']) ? $_GET['search'] : '';
                echo "<option value='" . $row['MainAuthor'] . "'>" . $row['MainAuthor'] . "</option>";
             }
             echo "</select>";
+            
+            $sql_product = "SELECT PublicationYear FROM products ORDER BY PublicationYear ASC"; // Replace 'table_name' with the actual table name
+            $result_product = mysqli_query($conn, $sql_product);
+            echo "<select name='year' id='year'>";
+            echo "<option value='' selected disabled>Publication Year</option>"; // Default option
+            echo "<option value='1800-1900'>1800-1900</option>";
+            echo "<option value='1900-2000'>1900-2000</option>";
+            echo "<option value='Above_2000'>Above 2000</option>";
+            echo "</select>";
 
+            
 
             $sql_product = "SELECT Publisher FROM products"; // Thay 'table_name' bằng tên bảng thực tế của bạn
             $result_product = mysqli_query($conn, $sql_product);
@@ -153,18 +163,6 @@ $search_keyword = isset($_GET['search']) ? $_GET['search'] : '';
             }
             echo "</select>";
 
-
-            $sql_product = "SELECT PublicationYear FROM products ORDER BY PublicationYear ASC"; // Thay 'table_name' bằng tên bảng thực tế của bạn
-            $result_product = mysqli_query($conn, $sql_product);
-            echo "<select name='year' id='year'>";
-            echo "<option value='' selected disabled >Publication Year</option>"; // Option mặc định
-
-            // Lặp qua kết quả và tạo các option
-            while ($row = mysqli_fetch_assoc($result_product)) {
-               echo "<option value='" . $row['PublicationYear'] . "'>" . $row['PublicationYear'] . "</option>";
-            }
-            // Kết thúc select box
-            echo "</select>";
 
             $sql_product = "SELECT DISTINCT Language FROM products"; // Thay 'table_name' bằng tên bảng thực tế của bạn
             $result_product = mysqli_query($conn, $sql_product);
@@ -275,15 +273,27 @@ $search_keyword = isset($_GET['search']) ? $_GET['search'] : '';
                   $publisher = mysqli_real_escape_string($conn, $_POST['publisher']);
                   $sql .= " AND Publisher = '$publisher'";
                }
+
                if (!empty($_POST['year'])) {
                   $year = mysqli_real_escape_string($conn, $_POST['year']);
-                  $sql .= " AND PublicationYear = '$year'";
+                  $sql = "SELECT * FROM `products` WHERE `PublicationYear` BETWEEN 1800 AND 1900"; // Khởi tạo biến $sql
+              
+                  if ($year == '1800-1900') {
+                      // Không nên nối chuỗi trực tiếp với kết quả của mysqli_query()
+                      // Thực hiện truy vấn và sử dụng kết quả để xây dựng truy vấn SQL
+                      $sql = "SELECT * FROM `products` WHERE `PublicationYear` BETWEEN 1800 AND 1900";
+                  } elseif ($year == '1900-2000') {
+                      $sql = "SELECT * FROM `products` WHERE `PublicationYear` BETWEEN 1900 AND 2000";
+                  } else {
+                      $sql = "SELECT * FROM `products` WHERE `PublicationYear` > 2000";
+                  }
+
                }
                if (!empty($_POST['language'])) {
                   $language = mysqli_real_escape_string($conn, $_POST['language']);
                   $sql .= " AND Language = '$language'";
                }
-               if (!empty($_GET['cover'])) {
+               if (!empty($_POST['cover'])) {
                   $cover = mysqli_real_escape_string($conn, $_POST['cover']);
                   $sql .= " AND CoverType = '$cover'";
                }
@@ -333,7 +343,7 @@ $search_keyword = isset($_GET['search']) ? $_GET['search'] : '';
 
 
    </section>
-
+   
    <?php include 'footer.php'; ?>
 
    <!-- custom js file link  -->
