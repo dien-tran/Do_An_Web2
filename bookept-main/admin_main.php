@@ -109,7 +109,7 @@ if (isset($_GET['unblock'])) {
                     <li id="main" class="sidebar-list-item tab-content active">
                         <a href="admin_main.php" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-home"></i></div>
-                            <div class="hidden-sidebar">Over view </div>
+                            <div class="hidden-sidebar">Overview </div>
                         </a>
                     </li>
                     <li class="sidebar-list-item tab-content">
@@ -167,10 +167,9 @@ if (isset($_GET['unblock'])) {
                             <h2><?php echo $number_of_users; ?></h2>
                             <div class="on-box">
                                 <img src="" alt="" style=" width: 200px;">
-                                <h3>Khách hàng</h3>
-                                <p>Sản phẩm là bất cứ cái gì có thể đưa vào thị trường để tạo sự chú ý, mua sắm, sử dụng
-                                    hay tiêu dùng nhằm thỏa mãn một nhu cầu hay ước muốn. Nó có thể là những vật thể,
-                                    dịch vụ, con người, địa điểm, tổ chức hoặc một ý tưởng.</p>
+                                <h3>Customer</h3>
+                                
+<p>A product is anything that can be brought to the market to attract attention, be purchased, used, or consumed to satisfy a need or desire. It can be objects, services, people, places, organizations, or an idea.</p>
                             </div>
 
                         </div>
@@ -184,9 +183,8 @@ if (isset($_GET['unblock'])) {
                                 $number_of_products = mysqli_num_rows($select_products);
                                 ?>
                                 <h2><?php echo $number_of_products; ?></h2>
-                                <h3>Sản phẩm</h3>
-                                <p>Khách hàng mục tiêu là một nhóm đối tượng khách hàng trong phân khúc thị trường mục
-                                    tiêu mà doanh nghiệp bạn đang hướng tới. </p>
+                                <h3>Products</h3>
+                                <p>A target customer is a group of customer segments within the target market that your business is aiming at.</p>
                             </div>
                         </div>
                     </div>
@@ -207,9 +205,11 @@ if (isset($_GET['unblock'])) {
                             ?>
                             <div class="on-box">
                                 <img src="" alt="" style=" width: 200px;">
-                                <h3>Doanh thu</h3>
-                                <p>Doanh thu của doanh nghiệp là toàn bộ số tiền sẽ thu được do tiêu thụ sản phẩm, cung
-                                    cấp dịch vụ với sản lượng.</p>
+                                <h3>Revenue</h3>
+                                <p>The revenue of a business is the total amount of money it will receive from the consumption of products or the provision of services at a certain volume.</p>
+
+
+
                             </div>
                         </div>
                     </div>

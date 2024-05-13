@@ -7,68 +7,6 @@ if (!isset($admin_id)) {
     header('Location:login.php');
     exit();
 }
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Lấy dữ liệu từ form
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $phone_number = $_POST['phone_number'];
-    $insert_query = "INSERT INTO `users` (name, email, password, user_type, phone_number) VALUES ('$name', '$email', '$password', '$user_type', '$phone_number')";
-    header('Location: admin_stats.php');
-    exit();
-}
-//search
-// if (isset($_GET['submit_search'])) 
-// {
-//     $search=$_GET['text_search'];
-//     $sql_tk="SELECT * FROM `users` WHERE `name` LIKE '%" . $search . "%'";
-//     $sql_search= mysqli_query($conn,$sql_tk);
-// }
-// else
-// {
-//     $search='';
-//     $sql_tk="SELECT* FROM `users` limit 5";
-//     $sql_search= mysqli_query($conn,$sql_tk);
-
-// }
-// xóa 
-
-if (isset($_GET['delete'])) // kiểm tra xem có tồn tại tham số 'delete' trong mảng $_GET hay không nếu có gì có id
-{
-    $delete_id = $_GET['delete']; // nếu có thì lấy id 
-    mysqli_query($conn, "DELETE FROM `users` WHERE id = '$delete_id'") or die('query failed');
-}
-if (isset($_GET['block'])) {
-    $block_id = $_GET['block'];
-    $sql_block = mysqli_query($conn, "SELECT * FROM  `users` WHERE id=$block_id");
-    if (mysqli_num_rows($sql_block) > 0) {
-        $query = "UPDATE `users` SET `status` = 0 WHERE id = $block_id";
-    }
-}
-if (isset($_GET['block'])) {
-    $block_id = $_GET['block'];
-    $sql_block = mysqli_query($conn, "SELECT * FROM  `users` WHERE id=$block_id");
-    if (mysqli_num_rows($sql_block) > 0) {
-        $query = "UPDATE `users` SET `status` = 0 WHERE id = $block_id";
-        if (mysqli_query($conn, $query)) {
-            echo "<script>alert('Người dùng đã được chặn.');</script>";
-        } else {
-            echo "Cập nhật trạng thái thất bại: " . mysqli_error($conn);
-        }
-    }
-}
-if (isset($_GET['unblock'])) {
-    $unblock_id = $_GET['unblock'];
-    $sql_unblock = mysqli_query($conn, "SELECT * FROM  `users` WHERE id=$unblock_id");
-    if (mysqli_num_rows($sql_unblock) > 0) {
-        $query = "UPDATE `users` SET `status` = 1 WHERE id = $unblock_id";
-        if (mysqli_query($conn, $query)) {
-            echo "<script>alert('Người dùng đã gỡ chặn.');</script>";
-        } else {
-            echo "Cập nhật trạng thái thất bại: " . mysqli_error($conn);
-        }
-    }
-}
 
 
 ?>
@@ -106,34 +44,34 @@ if (isset($_GET['unblock'])) {
             </div>
             <div class="middle-sidebar">
                 <ul class="sidebar-list">
-                    <li class="sidebar-list-item tab-content">
+                    <li id="main" class="sidebar-list-item tab-content">
                         <a href="admin_main.php" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-home"></i></div>
-                            <div class="hidden-sidebar">Trang tổng quan</div>
+                            <div class="hidden-sidebar">Overview</div>
                         </a>
                     </li>
                     <li class="sidebar-list-item tab-content">
                         <a href="admin_products.php" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-book"></i></div>
-                            <div class="hidden-sidebar">Sản phẩm</div>
+                            <div class="hidden-sidebar">Products</div>
                         </a>
                     </li>
-                    <li class="sidebar-list-item tab-content">
+                    <li id="customers" class="sidebar-list-item tab-content">
                         <a href="admin_users.php" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-group"></i></div>
-                            <div class="hidden-sidebar">Khách hàng</div>
+                            <div class="hidden-sidebar">Customer</div>
                         </a>
                     </li>
                     <li class="sidebar-list-item tab-content">
                         <a href="admin_orders.php" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-shopping-cart"></i></div>
-                            <div class="hidden-sidebar">Đơn hàng</div>
+                            <div class="hidden-sidebar">Order</div>
                         </a>
                     </li>
                     <li class="sidebar-list-item tab-content active">
                         <a href="admin_stats.php" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-bar-chart"></i></div>
-                            <div class="hidden-sidebar">Thống kê</div>
+                            <div class="hidden-sidebar">Statistical</div>
                         </a>
                     </li>
                 </ul>
@@ -143,7 +81,7 @@ if (isset($_GET['unblock'])) {
                     <li class="sidebar-list-item user-logout">
                         <a href="#" class="sidebar-link" id="logout-acc">
                             <div class="sidebar-icon"><i class="fa fa-arrow-right"></i></div>
-                            <div class="hidden-sidebar">Đăng xuất</div>
+                            <div class="hidden-sidebar">Log out</div>
                         </a>
                     </li>
                 </ul>
@@ -155,11 +93,11 @@ if (isset($_GET['unblock'])) {
                     <div class="admin-control-right">
                         <form method="post" class="fillter-date">
                             <div>
-                                <label for="start_date">Từ ngày:</label>
+                                <label for="start_date">From:</label>
                                 <input class="form-control-date" type="date" id="start_date" name="start_date">
                             </div>
                             <div>
-                                <label for="end_date">Đến ngày:</label>
+                                <label for="end_date">To:</label>
                                 <input class="form-control-date" type="date" id="end_date" name="end_date">
                             </div>
                             <button class="btn-control-large" type="submit" name="submit">Search</button>
@@ -167,37 +105,10 @@ if (isset($_GET['unblock'])) {
                     </div>
                 </div>
                 <div class="order-statistical" id="order-statistical">
+                        
                     <div class="order-statistical-item">
                         <div class="order-statistical-item-content">
-
-                            <p class="order-statistical-item-content-desc">Sản phẩm được bán nhiều nhất</p>
-                            <?php $most_sold = mysqli_query($conn, "SELECT p.Name AS ProductName, SUM(db.ProductAmount) AS TotalSold FROM detailsbill db INNER JOIN products p ON db.IdProduct = p.Id GROUP BY db.IdProduct ORDER BY TotalSold DESC LIMIT 3");
-                            if (mysqli_num_rows($most_sold) > 0) {
-                                $i = 1;
-                                while ($fetch_sold = mysqli_fetch_assoc($most_sold)) {
-                                    echo '<h4 class="order-statistical-item-content-h">#' . $i++ . ' ' . $fetch_sold['name'] . '</h4>';
-                                }
-                            }
-                            ?>
-                            </h4>
-                        </div>
-                        <div class="order-statistical-item-icon">
-                            <i class="fa-light fa-salad"></i>
-                        </div>
-                    </div>
-                    <div class="order-statistical-item">
-                        <div class="order-statistical-item-content">
-                            <p class="order-statistical-item-content-desc">Số lượng bán ra</p>
-                            <h4 class="order-statistical-item-content-h" id="quantity-order">
-                            </h4>
-                        </div>
-                        <div class="order-statistical-item-icon">
-                            <i class="fa-light fa-file-lines"></i>
-                        </div>
-                    </div>
-                    <div class="order-statistical-item">
-                        <div class="order-statistical-item-content">
-                            <p class="order-statistical-item-content-desc">Doanh thu</p>
+                            <p class="order-statistical-item-content-desc">Revenue</p>
                             <h4 class="order-statistical-item-content-h" id="quantity-sale">
                                 <?php
                                 $total_pendings = 0;
@@ -221,10 +132,10 @@ if (isset($_GET['unblock'])) {
                     <table width="100%">
                         <thead>
                             <tr>
-                                <td>Khách hàng</td>
-                                <td>Ngày đặt hàng</td>
-                                <td>SDT</td>
-                                <td>Doanh thu</td>
+                                <td>Customer</td>
+                                <td>Order date</td>
+                                <td>Phone</td>
+                                <td>Revenue</td>
                                 <td></td>
                             </tr>
                         </thead>
@@ -232,9 +143,9 @@ if (isset($_GET['unblock'])) {
                             <?php
                             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
                                 // Retrieve start and end date from the form
+                                // Retrieve orders within the specified time range
                                 $start_date = $_POST['start_date'];
                                 $end_date = $_POST['end_date'];
-                                // Retrieve orders within the specified time range
                                 $select_orders = mysqli_query($conn, "SELECT * FROM orders WHERE placed_on BETWEEN '$start_date' AND '$end_date' ORDER BY total_price DESC LIMIT 0, 5") or die('query failed');
                                 if (mysqli_num_rows($select_orders) > 0) {
                                     while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
@@ -245,21 +156,16 @@ if (isset($_GET['unblock'])) {
                                         <td>$<?php echo $fetch_orders['total_price'] ?></td>
                                         <td class="control">
                                             <form method="post">
-                                                <a style="color:black" href="admin_stats_details.php?start_date= <?php echo $start_date ?>&end_date=<?php echo $end_date ?>&order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Chi tiết</a>
+                                                <a style="color:black" href="admin_stats_details.php?start_date= <?php echo $start_date ?>&end_date=<?php echo $end_date ?>&order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Details</a>
                                             </form>
                                             </tr>
                                         <?php
                                     }
+                                    echo "<script>const closeModalBtn = document.querySelector('.modal-close');";
+                                    echo "const modal = document.querySelector('.modal.detail-order');";
+                                    echo "modal.classList.remove('open');";
                                 }
-                                // Array to store customer total purchases
-                                // Process each order
-                                // while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
-                                //     // Calculate total purchase amount for each order
-                                //     $total_price = $fetch_orders['total_price'];
-                                //     $customer_id = $fetch_orders['user_id'];
-                                //     $customer_orders_query = mysqli_query($conn, "SELECT * FROM orders WHERE user_id = $customer_id AND placed_on BETWEEN '$start_date' AND '$end_date'");
-                                // }
-                            } else {
+                            } elseif(isset($_GET['start_date'])) {
                                 $start_date = $_GET['start_date'];
                                 $end_date = $_GET['end_date'];
                                 $select_orders = mysqli_query($conn, "SELECT * FROM orders WHERE placed_on BETWEEN '$start_date' AND '$end_date' ORDER BY total_price DESC LIMIT 0, 5") or die('query failed');
@@ -273,13 +179,32 @@ if (isset($_GET['unblock'])) {
                                                 <td><?php echo $fetch_orders['total_price'] ?>$</td>
                                                 <td class="control">
                                                     <form method="post">
-                                                        <a style="color:black" href="admin_stats_details.php?start_date= <?php echo $start_date ?>&end_date=<?php echo $end_date ?>&order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Chi tiết</a>
+                                                    <a style="color:black" href="admin_stats_details.php?start_date= <?php echo $start_date ?>&end_date=<?php echo $end_date ?>&order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Details</a>
+                                                    </form>
+                                            </tr>
+                                <?php
+                                    }
+                                }
+                            }else{
+                                $select_orders = mysqli_query($conn, "SELECT * FROM orders") or die('query failed');
+                                if (mysqli_num_rows($select_orders) > 0) {
+                                    while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                                        ?>
+                                            <tr>
+                                                <td><?php echo $fetch_orders['name'] ?></td>
+                                                <td><?php echo $fetch_orders['placed_on'] ?></td>
+                                                <td><?php echo $fetch_orders['number'] ?></td>
+                                                <td><?php echo $fetch_orders['total_price'] ?>$</td>
+                                                <td class="control">
+                                                    <form method="post">
+                                                        <a style="color:black" href="admin_stats_details.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Details</a>
                                                     </form>
                                             </tr>
                                 <?php
                                     }
                                 }
                             }
+                            
 
                                 ?>
                         </tbody>
@@ -289,7 +214,7 @@ if (isset($_GET['unblock'])) {
         </main>
         <div class="modal detail-order open" id="a">
             <div class="modal-container">
-                <h3 class="modal-container-title">CHI TIẾT ĐƠN HÀNG</h3>
+                <h3 class="modal-container-title">Order Details</h3>
                 <form name="form" action="" method="post">
                     <input type="hidden" id="order_id_input" name="order_id">
                 </form>
@@ -363,19 +288,19 @@ if (isset($_GET['unblock'])) {
             <div class="modal-detail-right">
                 <ul class="detail-order-group">
                     <li class="detail-order-item">
-                        <span class="detail-order-item-left"><i class="fa fa-calendar"></i> Ngày đặt hàng</span>
+                        <span class="detail-order-item-left"><i class="fa fa-calendar"></i> Order date</span>
                         <span class="detail-order-item-right"><?php echo $result_order['placed_on']; ?></span>
                     </li>
                     <li class="detail-order-item">
-                        <span class="detail-order-item-left"><i class="fa fa-user"></i> Người nhận</span>
+                        <span class="detail-order-item-left"><i class="fa fa-user"></i> Customer</span>
                         <span class="detail-order-item-right"><?php echo $result_order['name'] ?></span>
                     </li>
                     <li class="detail-order-item">
-                        <span class="detail-order-item-left"><i class="fa fa-phone"></i> Số điện thoại</span>
+                        <span class="detail-order-item-left"><i class="fa fa-phone"></i> Phone</span>
                         <span class="detail-order-item-right"><?php echo $result_order['number'] ?></span>
                     </li>
                     <li class="detail-order-item tb">
-                        <span class="detail-order-item-t"><i class="fa fa-location-arrow"></i> Địa chỉ nhận</span>
+                        <span class="detail-order-item-t"><i class="fa fa-location-arrow"></i> Address</span>
                         <p class="detail-order-item-b"><?php echo $result_order['address'] ?></p>
                     </li>
                 </ul>
@@ -384,7 +309,7 @@ if (isset($_GET['unblock'])) {
         <div class="modal-detail-bottom">
             <div class="modal-detail-bottom-left">
                 <div class="price-total">
-                    <span class="thanhtien">Thành tiền</span>
+                    <span class="thanhtien">Total Price</span>
                     <span class="price">$<?php echo $result_order['total_price']; ?></span>
                 </div>
             </div>

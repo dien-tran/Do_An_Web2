@@ -24,7 +24,7 @@ if (isset($_POST['add_to_cart'])) {
    } else {
       mysqli_query($conn, "INSERT INTO `cart`(user_id, name, price, quantity, image) VALUES('$user_id', '$product_name', '$product_price', '$product_quantity', '$product_image')") or die('query failed');
       $message[] = 'product added to cart!';
-   }
+   }    
 }
 
 $products_per_page = 8;

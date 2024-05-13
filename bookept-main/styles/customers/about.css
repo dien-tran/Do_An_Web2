@@ -163,3 +163,29 @@
   padding: 1.5rem;
   background-color: var(--white);
 }
+.box-container .box .action>button {
+  background: var(--purple);
+  border-radius: 0.5rem;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.7em;
+  display: flex;
+
+  gap: 0.25em;
+  cursor: pointer;
+}
+.box-container .box .qty-pri {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 2rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid #e9e9e9;
+  margin-bottom: 1rem;
+}
+.box-container .box .qty {
+  max-width: 29%;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e9e9e9;
+}

@@ -88,42 +88,42 @@ if (isset($_POST['edit'])) {
         </button>
     </header>
     <div class="container">
-        <aside class="sidebar open">
+    <aside class="sidebar open">
             <div class="top-sidebar">
-                <a href="index.html" class="channel-logo"><img src="image/homelogo.jpeg" alt="Channel Logo"></a>
+                <a href="admin_main.php" class="channel-logo"><img src="image/homelogo.jpeg" alt="Channel Logo"></a>
                 <div class="hidden-sidebar your-channel"><img src="" style="height: 30px;" alt="">
                 </div>
             </div>
             <div class="middle-sidebar">
                 <ul class="sidebar-list">
-                    <li id="main" class="sidebar-list-item tab-content">
+                    <li id="main" class="sidebar-list-item tab-content active">
                         <a href="admin_main.php" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-home"></i></div>
-                            <div class="hidden-sidebar">Trang tổng quan</div>
+                            <div class="hidden-sidebar">Over view </div>
                         </a>
                     </li>
-                    <li class="sidebar-list-item tab-content active">
+                    <li class="sidebar-list-item tab-content">
                         <a href="admin_products.php" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-book"></i></div>
-                            <div class="hidden-sidebar">Sản phẩm</div>
+                            <div class="hidden-sidebar">Products</div>
                         </a>
                     </li>
                     <li id="customers" class="sidebar-list-item tab-content">
                         <a href="admin_users.php" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-group"></i></div>
-                            <div class="hidden-sidebar">Khách hàng</div>
+                            <div class="hidden-sidebar">Customer</div>
                         </a>
                     </li>
                     <li class="sidebar-list-item tab-content">
                         <a href="admin_orders.php" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-shopping-cart"></i></div>
-                            <div class="hidden-sidebar">Đơn hàng</div>
+                            <div class="hidden-sidebar">Order</div>
                         </a>
                     </li>
                     <li class="sidebar-list-item tab-content">
                         <a href="admin_stats.php" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-bar-chart"></i></div>
-                            <div class="hidden-sidebar">Thống kê</div>
+                            <div class="hidden-sidebar">Statistical</div>
                         </a>
                     </li>
                 </ul>
@@ -133,7 +133,12 @@ if (isset($_POST['edit'])) {
                     <li class="sidebar-list-item user-logout">
                         <a href="#" class="sidebar-link" id="logout-acc">
                             <div class="sidebar-icon"><i class="fa fa-arrow-right"></i></div>
-                            <div class="hidden-sidebar">Đăng xuất</div>
+                            <div class="hidden-sidebar" onclick="redirectToLogout()">Log out</div>
+                            <script>
+                                function redirectToLogout() {
+                                    window.location.href = "logout_admin.php";
+                                }
+                            </script>
                         </a>
                     </li>
                 </ul>
@@ -158,11 +163,11 @@ if (isset($_POST['edit'])) {
                     <div class="admin-control-center">
                         <form action="" class="form-search">
                             <span class="search-btn"><i class="fa fa-search"></i></span>
-                            <input id="form-search-product" type="text" class="form-search-input" placeholder="Tìm kiếm tên sách..." oninput="showProduct()">
+                            <input id="form-search-product" type="text" class="form-search-input" placeholder="Search products..." oninput="showProduct()">
                         </form>
                     </div>
                     <div class="admin-control-right">
-                        <button class="btn-control-large" id="btn-add-product"><i class="fa fa-plus"></i> Thêm sách mới</button>
+                        <button class="btn-control-large" id="btn-add-product"><i class="fa fa-plus"></i> Add new product</button>
                     </div>
                 </div>
                 <div id="show-product">
@@ -237,7 +242,7 @@ if (isset($_POST['edit'])) {
         <input type="hidden" id="edit-product-id" name="edit_product_id">
         <div class="modal edit-product open">
             <div class="modal-container">
-                <h3 class="modal-container-title edit-product-e">CHỈNH SỬA SẢN PHẨM</h3>
+                <h3 class="modal-container-title edit-product-e">EDIT PRODUCT</h3>
                 <a href="admin_products.php"><button class="modal-close product-form"><i class="fa fa-times"></i></button></a>
                 <div class="modal-content">
                     <form action="" method="post" class="add-product-form" enctype="multipart/form-data">
@@ -251,18 +256,18 @@ if (isset($_POST['edit'])) {
                             ?>
                                     <img id="imagePreview" src="./image/<?php echo $fetch_products_edit['Image'] ?>" alt="" class="upload-image-preview">
                                     <div class="form-group file">
-                                        <label for="up-hinh-anh" class="form-label-file"><i class="fa fa-plus"></i>Chọn hình ảnh</label>
+                                        <label for="up-hinh-anh" class="form-label-file"><i class="fa fa-plus"></i>Choose image</label>
                                         <input accept="image/jpeg, image/png, image/jpg" id="up-hinh-anh" name="Image" type="file" class="form-control" onchange="previewImage(event)">
                                     </div>
                         </div>
                         <div class="modal-content-right">
                             <div class="form-group">
-                                <label for="ten-mon" class="form-label">Tên sách</label>
+                                <label for="ten-mon" class="form-label">Book name</label>
                                 <input id="ten-mon" name="Name" type="text" placeholder="Nhập tên sách" value="<?php echo $fetch_products_edit['Name'] ?>" class="form-control">
                                 <span class="form-message"></span>
                             </div>
                             <div class="form-group">
-                                <label for="category" class="form-label">Chọn thể loại</label>
+                                <label for="category" class="form-label">Choose category</label>
                                 <select name="CategoryId" id="chon-mon">
                                     <?php
                                     $sql_cate = "SELECT * FROM category";
@@ -314,13 +319,13 @@ if (isset($_POST['edit'])) {
                                 <span class="form-message"></span>
                             </div>
                             <div class="form-group">
-                                <label for="mo-ta" class="form-label">Mô tả</label>
-                                <textarea class="product-desc" id="mo-ta" name="Description" placeholder="Nhập mô tả sách..."><?php echo $fetch_products_edit['Description'] ?></textarea>
+                                <label for="mo-ta" class="form-label">Description</label>
+                                <textarea class="product-desc" id="mo-ta" name="Description" placeholder="Enter description..."><?php echo $fetch_products_edit['Description'] ?></textarea>
                                 <span class="form-message"></span>
                             </div>
                             <button name="edit" class="form-submit btn-update-product-form edit-product-e" id="update-product-button">
                                 <i class="fa fa-floppy-o"></i>
-                                <span>LƯU THAY ĐỔI</span>
+                                <span>SAVE CHANGES</span>
                             </button>
                     <?php
                                 }

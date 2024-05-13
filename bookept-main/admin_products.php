@@ -128,31 +128,31 @@ if (isset($_GET['display'])) {
                     <li id="main" class="sidebar-list-item tab-content">
                         <a href="admin_main.php" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-home"></i></div>
-                            <div class="hidden-sidebar">Trang tổng quan</div>
+                            <div class="hidden-sidebar">Overview</div>
                         </a>
                     </li>
                     <li class="sidebar-list-item tab-content active">
                         <a href="admin_products.php" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-book"></i></div>
-                            <div class="hidden-sidebar">Sản phẩm</div>
+                            <div class="hidden-sidebar">Products</div>
                         </a>
                     </li>
                     <li id="customers" class="sidebar-list-item tab-content">
                         <a href="admin_users.php" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-group"></i></div>
-                            <div class="hidden-sidebar">Khách hàng</div>
+                            <div class="hidden-sidebar">Customer</div>
                         </a>
                     </li>
                     <li class="sidebar-list-item tab-content">
                         <a href="admin_orders.php" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-shopping-cart"></i></div>
-                            <div class="hidden-sidebar">Đơn hàng</div>
+                            <div class="hidden-sidebar">Order</div>
                         </a>
                     </li>
                     <li class="sidebar-list-item tab-content">
                         <a href="admin_stats.php" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-bar-chart"></i></div>
-                            <div class="hidden-sidebar">Thống kê</div>
+                            <div class="hidden-sidebar">Statistical</div>
                         </a>
                     </li>
                 </ul>
@@ -162,7 +162,7 @@ if (isset($_GET['display'])) {
                     <li class="sidebar-list-item user-logout">
                         <a href="#" class="sidebar-link" id="logout-acc">
                             <div class="sidebar-icon"><i class="fa fa-arrow-right"></i></div>
-                            <div class="hidden-sidebar">Đăng xuất</div>
+                            <div class="hidden-sidebar">Logout</div>
                         </a>
                     </li>
                 </ul>
@@ -177,12 +177,12 @@ if (isset($_GET['display'])) {
                         <form method="get" class="form-search">
                             <input type="hidden" name="search" value="<?php echo isset($_GET['search']) ? $_GET['search'] : ''; ?>">
                             <span class="search-btn"><i class="fa fa-search"></i></span>
-                            <input id="form-search-product" type="text" name="search" class="form-search-input" placeholder="Tìm kiếm tên sách...">
+                            <input id="form-search-product" type="text" name="search" class="form-search-input" placeholder="Search book name...">
                             <button type="submit" name="submit_search" class="btn-control-large ">Search</button>
                         </form>
                     </div>
                     <div class="admin-control-right">
-                        <button class="btn-control-large" id="btn-add-product"><i class="fa fa-plus"></i> Thêm sách mới</button>
+                        <button class="btn-control-large" id="btn-add-product"><i class="fa fa-plus"></i> Add new product</button>
                     </div>
                 </div>
                 <div id="show-product">

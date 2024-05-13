@@ -47,36 +47,36 @@ if (!isset($admin_id)) {
          </div>
          <div class="middle-sidebar">
             <ul class="sidebar-list">
-               <li class="sidebar-list-item tab-content">
-                  <a href="admin_main.php" class="sidebar-link">
-                     <div class="sidebar-icon"><i class="fa fa-home"></i></div>
-                     <div class="hidden-sidebar">Trang tổng quan</div>
-                  </a>
-               </li>
-               <li class="sidebar-list-item tab-content">
-                  <a href="admin_products.php" class="sidebar-link">
-                     <div class="sidebar-icon"><i class="fa fa-book"></i></div>
-                     <div class="hidden-sidebar">Sản phẩm</div>
-                  </a>
-               </li>
-               <li class="sidebar-list-item tab-content">
-                  <a href="admin_users.php" class="sidebar-link">
-                     <div class="sidebar-icon"><i class="fa fa-group"></i></div>
-                     <div class="hidden-sidebar">Khách hàng</div>
-                  </a>
-               </li>
-               <li class="sidebar-list-item tab-content active">
-                  <a href="admin_orders.php" class="sidebar-link">
-                     <div class="sidebar-icon"><i class="fa fa-shopping-cart"></i></div>
-                     <div class="hidden-sidebar">Đơn hàng</div>
-                  </a>
-               </li>
-               <li class="sidebar-list-item tab-content">
-                  <a href="admin_stats.php" class="sidebar-link">
-                     <div class="sidebar-icon"><i class="fa fa-bar-chart"></i></div>
-                     <div class="hidden-sidebar">Thống kê</div>
-                  </a>
-               </li>
+            <li id="main" class="sidebar-list-item tab-content">
+                        <a href="admin_main.php" class="sidebar-link">
+                            <div class="sidebar-icon"><i class="fa fa-home"></i></div>
+                            <div class="hidden-sidebar">Overview</div>
+                        </a>
+                    </li>
+                    <li class="sidebar-list-item tab-content">
+                        <a href="admin_products.php" class="sidebar-link">
+                            <div class="sidebar-icon"><i class="fa fa-book"></i></div>
+                            <div class="hidden-sidebar">Products</div>
+                        </a>
+                    </li>
+                    <li id="customers" class="sidebar-list-item tab-content">
+                        <a href="admin_users.php" class="sidebar-link">
+                            <div class="sidebar-icon"><i class="fa fa-group"></i></div>
+                            <div class="hidden-sidebar">Customer</div>
+                        </a>
+                    </li>
+                    <li class="sidebar-list-item tab-content active">
+                        <a href="admin_orders.php" class="sidebar-link">
+                            <div class="sidebar-icon"><i class="fa fa-shopping-cart"></i></div>
+                            <div class="hidden-sidebar">Order</div>
+                        </a>
+                    </li>
+                    <li class="sidebar-list-item tab-content">
+                        <a href="admin_stats.php" class="sidebar-link">
+                            <div class="sidebar-icon"><i class="fa fa-bar-chart"></i></div>
+                            <div class="hidden-sidebar">Statistical</div>
+                        </a>
+                    </li>
             </ul>
          </div>
          <div class="bottom-sidebar">
@@ -84,7 +84,7 @@ if (!isset($admin_id)) {
                <li class="sidebar-list-item user-logout">
                   <a href="admin_stats.php" class="sidebar-link" id="logout-acc">
                      <div class="sidebar-icon"><i class="fa fa-arrow-right"></i></div>
-                     <div class="hidden-sidebar">Đăng xuất</div>
+                     <div class="hidden-sidebar">Log out</div>
                   </a>
                </li>
             </ul>
@@ -124,12 +124,12 @@ if (!isset($admin_id)) {
                <table width="100%">
                   <thead>
                      <tr>
-                        <td>Mã đơn</td>
-                        <td>Khách hàng</td>
-                        <td>Ngày đặt</td>
-                        <td>Tổng tiền</td>
-                        <td>Trạng thái</td>
-                        <td>Thao tác</td>
+                        <td>ID Orders</td>
+                        <td>Customer</td>
+                        <td>Order date</td>
+                        <td>Total price</td>
+                        <td>Status</td>
+                        <td>Action</td>
                      </tr>
                   </thead>
                   <tbody id="showOrder">
@@ -146,7 +146,7 @@ if (!isset($admin_id)) {
                               <td><?php echo $fetch_orders['payment_status'] ?></td>
                               <td class="control">
                                  <form method="post">
-                                 <a style="color:black" href="admin_orderdetail.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Chi tiết</a>
+                                 <a style="color:black" href="admin_orderdetail.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Details</a>
                                  </form>
                           <?php
                         }

@@ -51,42 +51,42 @@ if (!isset($admin_id)) {
         </button>
     </header>
     <div class="container">
-        <aside class="sidebar open">
+    <aside class="sidebar open">
             <div class="top-sidebar">
-                <a href="index.html" class="channel-logo"><img src="image/homelogo.jpeg" alt="Channel Logo"></a>
+                <a href="admin_main.php" class="channel-logo"><img src="image/homelogo.jpeg" alt="Channel Logo"></a>
                 <div class="hidden-sidebar your-channel"><img src="" style="height: 30px;" alt="">
                 </div>
             </div>
             <div class="middle-sidebar">
                 <ul class="sidebar-list">
-                    <li class="sidebar-list-item tab-content">
+                    <li id="main" class="sidebar-list-item tab-content">
                         <a href="admin_main.php" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-home"></i></div>
-                            <div class="hidden-sidebar">Trang tổng quan</div>
+                            <div class="hidden-sidebar">Overview </div>
                         </a>
                     </li>
                     <li class="sidebar-list-item tab-content">
                         <a href="admin_products.php" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-book"></i></div>
-                            <div class="hidden-sidebar">Sản phẩm</div>
+                            <div class="hidden-sidebar">Products</div>
+                        </a>
+                    </li>
+                    <li id="customers" class="sidebar-list-item tab-content">
+                        <a href="admin_users.php" class="sidebar-link">
+                            <div class="sidebar-icon"><i class="fa fa-group"></i></div>
+                            <div class="hidden-sidebar">Customer</div>
                         </a>
                     </li>
                     <li class="sidebar-list-item tab-content">
-                        <a href="admin_users.php" class="sidebar-link">
-                            <div class="sidebar-icon"><i class="fa fa-group"></i></div>
-                            <div class="hidden-sidebar">Khách hàng</div>
+                        <a href="admin_orders.php" class="sidebar-link">
+                            <div class="sidebar-icon"><i class="fa fa-shopping-cart"></i></div>
+                            <div class="hidden-sidebar">Order</div>
                         </a>
                     </li>
                     <li class="sidebar-list-item tab-content active">
-                        <a href="admin_orders.php" class="sidebar-link">
-                            <div class="sidebar-icon"><i class="fa fa-shopping-cart"></i></div>
-                            <div class="hidden-sidebar">Đơn hàng</div>
-                        </a>
-                    </li>
-                    <li class="sidebar-list-item tab-content">
                         <a href="admin_stats.php" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-bar-chart"></i></div>
-                            <div class="hidden-sidebar">Thống kê</div>
+                            <div class="hidden-sidebar">Statistical</div>
                         </a>
                     </li>
                 </ul>
@@ -94,9 +94,14 @@ if (!isset($admin_id)) {
             <div class="bottom-sidebar">
                 <ul class="sidebar-list">
                     <li class="sidebar-list-item user-logout">
-                        <a href="admin_stats.php" class="sidebar-link" id="logout-acc">
+                        <a href="#" class="sidebar-link" id="logout-acc">
                             <div class="sidebar-icon"><i class="fa fa-arrow-right"></i></div>
-                            <div class="hidden-sidebar">Đăng xuất</div>
+                            <div class="hidden-sidebar" onclick="redirectToLogout()">Log out</div>
+                            <script>
+                                function redirectToLogout() {
+                                    window.location.href = "logout_admin.php";
+                                }
+                            </script>
                         </a>
                     </li>
                 </ul>
@@ -105,44 +110,16 @@ if (!isset($admin_id)) {
         <main class="content">
             <!-- Order  -->
             <div class="section active">
-                <div class="admin-control">
-                    <div class="admin-control-left">
-                        <select name="tinh-trang" id="tinh-trang" onchange="findOrder()">
-                            <option value="2">Tất cả</option>
-                            <option value="1">Đã xử lý</option>
-                            <option value="0">Chưa xử lý</option>
-                        </select>
-                    </div>
-                    <div class="admin-control-center">
-                        <form action="" class="form-search">
-                            <span class="search-btn"><i class="fa fa-search"></i></span>
-                            <input id="form-search-order" type="text" class="form-search-input" placeholder="Tìm kiếm mã đơn, khách hàng..." oninput="findOrder()">
-                        </form>
-                    </div>
-                    <div class="admin-control-right">
-                        <form action="" class="fillter-date">
-                            <div>
-                                <label for="time-start">Từ</label>
-                                <input type="date" class="form-control-date" id="time-start" onchange="findOrder()">
-                            </div>
-                            <div>
-                                <label for="time-end">Đến</label>
-                                <input type="date" class="form-control-date" id="time-end" onchange="findOrder()">
-                            </div>
-                        </form>
-                        <button class="btn-reset-order" onclick="cancelSearchOrder()"><i class="fa fa-refresh fa-spin"></i></button>
-                    </div>
-                </div>
                 <div class="table">
                     <table width="100%">
                         <thead>
                             <tr>
-                                <td>Mã đơn</td>
-                                <td>Khách hàng</td>
-                                <td>Ngày đặt</td>
-                                <td>Tổng tiền</td>
-                                <td>Trạng thái</td>
-                                <td>Thao tác</td>
+                            <td>ID Orders</td>
+                            <td>Customer</td>
+                            <td>Order date</td>
+                            <td>Total price</td>
+                            <td>Status</td>
+                            <td>Action</td>
                             </tr>
                         </thead>
                         <tbody id="showOrder">
@@ -158,7 +135,7 @@ if (!isset($admin_id)) {
                                         <td><?php echo $fetch_orders['total_price'] ?>$</td>
                                         <td><?php echo $fetch_orders['payment_status'] ?></td>
                                         <td class="control">
-                                            <a style="color:black" href="admin_orderdetail.php?order_id= <?php echo $fetch_orders['id']; ?>"><i onclick="detailOrder()" class=" fa fa-asterisk"></i> Chi tiết</a>
+                                            <a style="color:black" href="admin_orderdetail.php?order_id= <?php echo $fetch_orders['id']; ?>"><i onclick="detailOrder()" class=" fa fa-asterisk"></i>Details</a>
                                     <?php
                                 }
                             }
@@ -180,7 +157,7 @@ if (!isset($admin_id)) {
     </div>
     <div class="modal detail-order open" id="a">
         <div class="modal-container">
-            <h3 class="modal-container-title">CHI TIẾT ĐƠN HÀNG</h3>
+            <h3 class="modal-container-title">Order Details</h3>
             <form name="form" action="" method="post">
                 <input type="hidden" id="order_id_input" name="order_id">
             </form>
@@ -254,23 +231,23 @@ if (!isset($admin_id)) {
         <div class="modal-detail-right">
             <ul class="detail-order-group">
                 <li class="detail-order-item">
-                    <span class="detail-order-item-left"><i class="fa fa-calendar"></i> Ngày đặt hàng</span>
+                    <span class="detail-order-item-left"><i class="fa fa-calendar"></i> Order Date</span>
                     <span class="detail-order-item-right"><?php echo $result_order['placed_on']; ?></span>
                 </li>
                 <li class="detail-order-item">
-                    <span class="detail-order-item-left"><i class="fa fa-user"></i> Người nhận</span>
+                    <span class="detail-order-item-left"><i class="fa fa-user"></i> Customer</span>
                     <span class="detail-order-item-right"><?php echo $result_order['name'] ?></span>
                 </li>
                 <li class="detail-order-item">
-                    <span class="detail-order-item-left"><i class="fa fa-phone"></i> Số điện thoại</span>
+                    <span class="detail-order-item-left"><i class="fa fa-phone"></i> Phone</span>
                     <span class="detail-order-item-right"><?php echo $result_order['number'] ?></span>
                 </li>
                 <li class="detail-order-item">
-                    <span class="detail-order-item-left"><i class="fa fa-credit-card"></i> Phương thức</span>
+                    <span class="detail-order-item-left"><i class="fa fa-credit-card"></i> Method</span>
                     <span class="detail-order-item-right"><?php echo $result_order['method'] ?></span>
                 </li>
                 <li class="detail-order-item tb">
-                    <span class="detail-order-item-t"><i class="fa fa-location-arrow"></i> Địa chỉ nhận</span>
+                    <span class="detail-order-item-t"><i class="fa fa-location-arrow"></i> Address</span>
                     <p class="detail-order-item-b"><?php echo $result_order['address'] ?></p>
                 </li>
             </ul>
@@ -279,7 +256,7 @@ if (!isset($admin_id)) {
     <div class="modal-detail-bottom">
         <div class="modal-detail-bottom-left">
             <div class="price-total">
-                <span class="thanhtien">Thành tiền</span>
+                <span class="thanhtien">Total Price</span>
                 <span class="price">$<?php echo $result_order['total_price']; ?></span>
             </div>
         </div>

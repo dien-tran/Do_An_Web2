@@ -98,57 +98,62 @@ if (isset($_GET['unblock'])) {
       </button>
    </header>
    <div class="container">
-      <aside class="sidebar open">
-         <div class="top-sidebar">
-            <a href="admin_main.php" class="channel-logo"><img src="image/Logo.jpg" alt="Channel Logo"></a>
-            <div class="hidden-sidebar your-channel"><img src="" style="height: 30px;" alt="">
+   <aside class="sidebar open">
+            <div class="top-sidebar">
+                <a href="admin_main.php" class="channel-logo"><img src="image/homelogo.jpeg" alt="Channel Logo"></a>
+                <div class="hidden-sidebar your-channel"><img src="" style="height: 30px;" alt="">
+                </div>
             </div>
-         </div>
-         <div class="middle-sidebar">
-            <ul class="sidebar-list">
-               <li id="main" class="sidebar-list-item tab-content">
-                  <a href="admin_main.php" class="sidebar-link">
-                     <div class="sidebar-icon"><i class="fa fa-home"></i></div>
-                     <div class="hidden-sidebar">Trang tổng quan</div>
-                  </a>
-               </li>
-               <li class="sidebar-list-item tab-content">
-                  <a href="admin_products.php" class="sidebar-link">
-                     <div class="sidebar-icon"><i class="fa fa-book"></i></div>
-                     <div class="hidden-sidebar">Sản phẩm</div>
-                  </a>
-               </li>
-               <li id="customers" class="sidebar-list-item tab-content active">
-                  <a href="admin_users.php" class="sidebar-link">
-                     <div class="sidebar-icon"><i class="fa fa-group"></i></div>
-                     <div class="hidden-sidebar">Khách hàng</div>
-                  </a>
-               </li>
-               <li class="sidebar-list-item tab-content">
-                  <a href="admin_orders.php" class="sidebar-link">
-                     <div class="sidebar-icon"><i class="fa fa-shopping-cart"></i></div>
-                     <div class="hidden-sidebar">Đơn hàng</div>
-                  </a>
-               </li>
-               <li class="sidebar-list-item tab-content">
-                  <a href="admin_stats.php" class="sidebar-link">
-                     <div class="sidebar-icon"><i class="fa fa-bar-chart"></i></div>
-                     <div class="hidden-sidebar">Thống kê</div>
-                  </a>
-               </li>
-            </ul>
-         </div>
-         <div class="bottom-sidebar">
-            <ul class="sidebar-list">
-               <li class="sidebar-list-item user-logout">
-                  <a href="#" class="sidebar-link" id="logout-acc">
-                     <div class="sidebar-icon"><i class="fa fa-arrow-right"></i></div>
-                     <div class="hidden-sidebar">Đăng xuất</div>
-                  </a>
-               </li>
-            </ul>
-         </div>
-      </aside>
+            <div class="middle-sidebar">
+                <ul class="sidebar-list">
+                    <li id="main" class="sidebar-list-item tab-content">
+                        <a href="admin_main.php" class="sidebar-link">
+                            <div class="sidebar-icon"><i class="fa fa-home"></i></div>
+                            <div class="hidden-sidebar">Overview</div>
+                        </a>
+                    </li>
+                    <li class="sidebar-list-item tab-content">
+                        <a href="admin_products.php" class="sidebar-link">
+                            <div class="sidebar-icon"><i class="fa fa-book"></i></div>
+                            <div class="hidden-sidebar">Products</div>
+                        </a>
+                    </li>
+                    <li id="customers" class="sidebar-list-item tab-content active">
+                        <a href="admin_users.php" class="sidebar-link">
+                            <div class="sidebar-icon"><i class="fa fa-group"></i></div>
+                            <div class="hidden-sidebar">Customer</div>
+                        </a>
+                    </li>
+                    <li class="sidebar-list-item tab-content">
+                        <a href="admin_orders.php" class="sidebar-link">
+                            <div class="sidebar-icon"><i class="fa fa-shopping-cart"></i></div>
+                            <div class="hidden-sidebar">Order</div>
+                        </a>
+                    </li>
+                    <li class="sidebar-list-item tab-content">
+                        <a href="admin_stats.php" class="sidebar-link">
+                            <div class="sidebar-icon"><i class="fa fa-bar-chart"></i></div>
+                            <div class="hidden-sidebar">Statistical</div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="bottom-sidebar">
+                <ul class="sidebar-list">
+                    <li class="sidebar-list-item user-logout">
+                        <a href="#" class="sidebar-link" id="logout-acc">
+                        <div class="sidebar-icon"><i class="fa fa-arrow-right"></i></div>
+                            <div class="hidden-sidebar" onclick="redirectToLogout()">Logout</div>
+                            <script>
+                                function redirectToLogout() {
+                                    window.location.href = "logout_admin.php";
+                                }
+                            </script>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
       <main class="content">
          <!-- Account  -->
          <div class="section active">
@@ -164,8 +169,8 @@ if (isset($_GET['unblock'])) {
                   <form action="#?" class="form-search" method="GET">
                      <span class="search-btn"><i class="fa fa-search"></i></span>
                      <!-- <input id="form-search-user" type="text" class="form-search-input" placeholder="Tìm kiếm khách hàng..." oninput="showUser()"> -->
-                     <input id="form-search-user" type="text" name="text_search" class="form-search-input" placeholder="Tìm kiếm khách hàng...">
-                     <button id="btn-search-user" class="btn-control-large" type="submit" name="submit_search"> Tìm kiếm </button>
+                     <input id="form-search-user" type="text" name="text_search" class="form-search-input" placeholder="Search customer...">
+                     <button id="btn-search-user" class="btn-control-large" type="submit" name="submit_search"> Search </button>
                   </form>
                </div>
 
@@ -181,7 +186,7 @@ if (isset($_GET['unblock'])) {
                             </div>
                         </form> -->
                   <!-- <button class="btn-reset-order" onclick="cancelSearchUser()"><i class="fa fa-refresh fa-spin"></i></button> -->
-                  <button id="btn-add-user" class="btn-control-large" onclick="register()"><i class="fa fa-plus"></i> <span>Thêm khách hàng</span></button>
+                  <button id="btn-add-user" class="btn-control-large" onclick="register()"><i class="fa fa-plus"></i> <span>Add a customer</span></button>
                   <script>
                      // chuyển sang trang register . khi thêm khách hàng
                      function register() {
@@ -250,11 +255,11 @@ if (isset($_GET['unblock'])) {
                <table width="100%">
                   <thead>
                      <tr>
-                        <td>STT</td>
-                        <td>Họ và tên</td>
-                        <td>Liên hệ</td>
-                        <td>Ngày tham gia</td>
-                        <td>Chức năng</td>
+                        <td>Number</td>
+                        <td>Name</td>
+                        <td>Contact</td>
+                        <td>Join Date</td>
+                        <td>Function</td>
                         <td></td>
                      </tr>
                   </thead>
@@ -278,15 +283,15 @@ if (isset($_GET['unblock'])) {
                                     <?php
                                     if ($fetch_users['status'] == 1) {
                                     ?>
-                                       <a id="btn-add-user" class="btn-control-large" type="submit" name="delete" href="admin_users.php?delete=<?php echo $fetch_users['id']; ?>" onclick="return confirm('delete this user?');" class="delete-btn">Xóa</a>
-                                       <a id="btn-add-user" class="btn-control-large" type="submit" name="block" href="admin_users.php?block=<?php echo $fetch_users['id']; ?>" onclick="return confirm('Block this user?');" class="delete-btn">Chặn</a>
+                                       <a id="btn-add-user" class="btn-control-large" type="submit" name="delete" href="admin_users.php?delete=<?php echo $fetch_users['id']; ?>" onclick="return confirm('delete this user?');" class="delete-btn">Delete</a>
+                                       <a id="btn-add-user" class="btn-control-large" type="submit" name="block" href="admin_users.php?block=<?php echo $fetch_users['id']; ?>" onclick="return confirm('Block this user?');" class="delete-btn">Block</a>
                                        <a id="btn-edit-user"class="btn-control-large" type="submit" name="edit" href="edit_user.php?id= <?php echo $fetch_users['id']; ?>">Edit</a>
 
                                     <?php
                                     } else {
                                     ?>
-                                       <a id="btn-add-user" class="btn-control-large" type="submit" name="delete" href="admin_users.php?delete=<?php echo $fetch_users['id']; ?>" onclick="return confirm('delete this user?');" class="delete-btn">Xóa</a>
-                                       <a id="btn-add-user" class="btn-control-large" type="submit" name="unblock" href="admin_users.php?unblock=<?php echo $fetch_users['id']; ?>" onclick="return confirm('Unblock this user?');" class="delete-btn">Gỡ chặn</a>
+                                       <a id="btn-add-user" class="btn-control-large" type="submit" name="delete" href="admin_users.php?delete=<?php echo $fetch_users['id']; ?>" onclick="return confirm('delete this user?');" class="delete-btn">Delete</a>
+                                       <a id="btn-add-user" class="btn-control-large" type="submit" name="unblock" href="admin_users.php?unblock=<?php echo $fetch_users['id']; ?>" onclick="return confirm('Unblock this user?');" class="delete-btn">Unblock</a>
                                     <?php
                                     }
                                     ?>

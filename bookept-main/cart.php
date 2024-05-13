@@ -167,7 +167,7 @@ if(isset($_GET['delete_all'])){
       <li class="cart-item">
          <div class="cart-item-content">
             <div class="image">
-               <img src="uploaded_img/<?php echo $fetch_cart['image']; ?>" alt="">
+               <img src="image/<?php echo $fetch_cart['image']; ?>" alt="">
             </div>
             <div class="name">
                <h2><?php echo $fetch_cart['name']; ?></h2>
