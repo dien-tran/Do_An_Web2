@@ -261,7 +261,7 @@ $search_keyword = isset($_GET['search']) ? $_GET['search'] : '';
                   if (mysqli_num_rows($result_category_id) > 0) {
                      $row_category_id = mysqli_fetch_assoc($result_category_id);
                      $category_id = $row_category_id['CateId'];
-                     $sql = "SELECT * FROM products WHERE CategoryId = '$category_id'";
+                     $sql .= "AND CategoryId = '$category_id'";
                   }
                }
                if (!empty($_POST['author'])) {
@@ -274,17 +274,14 @@ $search_keyword = isset($_GET['search']) ? $_GET['search'] : '';
                }
 
                if (!empty($_POST['year'])) {
-                  $year = mysqli_real_escape_string($conn, $_POST['year']);
-                  $sql = "SELECT * FROM `products` WHERE `PublicationYear` BETWEEN 1800 AND 1900"; // Khởi tạo biến $sql
-              
+                  $year = mysqli_real_escape_string($conn, $_POST['year']);         
+
                   if ($year == '1800-1900') {
-                      // Không nên nối chuỗi trực tiếp với kết quả của mysqli_query()
-                      // Thực hiện truy vấn và sử dụng kết quả để xây dựng truy vấn SQL
-                      $sql = "SELECT * FROM `products` WHERE `PublicationYear` BETWEEN 1800 AND 1900";
+                      $sql .= "AND `PublicationYear` BETWEEN 1800 AND 1900";
                   } elseif ($year == '1900-2000') {
-                      $sql = "SELECT * FROM `products` WHERE `PublicationYear` BETWEEN 1900 AND 2000";
+                      $sql .= "AND `PublicationYear` BETWEEN 1900 AND 2000";
                   } else {
-                      $sql = "SELECT * FROM `products` WHERE `PublicationYear` > 2000";
+                      $sql .= "AND `PublicationYear` > 2000";
                   }
 
                }
@@ -305,11 +302,11 @@ $search_keyword = isset($_GET['search']) ? $_GET['search'] : '';
                   $min_price = intval($min_price);
                   $max_price = intval($max_price);
                   // Tạo câu truy vấn SQL để lấy các sản phẩm trong khoảng giá trị min và max
-                  $sql = "SELECT * FROM products WHERE Price > $min_price AND Price < $max_price";
+                  $sql .= "AND Price > $min_price AND Price < $max_price";
                }
                if (!empty($_POST['search'])) {
                   $search_item = mysqli_real_escape_string($conn, $_POST['search']);
-                  $sql = "SELECT * FROM `products` WHERE name LIKE '%$search_item%'";
+                  $sql .= "AND name LIKE '%$search_item%'";
                }
                if (!isset($_GET['page'])) {
                   $page_number = 1;
