@@ -213,6 +213,7 @@ if (isset($_GET['unblock'])) {
             // $select_products = mysqli_query($conn, "SELECT * FROM `products` LIMIT $offset, $products_per_page") or die('query failed');
             $select_products = mysqli_query($conn, $sql_tk . " LIMIT $offset, $products_per_page") or die('query failed');
             $stt = 1;
+            $pagee=1;
 
 
             // $sql_page = mysqli_query($conn, "SELECT * FROM `users`");
@@ -266,9 +267,10 @@ if (isset($_GET['unblock'])) {
                   <tbody id="show-user">
                      <?php
                      
-                     if(mysqli_num_rows($select_products))
+                     if(mysqli_num_rows($select_products)>0)
                      while ($fetch_users = mysqli_fetch_assoc($select_products)) {
-                        if ($fetch_users['user_type'] === "user") {
+                        if ($fetch_users['user_type'] === "user") 
+                        {
 
                      ?>
                            <tr>
@@ -299,7 +301,10 @@ if (isset($_GET['unblock'])) {
                            </tr>
                      <?php
                         }
+                        else {
+                           echo '<div class="no-result"><div class="no-result-i"><i class="fa fa-home"></i></div><div class="no-result-h">Không có sản phẩm để hiển thị</div></div>';
                      }
+                  }
                      ?>
                   </tbody>
                </table>
@@ -310,10 +315,11 @@ if (isset($_GET['unblock'])) {
                <p>Page:</p>
                <ul class="list_page">
                   <?php
+                                    
                   for ($page = 1; $page <= $total_pages; $page++) {
                      // Kiểm tra xem có từ khóa tìm kiếm hay không
                      if (!empty($search_keyword)) {
-                         echo '<li><a class="page-link" href="admin_users.php?page=' . $page . '&search=' . $search_keyword . '">' . $page . '</a></li>';
+                         echo '<li><a class="page-link" href="admin_users.php?page=' . $page . '&text_search=' . $search_keyword . '">' . $page . '</a></li>';
                      } else {
                          echo '<li><a class="page-link" href="admin_users.php?page=' . $page . '">' . $page . '</a></li>';
                      }
