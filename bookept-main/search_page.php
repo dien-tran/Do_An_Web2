@@ -199,7 +199,6 @@ $search_keyword = isset($_GET['search']) ? $_GET['search'] : '';
 
          <input type="text" name="search" placeholder="search..." class="box">
          <input type="submit" name="submit" value="search" class="btn">
-         <input type="hidden" name="search" value="<?php echo isset($_GET['search']) ? $_GET['search'] : ''; ?>">
       </form>
    </section>
 
