@@ -82,7 +82,7 @@ if (!isset($admin_id)) {
                     <li class="sidebar-list-item user-logout">
                         <a href="#" class="sidebar-link" id="logout-acc">
                             <div class="sidebar-icon"><i class="fa fa-arrow-right"></i></div>
-                            <div class="hidden-sidebar" onclick="redirectToLogout()">Log out</div>
+                            <div class="hidden-sidebar" onclick="redirectToLogout()">Logout</div>
                             <script>
                                 function redirectToLogout() {
                                     window.location.href = "logout_admin.php";
@@ -113,7 +113,7 @@ if (!isset($admin_id)) {
                 <div class="order-statistical" id="order-statistical">
                     <div class="order-statistical-item">
                         <div class="order-statistical-item-content">
-                            <p class="order-statistical-item-content-desc">Revenue</p>
+                            <p class="order-statistical-item-content-desc">Total revenue</p>
                             <h4 class="order-statistical-item-content-h" id="quantity-sale">
                                 <?php
                                 $total_pendings = 0;
@@ -138,7 +138,6 @@ if (!isset($admin_id)) {
                         <thead>
                             <tr>
                                 <td>Customer</td>
-                                <td>Order date</td>
                                 <td>Phone</td>
                                 <td>Revenue</td>
                                 <td></td>
@@ -147,7 +146,7 @@ if (!isset($admin_id)) {
                         <tbody id="showTk">
                             <?php
                             $customer_details = array();
-                            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
+                            if (isset($_POST['submit'])) {
 
                                 // Retrieve start and end date from the form
                                 $start_date = $_POST['start_date'];
@@ -176,13 +175,10 @@ if (!isset($admin_id)) {
                                     foreach ($customer_details as $customer_name => $details) {
                                         echo "<tr>";
                                         echo "<td>$customer_name</td>";
-                                        echo "<td>{$details['order_date']}</td>";
                                         echo "<td>{$details['phone_number']}</td>";
                                         echo "<td>{$details['total_price']}$</td>";
                                         echo "<td class='control'>";
-                                        echo "<form method='post'>";
-                                        echo "<button class='btn-detail'><a style='color:black' href='admin_stats_details.php?customer_name=$customer_name&start_date=$start_date&end_date=$end_date'><i class='fa fa-asterisk'></i>Details</a></button>";
-                                        echo "</form>";
+                                        echo "<a style='color:black' href='admin_stats_details.php?customer_name=$customer_name&start_date=$start_date&end_date=$end_date'><button class='btn-detail'><i class='fa fa-asterisk'></i>More</button></a>";
                                         echo "</td>";
                                         echo "</tr>";
                                     }
@@ -213,13 +209,10 @@ if (!isset($admin_id)) {
                                     foreach ($customer_details as $customer_name => $details) {
                                         echo "<tr>";
                                         echo "<td>$customer_name</td>";
-                                        echo "<td>{$details['order_date']}</td>";
                                         echo "<td>{$details['phone_number']}</td>";
                                         echo "<td>{$details['total_price']}$</td>";
                                         echo "<td class='control'>";
-                                        echo "<form method='post'>";
                                         echo "<a style='color:black' href='admin_stats_details.php?customer_name=$customer_name'>More</a>";
-                                        echo "</form>";
                                         echo "</td>";
                                         echo "</tr>";
                                     }
@@ -249,13 +242,10 @@ if (!isset($admin_id)) {
                                     foreach ($customer_details as $customer_name => $details) {
                                         echo "<tr>";
                                         echo "<td>$customer_name</td>";
-                                        echo "<td>{$details['order_date']}</td>";
                                         echo "<td>{$details['phone_number']}</td>";
                                         echo "<td>{$details['total_price']}$</td>";
                                         echo "<td class='control'>";
-                                        echo "<form method='post'>";
-                                        echo "<button class='btn-detail'><a style='color:black' href='admin_stats_details.php?customer_name=$customer_name'><i class='fa fa-asterisk'></i>More</a></button>";
-                                        echo "</form>";
+                                        echo "<a style='color:black' href='admin_stats_details.php?customer_name=$customer_name'><button class='btn-detail'><i class='fa fa-asterisk'></i>More</button></a>";
                                         echo "</td>";
                                         echo "</tr>";
                                     }

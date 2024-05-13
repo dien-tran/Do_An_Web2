@@ -81,7 +81,12 @@ if (!isset($admin_id)) {
                     <li class="sidebar-list-item user-logout">
                         <a href="#" class="sidebar-link" id="logout-acc">
                             <div class="sidebar-icon"><i class="fa fa-arrow-right"></i></div>
-                            <div class="hidden-sidebar">Log out</div>
+                            <div class="hidden-sidebar" onclick="redirectToLogout()">Logout</div>
+                            <script>
+                                function redirectToLogout() {
+                                    window.location.href = "logout_admin.php";
+                                }
+                            </script>
                         </a>
                     </li>
                 </ul>
@@ -98,11 +103,13 @@ if (!isset($admin_id)) {
 
                     <div class="order-statistical-item">
                         <div class="order-statistical-item-content">
-                            <p class="order-statistical-item-content-desc">Revenue</p>
+                        <p class="order-statistical-item-content-desc"><?php $name = $_GET['customer_name']; 
+                        echo $name?>'s revenue</p>
                             <h4 class="order-statistical-item-content-h" id="quantity-sale">
                                 <?php
                                 $total_pendings = 0;
-                                $select_pending = mysqli_query($conn, "SELECT total_price FROM orders WHERE payment_status = 'Completed'") or die('query failed');
+                                
+                                $select_pending = mysqli_query($conn, "SELECT total_price FROM orders WHERE payment_status = 'Completed' AND name = '$name'") or die('query failed');
                                 if (mysqli_num_rows($select_pending) > 0) {
                                     while ($fetch_pendings = mysqli_fetch_assoc($select_pending)) {
                                         $total_price = $fetch_pendings['total_price'];
@@ -122,7 +129,6 @@ if (!isset($admin_id)) {
                     <table width="100%">
                         <thead>
                             <tr>
-                                <td>Customer</td>
                                 <td>Order date</td>
                                 <td>Phone</td>
                                 <td>Revenue</td>
@@ -140,11 +146,10 @@ if (!isset($admin_id)) {
                                     while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
                             ?>
                                         <tr>
-                                            <td><?php echo $fetch_orders['name'] ?></td>
                                             <td><?php echo $fetch_orders['placed_on'] ?></td>
-                                            <td><?php echo $fetch_orders['number'] ?></td>
+                                            <td><?php echo $fetch_orders['method'] ?></td>
                                             <td><?php echo $fetch_orders['total_price'] ?>$</td>
-                                            <td class="control"><button class="btn-detail"><a style="color:black" href="admin_stats_popup.php?customer_name=<?php echo $fetch_orders['name'] ?> &order_id=<?php echo $fetch_orders['id'] ?>&start_date=<?php echo $start_date ?>&end_date=<?php echo $end_date ?>"><i class=" fa fa-asterisk"></i>Details</a></button></td>
+                                            <td class="control"><a style="color:black" href="admin_stats_popup.php?customer_name=<?php echo $fetch_orders['name'] ?> &order_id=<?php echo $fetch_orders['id'] ?>&start_date=<?php echo $start_date ?>&end_date=<?php echo $end_date ?>"><button class="btn-detail"><i class=" fa fa-asterisk"></i>Details</button></a></td>
 
                                         </tr>
                                     <?php
@@ -157,11 +162,10 @@ if (!isset($admin_id)) {
                                     while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
                                     ?>
                                         <tr>
-                                            <td><?php echo $fetch_orders['name'] ?></td>
                                             <td><?php echo $fetch_orders['placed_on'] ?></td>
-                                            <td><?php echo $fetch_orders['number'] ?></td>
+                                            <td><?php echo $fetch_orders['method'] ?></td>
                                             <td><?php echo $fetch_orders['total_price'] ?>$</td>
-                                            <td class="control"><button class="btn-detail"><a style="color:black" href="admin_stats_popup.php?customer_name=<?php echo $fetch_orders['name'] ?> &order_id=<?php echo $fetch_orders['id'] ?>"><i class=" fa fa-asterisk"></i>Details</a></button></td>
+                                            <td class="control"><a style="color:black" href="admin_stats_popup.php?customer_name=<?php echo $fetch_orders['name'] ?> &order_id=<?php echo $fetch_orders['id'] ?>"><button class="btn-detail"><i class=" fa fa-asterisk"></i>Details</button></a></td>
 
                                         </tr>
                             <?php

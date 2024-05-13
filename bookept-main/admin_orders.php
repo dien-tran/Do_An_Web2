@@ -84,7 +84,12 @@ if (!isset($admin_id)) {
                <li class="sidebar-list-item user-logout">
                   <a href="admin_stats.php" class="sidebar-link" id="logout-acc">
                      <div class="sidebar-icon"><i class="fa fa-arrow-right"></i></div>
-                     <div class="hidden-sidebar">Log out</div>
+                     <div class="hidden-sidebar" onclick="redirectToLogout()">Logout</div>
+                            <script>
+                                function redirectToLogout() {
+                                    window.location.href = "logout_admin.php";
+                                }
+                            </script>
                   </a>
                </li>
             </ul>
