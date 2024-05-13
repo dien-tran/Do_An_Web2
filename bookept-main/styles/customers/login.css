@@ -57,11 +57,11 @@
     transform: skewY(0);
 }
 
-.form-inner {
+/* .form-inner {
     background-color: #FEEFE0;
     z-index: 1;
     padding: 3rem;
-}
+} */
 
 .input-group {
     display: flex;
@@ -97,4 +97,34 @@
 
 p{
     font-size: 15px;
+}
+.message-container {
+    max-width: 450px;
+    margin: 20px auto; /* thêm margin để dễ nhìn */
+    padding: 0 15px; /* thêm padding cho đẹp */
+}
+
+.message {
+    background-color: #FEEFE0;
+    padding: 10px 15px; /* thêm padding cho đẹp */
+    border-radius: 5px; /* bo góc */
+    margin-bottom: 10px; /* thêm margin giữa các tin nhắn */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.message span {
+    font-size: 1.2rem; /* giảm kích thước chữ */
+    color: #000; /* màu chữ đen */
+}
+
+.message i {
+    cursor: pointer;
+    color: #f00; /* màu chữ đỏ */
+    font-size: 1.5rem; /* giảm kích thước icon */
+}
+
+.message i:hover {
+    transform: rotate(90deg);
 }

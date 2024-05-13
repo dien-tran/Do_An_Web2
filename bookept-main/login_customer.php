@@ -2,35 +2,34 @@
 <html lang="en">
 
 <head>
+ 
+   <link rel="stylesheet" href="./styles/login.css">
    <meta charset="UTF-8">
    <meta http-equiv="X-UA-Compatible" content="IE=edge">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Bookept | Login</title>
+   <title>Bookept | Register</title>
    <meta name="description" content="Knowledge space for nerds. Search online books by subject and add them to your favorite cart">
    <meta name="keywords" content="php, sql, mysql, html, css, javascript, book">
    <link rel="shortcut icon" href="./public/favicon.ico" type="image/x-icon">
+
+   <!-- font awesome cdn link  -->
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+   <!-- custom css file link  -->
    <link rel="stylesheet" href="styles/main.css">
    <link rel="stylesheet" href="./styles/login.css">
-
+   
 </head>
 
 <body>
-<?php 
-      if(isset($message))
-      {
-         foreach($message as $msg)
-         {
-            echo '
-            <div class="message">
-            <span>' . $msg . '</span>
-            <i clss="fas fa-times" onclick="this.parentElement.remove();"></i>
-            ';
-         }
-      }
-   ?>
+<div id="alertMessage1" class="alert-message" style="display: none;">
+    The account has been locked. Please call the hotline
+</div>
+<div id="alertMessage2" class="alert-message" style="display: none;">
+      Invalid email or password
+</div>
    <div class="form-container">
-      <form class="login_form" action="" method="post">
+      <form class="login_form"action="" method="post">
          <div class="form-inner">
             <h2>Login now</h2>
             <div class="input-group">
@@ -53,7 +52,7 @@
          </div>
       </form>
    </div>
-   <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+   <!-- <script src="https://code.jquery.com/jquery-3.7.1.js"></script> -->
 
 
 
@@ -104,20 +103,15 @@ if (isset($_POST['submit'])) // kiểm tra giá trị tồn tại và có ko nul
          }
          else
          {
-            $message[] = 'The account has been locked. Please call the hotline';
+            echo '<script>alert("The account has been locked. Please call the hotline");</script>';
          }
                  
       }
       
    }
-
-   /* ?> ---<?php ?> để tạo ra một đoạn mã JavaScript,nó sẽ được PHP xử lý trước khi được gửi về cho trình duyệt. 
-                      Kết quả là trình duyệt sẽ nhận được một chuỗi HTML chứa đoạn mã JavaScript, không phải là một trang HTML hoàn chỉnh.
-        //     <script>
-        //         alert("Email hoặc mật khẩu không chính xác!");
-        //     </script>
-         <?php */ else {
-      echo "<script>alert('Incorrect email or account.');</script>";
-
+   else
+   {
+      echo '<script>alert("Invalid email or password");</script>';
    }
+
 } ?>

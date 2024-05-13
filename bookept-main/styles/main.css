@@ -86,7 +86,10 @@ ul {
     color: var(--red);
     font-size: 2rem;
 }
-
+.message-container {
+    max-width: 450px;
+    margin: 0 auto;
+}
 .message {
     position: sticky;
     top: 0;
@@ -94,7 +97,6 @@ ul {
     max-width: 1200px;
     background-color: var(--white);
     padding: 2rem;
-    display: flex;
     align-items: center;
     justify-content: space-between;
     z-index: 10000;

@@ -13,12 +13,13 @@ if (isset($_POST['submit'])) {
    $select_users = mysqli_query($conn, "SELECT * FROM `users` WHERE email = '$email' ") or die('query failed');
    if (mysqli_num_rows($select_users) > 0) {
       $message[] = 'User already exists!';
-   } 
+   
+   }// Khai báo mảng chứa các trường không hợp lệ
    else {
-     // Khai báo mảng chứa các trường không hợp lệ
+      
 
-
-     if ($pass != $password2) {
+      
+         if ($pass != $password2) {
       // Nếu mật khẩu không trùng khớp, xóa cả hai mật khẩu và focus tới mật khẩu
       $invalidFields[] = 'password';
       $invalidFields[] = 'password2';
@@ -56,7 +57,10 @@ if (!empty($invalidFields)) {
          }
       }
    }
+   
 }
+
+
 ?>
 
 
@@ -83,19 +87,18 @@ if (!empty($invalidFields)) {
 </head>
 
 <body>
-<?php
-if(isset($message) && is_array($message)) // Kiểm tra nếu $message là một mảng
-{
-    foreach($message as $msg)
-    {
-        echo '
-        <div class="message">
-        <span>' . $msg . '</span>
-        <i class="fas fa-times" onclick="this.parentElement.remove();"></i>
-        </div>'; // Thêm </div> ở cuối để đóng div.message
-    }
-}
-?>
+<div class="message-container">
+        <?php
+        if(isset($message)) {
+            foreach($message as $msg) {
+                echo '<div class="message">
+                        <span>' . $msg . '</span>
+                        <i class="fas fa-times" onclick="this.parentElement.remove();"></i>
+                      </div>';
+            }
+        }
+        ?>
+    </div>
    <div class="form-container ">
       <div class="container">
          <form class="form" action="" method="post">

@@ -13,6 +13,7 @@ if (!isset($user_id)) {
 
 if (isset($_POST['submit'])) {
   $phone = $name = $email = $address = $city = $road = $district = $ward = "";
+  $check1=true;$check2=true; $check3=true;$check4=true;$check5=true;$check6=true;$check7=true;$check8=true;
 
     // Check if phone number is set and not empty in $_POSt
   
@@ -24,12 +25,21 @@ if (isset($_POST['submit'])) {
       $name = mysqli_real_escape_string($conn, $_POST['name_change']);
       $queries[] .= "UPDATE `users` SET `name` = '$name' WHERE id = $user_id";
       $_SESSION['name'] = $name;
+      $check1=true;
     } 
     if (isset($_POST['email_change'])) {
       $email = mysqli_real_escape_string($conn, $_POST['email_change']);
-      $queries[] .= "UPDATE `users` SET `email` = '$email' WHERE id = $user_id";
-      $_SESSION['email'] = $email;
-    }
+      $check = mysqli_query($conn, "SELECT * FROM users WHERE email = '$email' AND id != $user_id");
+      if (mysqli_num_rows($check) > 0) {
+          $message[] = 'This email already exists, please update it.';
+          $check2=false;
+      } else {
+          $queries[] = "UPDATE `users` SET `email` = '$email' WHERE id = $user_id";
+          $_SESSION['email'] = $email;
+          $check2=true;
+      }
+  }
+  
   
     if (isset($_POST['phone_number'])) {
       $phone = mysqli_real_escape_string($conn, $_POST['phone_number']);
@@ -39,9 +49,10 @@ if (isset($_POST['submit'])) {
               // Kiểm tra độ dài của số điện thoại
               if (strlen($phone) == 10) {
                   $queries[] .= "UPDATE `users` SET `phone_number` = '$phone' WHERE id = $user_id";
-                 
+                  $check3=true;
               } else {
                   $message[] = 'The phone number must be 10 digits.';
+                  $check3=false;
               }
           } else {
               $message[] = 'The phone number is invalid. Please check!';
@@ -52,6 +63,7 @@ if (isset($_POST['submit'])) {
             $address = mysqli_real_escape_string($conn, $_POST['address']);
                 $queries[] .= "UPDATE `users` SET `house_number` = '$address' WHERE id = $user_id";
                 $_SESSION['house_number'] = $address;
+                $check4=true;
             
         }
     
@@ -61,6 +73,8 @@ if (isset($_POST['submit'])) {
           
                 $queries[] .= "UPDATE `users` SET `road` = '$road' WHERE id = $user_id";
                 $_SESSION['road'] = $road;
+                $check5=true;
+            
             
         }
     
@@ -69,6 +83,8 @@ if (isset($_POST['submit'])) {
           $ward = $_POST['ward'];
               $queries[] .= "UPDATE `users` SET `ward` = '$ward' WHERE id = $user_id";
               $_SESSION['ward'] = $ward;
+              $check6=true;
+            
       }
   
       // Check if district is set and not empty in $_POST
@@ -76,6 +92,8 @@ if (isset($_POST['submit'])) {
           $district = $_POST['district'];
               $queries[] .= "UPDATE `users` SET `district` = '$district' WHERE id = $user_id";
               $_SESSION['district'] = $district;
+              $check7=true;
+            
       }
   
       // Check if city is set and not empty in $_POST
@@ -83,38 +101,34 @@ if (isset($_POST['submit'])) {
           $city = $_POST['city'];
               $queries[] .= "UPDATE `users` SET `city` = '$city' WHERE id = $user_id";
               $_SESSION['city'] = $city;
+              $check8=true;
+      }
+      $updateSuccess=false;
+      // $ck=true;
+      foreach($queries as $query)
+      {
+        if (!empty($query))
+        {
+          if (mysqli_query($conn,$query))
+          {
+            $updateSuccess = $updateSuccess && true;
+      
+          }
+          else
+          {
+            // $ch=false;
+            $updateSuccess=false;
+            echo "error: " . mysqli_error($conn) . "<br>";
+            break; // Thoát khỏi vòng lặp nếu có bất kỳ truy vấn nào thất bại
+          }
+        }
+      }
+      if ($check1==true && $check2==true && $check3==true && $check4==true && $check5==true && $check6==true && $check7==true && $check8==true) {
+        // Nếu đã thành công, hiển thị thông báo
+        $message[] = 'Update data successfully';
       }
       
-      $updateSuccess = false;
-foreach($queries as $query)
-{
-  if (!empty($query))
-  {
-    if (mysqli_query($conn,$query))
-    {
-      $updateSuccess =$updateSuccess && true;
-
-    }
-    else
-    {
-      $updateSuccess=false;
-      echo "error: " . mysqli_error($conn) . "<br>";
-      exit();
-    }
-  }
-}
-if ($updateSuccess) {
-  // Nếu đã thành công, hiển thị thông báo
-  $message[] = 'Update data successfully';
-}
-
-}
-    
-       
-   
-
-
-
+      }
 
 if (isset($_POST["finish"])) {
     header("location:home.php");
@@ -187,16 +201,30 @@ if (isset($message) && is_array($message)) {
       <td><input type="email" id="email" name="email_change" value="<?php echo $check['email']; ?>" class="box"></td>
     </tr>
     <tr>
-      <td><label for="phone">Phone Number:</label></td>
-      <td><input type="tel" id="phone" name="phone_number" value="<?php echo isset($phone) ? $phone : $check['phone_number']; ?>" class="box"></td>   
-     </tr>
-    
+    <td><label for="phone">Phone Number:</label></td>
+    <td>
+        <input type="tel" id="phone" name="phone_number" value="<?php echo isset($phone) ? htmlspecialchars($phone) : htmlspecialchars($check['phone_number']); ?>" class="box <?php if (isset($invalidFields) && in_array('phone_number', $invalidFields)) echo 'invalid'; ?>">
+        <div id="phone-error" style="color: red;" class="error-message"></div>
+        <?php if (isset($invalidFields) && in_array('phone_number', $invalidFields)) {
+            echo '<script>document.getElementById("phone-error").innerHTML = "Invalid phone number. Please check!";</script>';
+        } ?>
+    </td>
+    </tr>
+
     <script>
     <?php if (isset($_POST['phone_number']) && (strlen($phone) != 10 || !preg_match('/^[0-9]+$/', $phone))) : ?>
-    document.getElementById('phone').focus();
+        var isInvalid = true;
+        document.getElementById('phone').classList.add('invalid');
+        document.getElementById('phone').focus();
+    <?php else: ?>
+        var isInvalid = false;
     <?php endif; ?>
+    // Kiểm tra nếu có lỗi thì hiển thị thông báo màu đỏ
+    if (isInvalid) {
+        document.getElementById('phone').classList.add('invalid');
+        document.getElementById('phone-error').innerHTML = 'Invalid phone number. Please check!';
+    }
 </script>
-    <tr>
       <td><label for="address">House Number:</label></td>
       <td><input type="text" id="address" name="address" value="<?php echo $check['house_number']; ?>" class="box"></td>
     </tr>
