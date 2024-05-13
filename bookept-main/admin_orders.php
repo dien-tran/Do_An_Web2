@@ -146,7 +146,7 @@ if (!isset($admin_id)) {
                               <td><?php echo $fetch_orders['payment_status'] ?></td>
                               <td class="control">
                                  <form method="post">
-                                 <a style="color:black" href="admin_orderdetail.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Details</a>
+                                 <button class='btn-detail'><a style="color:black" href="admin_orderdetail.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Details</a></button>
                                  </form>
                           <?php
                         }

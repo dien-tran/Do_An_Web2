@@ -91,7 +91,9 @@ if (!isset($admin_id)) {
             <div class="section active">
                 <div class="admin-control">
                     <div class="admin-control-right">
-                        <a style="color:white" href="admin_stats.php"><button class="btn-control-large">Back</button></a>
+                        <form method="post" class="fillter-date">
+                            <button class="btn-control-large"><a style="color:white" href="admin_stats.php">Back</a></button>
+                        </form>
                     </div>
                 </div>
                 <div class="order-statistical" id="order-statistical">
@@ -150,9 +152,9 @@ if (!isset($admin_id)) {
                                     <?php
                                     }
                                 }
-                            } else {
+                            } elseif (isset($_GET['customer_name'])) {
                                 $name = $_GET['customer_name'];
-                                $select_orders = mysqli_query($conn, "SELECT * FROM orders WHERE payment_status = 'Completed' AND name = '$name'") or die('query failed');
+                                $select_orders = mysqli_query($conn, "SELECT * FROM orders WHERE name = '$name'") or die('query failed');
                                 if (mysqli_num_rows($select_orders) > 0) {
                                     while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
                                     ?>
@@ -161,7 +163,7 @@ if (!isset($admin_id)) {
                                             <td><?php echo $fetch_orders['placed_on'] ?></td>
                                             <td><?php echo $fetch_orders['number'] ?></td>
                                             <td><?php echo $fetch_orders['total_price'] ?>$</td>
-                                            <td class="control"><button class="btn-detail"><a style="color:black" href="admin_stats_popup.php?customer_name=<?php echo $fetch_orders['name'] ?> &order_id=<?php echo $fetch_orders['id'] ?>"><i class=" fa fa-asterisk"></i>Details</a></button></td>
+                                            <td class="control"><button class="btn-detail"><a style="color:black" href="admin_stats_popup.php?order_id=<?php echo $fetch_orders['id'] ?>"><i class=" fa fa-asterisk"></i>Details</a></button></td>
 
                                         </tr>
                             <?php
@@ -176,7 +178,125 @@ if (!isset($admin_id)) {
                 </div>
             </div>
         </main>
+        <div class="modal detail-order open" id="a">
+            <div class="modal-container">
+                <h3 class="modal-container-title">Order Details</h3>
+                <form name="form" action="" method="post">
+                    <input type="hidden" id="order_id_input" name="order_id">
+                </form>
+                <?php
+                // Lấy order_id từ tham số GET
+                $order_id = $_GET['order_id'];
 
+                // Truy vấn để lấy thông tin đơn hàng từ CSDL
+                $sql_order = mysqli_query($conn, "SELECT * FROM orders where id = '$order_id' ");
+                $result_order = mysqli_fetch_assoc($sql_order);
+
+                // Kiểm tra xem có đơn hàng nào được tìm thấy không
+                if ($result_order) {
+                ?>
+                    <div class="modal-detail-order">
+                        <?php
+                        if (isset($_GET['start_date']) && isset($_GET['end_date'])) {
+                            $start_date = $_GET['start_date'];
+                            $end_date = $_GET['end_date'];
+                        ?>
+                            <a href="admin_stats_details.php?customer_name=<?php echo $result_order['name'] ?>&start_date=<?php echo $start_date ?>&end_date=<?php echo $end_date ?>"><button class="modal-close"><i class="fa fa-close"></i></button></a>
+                        <?php
+                        } else {
+                        ?>
+                            <a href="admin_stats_details.php?customer_name=<?php echo $result_order['name'] ?>"><button class="modal-close"><i class="fa fa-close"></i></button></a>
+                        <?php
+                        }
+                        ?>
+                        <div class="modal-detail-left">
+                            <div class="order-item-group">
+                                <?php
+                                // Truy vấn để lấy thông tin chi tiết sản phẩm trong đơn hàng
+                                $total_products = $result_order['total_products']; // Lấy giá trị từ cột total_products
+                                $products_array = explode(',', $total_products); // Tách các sản phẩm thành mảng
+                                $product_number = 1;
+
+                                if (count($products_array) > 0) {
+                                    array_shift($products_array); // Bỏ qua phần tử đầu tiên của mảng
+                                }
+
+                                foreach ($products_array as $product_string) {
+                                    // Tách tên sản phẩm và số lượng
+                                    $product_data = explode('(', $product_string);
+                                    $product_name = trim($product_data[0]); // Tên sản phẩm
+                                    $product_quantity = intval($product_data[1]); // Số lượng sản phẩm
+
+                                    // $sql_product_image = mysqli_query($conn,"SELECT Image FROM products  JOIN orders ON products.name =   $product_name ");
+
+                                    // $product_img = mysqli_fetch_assoc($sql_product_image);    
+                                    $sql_product_image = mysqli_query($conn, "SELECT * FROM products WHERE Name = '$product_name'");
+                                    $product_img_data = mysqli_fetch_assoc($sql_product_image);
+                                    $product_img_url = $product_img_data['Image'];
+
+                                    // Truy vấn cơ sở dữ liệu để lấy thông tin về sản phẩm
+                                    $sql_product = mysqli_query($conn, "SELECT * FROM products WHERE Name = '$product_name'");
+                                    $product_detail = mysqli_fetch_assoc($sql_product);
+
+                                    // Tính toán tổng tiền cho sản phẩm
+                                    $product_price = $product_detail['Price']; // Giá của sản phẩm
+                                    $total_price = $product_price * $product_quantity; // Tổng tiền cho sản phẩm
+
+                                    $product_number++;
+
+                                    echo '<div class="order-product">';
+                                    echo '<div class="order-product-left">';
+                                    echo '<div class="order-product-left">';
+                                    echo '<img src="image/' . $product_img_url . '" alt="">';
+
+
+                                    echo '<div class="order-product-info">';
+                                    echo '<h4>' . $product_name . '</h4> ';
+                                    echo '<h4> Price: $' . $total_price . '</h4>';
+                                    echo '<p class="order-product-quantity">SL: ' . $product_quantity . '<p>';
+                                    echo '</div>';
+                                    echo '</div>';
+                                ?>
+                            </div>
+                        </div>
+                    <?php
+                                } ?>
+                    </div>
+            </div>
+            <div class="modal-detail-right">
+                <ul class="detail-order-group">
+                    <li class="detail-order-item">
+                        <span class="detail-order-item-left"><i class="fa fa-calendar"></i> Order date</span>
+                        <span class="detail-order-item-right"><?php echo $result_order['placed_on']; ?></span>
+                    </li>
+                    <li class="detail-order-item">
+                        <span class="detail-order-item-left"><i class="fa fa-user"></i> Customer</span>
+                        <span class="detail-order-item-right"><?php echo $result_order['name'] ?></span>
+                    </li>
+                    <li class="detail-order-item">
+                        <span class="detail-order-item-left"><i class="fa fa-phone"></i> Phone</span>
+                        <span class="detail-order-item-right"><?php echo $result_order['number'] ?></span>
+                    </li>
+                    <li class="detail-order-item tb">
+                        <span class="detail-order-item-t"><i class="fa fa-location-arrow"></i> Address</span>
+                        <p class="detail-order-item-b"><?php echo $result_order['address'] ?></p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="modal-detail-bottom">
+            <div class="modal-detail-bottom-left">
+                <div class="price-total">
+                    <span class="thanhtien">Total Price</span>
+                    <span class="price">$<?php echo $result_order['total_price']; ?></span>
+                </div>
+            </div>
+            <div class="modal-detail-bottom-right">
+            <?php
+                }
+            ?>
+            </div>
+        </div>
     </div>
     </div>
     <div id="toast"></div>

@@ -69,13 +69,9 @@ if (isset($_GET['delete'])) // kiểm tra xem có tồn tại tham số 'delete'
     $delete_id = $_GET['delete']; // nếu có thì lấy id 
     $check_sold_query = mysqli_query($conn, "SELECT * FROM products WHERE '$delete_id' = Id");
     $fetch_delete = mysqli_fetch_assoc($check_sold_query);
-    if ($fetch_delete['SoldYet'] == "Yes" && $fetch_delete['Status'] == 0) {
-        mysqli_query($conn, "DELETE FROM products WHERE id = '$delete_id'") or die('query failed');
-        header("Location:admin_products.php");
-    } elseif ($fetch_delete['SoldYet'] == "Yes") {
+    if ($fetch_delete['SoldYet'] == "Yes") {
         mysqli_query($conn, "UPDATE products SET STATUS = 0 WHERE id = '$delete_id'");
-    } else
-    {
+    } else {
         mysqli_query($conn, "DELETE FROM products WHERE id = '$delete_id'") or die('query failed');
         header("Location:admin_products.php");
     }
@@ -85,7 +81,7 @@ if (isset($_GET['display'])) {
     $hidden_id = $_GET['display'];
     $display_sql = mysqli_query($conn, "SELECT * FROM products WHERE Id = '$hidden_id'");
     $fetch_display = mysqli_fetch_assoc($display_sql);
-    mysqli_query($conn, "UPDATE products SET Status = 1");
+    mysqli_query($conn, "UPDATE products SET Status = 1 WHERE Id = '$hidden_id'");
 }
 
 ?>
@@ -233,146 +229,148 @@ if (isset($_GET['display'])) {
                                     </div>
                                     <div class="list-control">
                                         <div class="list-tool">
+                                            <a href="admin_products_edit.php?edit_product=<?php echo $fetch_products['Id']; ?>" style="color:black;"><button id="edit-product" name="edit" class="btn-edit"><i class="fa fa-pencil"></i></button></a>
                                             <?php
-                                            if ($fetch_products['Status'] == 0) { ?>
-                                                <a style="color:black" href="admin_products.php?display=<?php echo $fetch_products['Id'] ?>"><button name="display" class="btn-edit" onclick="return confirm('Do you want to continue selling this item?')"><i class="fa fa-eye" aria-hidden="true"></i></button>
-                                                <?php
-                                            }
+                                            if ($fetch_products['Status'] == 0) {
+                                            ?>
+
+                                                <a style="color:black" href="admin_products.php?display=<?php echo $fetch_products['Id'] ?>"><button name="display" class="btn-edit" onclick="return confirm('Do you want to continue selling this item?')"><i class="fa fa-eye" aria-hidden="true"></i></button></a>
+                                                <?php } elseif ($fetch_products['Status'] == 1) {
                                                 ?>
-                                                <a href="admin_products_edit.php?edit_product=<?php echo $fetch_products['Id']; ?>" style="color:black;"><button id="edit-product" name="edit" class="btn-edit"><i class="fa fa-pencil"></i></button></a>
-                                                <a href="admin_products.php?delete=<?php echo $fetch_products['Id']; ?>"><button class="btn-delete" name="delete" onclick="return confirm('Delete this product?')"><i class="fa fa-trash"></i></button> </a>
+                                                    <a href="admin_products.php?delete=<?php echo $fetch_products['Id']; ?>"><button class="btn-delete" name="delete" onclick="return confirm('Delete this product?')"><i class="fa fa-trash"></i></button> </a>
+                                                <?php } ?>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                    <?php
+        <?php
                         }
                     } else {
                         echo '<div class="no-result"><div class="no-result-i"><i class="fa fa-home"></i></div><div class="no-result-h">Không có sản phẩm để hiển thị</div></div>';
                     }
-                    ?>
-                    <div class="page-nav">
-                        <ul class="page-nav-list">
-                            <?php
-                            // Hiển thị các nút phân trang
-                            for ($page = 1; $page <= $total_pages; $page++) {
-                                // Kiểm tra xem có từ khóa tìm kiếm hay không
-                                if (!empty($search_keyword)) {
-                                    echo '<li class="page-nav-item"><a href="admin_products.php?page=' . $page . '&search=' . $search_keyword . '">' . $page . '</a></li>';
-                                } else {
-                                    echo '<li class="page-nav-item"><a href="admin_products.php?page=' . $page . '">' . $page . '</a></li>';
-                                }
-                            }
-                            ?>
-                        </ul>
-                    </div>
-                </div>
-
+        ?>
+        <div class="page-nav">
+            <ul class="page-nav-list">
+                <?php
+                // Hiển thị các nút phân trang
+                for ($page = 1; $page <= $total_pages; $page++) {
+                    // Kiểm tra xem có từ khóa tìm kiếm hay không
+                    if (!empty($search_keyword)) {
+                        echo '<li class="page-nav-item"><a href="admin_products.php?page=' . $page . '&search=' . $search_keyword . '">' . $page . '</a></li>';
+                    } else {
+                        echo '<li class="page-nav-item"><a href="admin_products.php?page=' . $page . '">' . $page . '</a></li>';
+                    }
+                }
+                ?>
+            </ul>
+        </div>
             </div>
-        </main>
-        <div class="modal add-product">
-            <div class="modal-container">
-                <h3 class="modal-container-title add-product-e">THÊM MỚI SẢN PHẨM</h3>
-                <button class="modal-close product-form"><i class="fa fa-times"></i></button>
-                <div class="modal-content">
-                    <form action="" method="POST" class="add-product-form" enctype="multipart/form-data">
-                        <div class="modal-content-left">
-                            <img id="imagePreview" src="./image/" alt="" class="upload-image-preview">
-                            <div class="form-group file">
-                                <label for="up-hinh-anh" class="form-label-file"><i class="fa fa-plus"></i>Chọn hình ảnh</label>
-                                <input accept="image/jpeg, image/png, image/jpg" id="up-hinh-anh" name="Image" type="file" class="form-control" onchange="previewImage(event)">
-                            </div>
-                        </div>
-                        <div class="modal-content-right">
-                            <div class="form-group">
-                                <label for="ten-mon" class="form-label">Tên sách</label>
-                                <input id="ten-mon" name="Name" type="text" placeholder="Nhập tên sách" value="" class="form-control">
-                                <span class="form-message"></span>
-                            </div>
-                            <div class="form-group">
-                                <label for="category" class="form-label">Chọn thể loại</label>
-                                <select name="CategoryId" id="chon-mon">
-                                    <?php
-                                    $sql_cate = "SELECT * FROM category";
-                                    $result = mysqli_query($conn, $sql_cate);
-                                    if (mysqli_num_rows($result) > 0) {
-                                        while ($row = mysqli_fetch_assoc($result)) {
-                                            echo '<option value="' . $row['CateId'] . '">' . $row['CateName'] . '</option>';
-                                        }
-                                        echo '</select>';
-                                    }
-                                    ?>
-                                    <span class="form-message"></span>
-                            </div>
-                            <!-- Price -->
-                            <div class="form-group">
-                                <label for="gia-moi" class="form-label">Price</label>
-                                <input id="gia-moi" name="Price" type="text" placeholder="Nhập giá bán" value="" class="form-control">
-                                <span class="form-message"></span>
-                            </div>
-                            <!-- Author -->
-                            <div class="form-group">
-                                <label for="author" class="form-label">Author</label>
-                                <input id="author" name="MainAuthor" type="text" value="" class="form-control">
-                                <span class="form-message"></span>
-                            </div>
-                            <div class="form-group">
-                                <label for="publisher" class="form-label">Publisher</label>
-                                <input id="publisher" name="Publisher" value="" type="text" class="form-control">
-                                <span class="form-message"></span>
-                            </div>
-                            <div class="form-group">
-                                <label for="pub-year" class="form-label">PublicationYear</label>
-                                <input id="pub-year" name="PublicationYear" value="" type="number" min="0" class="form-control">
-                                <span class="form-message"></span>
-                            </div>
-                            <div class="form-group">
-                                <label for="language" class="form-label">Language</label>
-                                <input id="language" name="Language" value="" type="text" class="form-control">
-                                <span class="form-message"></span>
-                            </div>
-                            <div class="form-group">
-                                <label for="cover" class="form-label">Cover</label>
-                                <input id="cover" name="CoverType" value="" type="text" class="form-control">
-                                <span class="form-message"></span>
-                            </div>
-                            <div class="form-group">
-                                <label for="quanitiy" class="form-label">Quantity</label>
-                                <input id="quanitiy" name="Quantity" value="" type="number" min="0" class="form-control">
-                                <span class="form-message"></span>
-                            </div>
-                            <div class="form-group">
-                                <label for="mo-ta" class="form-label">Mô tả</label>
-                                <textarea class="product-desc" id="mo-ta" value="" name="Description" placeholder="Nhập mô tả sách..."></textarea>
-                                <span class="form-message"></span>
-                            </div>
-                            <button type="submit" class="form-submit btn-add-product-form add-product-e" id="add-product-button" name="add_product">
-                                <i class="fa fa-plus"></i>
-                                <span>THÊM SÁCH</span>
 
-                            </button>
-                            </a>
+    </div>
+    </main>
+    <div class="modal add-product">
+        <div class="modal-container">
+            <h3 class="modal-container-title add-product-e">THÊM MỚI SẢN PHẨM</h3>
+            <button class="modal-close product-form"><i class="fa fa-times"></i></button>
+            <div class="modal-content">
+                <form action="" method="POST" class="add-product-form" enctype="multipart/form-data">
+                    <div class="modal-content-left">
+                        <img id="imagePreview" src="./image/" alt="" class="upload-image-preview">
+                        <div class="form-group file">
+                            <label for="up-hinh-anh" class="form-label-file"><i class="fa fa-plus"></i>Add Product</label>
+                            <input accept="image/jpeg, image/png, image/jpg" id="up-hinh-anh" name="Image" type="file" class="form-control" onchange="previewImage(event)">
                         </div>
-                    </form>
-                </div>
+                    </div>
+                    <div class="modal-content-right">
+                        <div class="form-group">
+                            <label for="ten-mon" class="form-label">Name</label>
+                            <input id="ten-mon" name="Name" type="text" placeholder="Please enter the name of the book  " value="" class="form-control">
+                            <span class="form-message"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="category" class="form-label">Choose category</label>
+                            <select name="CategoryId" id="chon-mon">
+                                <?php
+                                $sql_cate = "SELECT * FROM category";
+                                $result = mysqli_query($conn, $sql_cate);
+                                if (mysqli_num_rows($result) > 0) {
+                                    while ($row = mysqli_fetch_assoc($result)) {
+                                        echo '<option value="' . $row['CateId'] . '">' . $row['CateName'] . '</option>';
+                                    }
+                                    echo '</select>';
+                                }
+                                ?>
+                                <span class="form-message"></span>
+                        </div>
+                        <!-- Price -->
+                        <div class="form-group">
+                            <label for="gia-moi" class="form-label">Price</label>
+                            <input id="gia-moi" name="Price" type="text" placeholder="Please enter the price" value="" class="form-control">
+                            <span class="form-message"></span>
+                        </div>
+                        <!-- Author -->
+                        <div class="form-group">
+                            <label for="author" class="form-label">Author</label>
+                            <input id="author" name="MainAuthor" type="text" value="" class="form-control">
+                            <span class="form-message"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="publisher" class="form-label">Publisher</label>
+                            <input id="publisher" name="Publisher" value="" type="text" class="form-control">
+                            <span class="form-message"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="pub-year" class="form-label">PublicationYear</label>
+                            <input id="pub-year" name="PublicationYear" value="" type="number" min="0" class="form-control">
+                            <span class="form-message"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="language" class="form-label">Language</label>
+                            <input id="language" name="Language" value="" type="text" class="form-control">
+                            <span class="form-message"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="cover" class="form-label">Cover</label>
+                            <input id="cover" name="CoverType" value="" type="text" class="form-control">
+                            <span class="form-message"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="quanitiy" class="form-label">Quantity</label>
+                            <input id="quanitiy" name="Quantity" value="" type="number" min="0" class="form-control">
+                            <span class="form-message"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="mo-ta" class="form-label">Description</label>
+                            <textarea class="product-desc" id="mo-ta" value="" name="Description" placeholder="Nhập mô tả sách..."></textarea>
+                            <span class="form-message"></span>
+                        </div>
+                        <button type="submit" class="form-submit btn-add-product-form add-product-e" id="add-product-button" name="add_product">
+                            <i class="fa fa-plus"></i>
+                            <span>ADD</span>
+
+                        </button>
+                        </a>
+                    </div>
+                </form>
             </div>
         </div>
+    </div>
 
-        <script src="js/admin.js">
-        </script>
-        <script>
-            // if (typeof window.history.pushState === 'function') {
-            //     // Remove GET parameters from the URL
-            //     window.history.pushState({}, '', window.location.href.split('?')[0]);
-            // }
-            let links = document.querySelectorAll('.page-nav-item');
-            let bodyId = parseInt(document.body.id) - 1;
-            console.log(links + "as" + bodyId);
-            links[bodyId].classList.add('active');
-        </script>
-        <?php
+    <script src="js/admin.js">
+    </script>
+    <script>
+        // if (typeof window.history.pushState === 'function') {
+        //     // Remove GET parameters from the URL
+        //     window.history.pushState({}, '', window.location.href.split('?')[0]);
+        // }
+        let links = document.querySelectorAll('.page-nav-item');
+        let bodyId = parseInt(document.body.id) - 1;
+        console.log(links + "as" + bodyId);
+        links[bodyId].classList.add('active');
+    </script>
+    <?php
 
-        ?>
+    ?>
 </body>
 
 </html>

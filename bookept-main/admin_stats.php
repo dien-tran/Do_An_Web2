@@ -37,7 +37,7 @@ if (!isset($admin_id)) {
         </button>
     </header>
     <div class="container">
-    <aside class="sidebar open">
+        <aside class="sidebar open">
             <div class="top-sidebar">
                 <a href="admin_main.php" class="channel-logo"><img src="image/homelogo.jpeg" alt="Channel Logo"></a>
                 <div class="hidden-sidebar your-channel"><img src="" style="height: 30px;" alt="">
@@ -100,11 +100,11 @@ if (!isset($admin_id)) {
                         <form method="post" class="fillter-date">
                             <div>
                                 <label for="start_date">From:</label>
-                                <input class="form-control-date" type="date" id="start_date" name="start_date">
+                                <input required class="form-control-date" type="date" id="start_date" name="start_date">
                             </div>
                             <div>
                                 <label for="end_date">To:</label>
-                                <input class="form-control-date" type="date" id="end_date" name="end_date">
+                                <input required class="form-control-date" type="date" id="end_date" name="end_date">
                             </div>
                             <button class="btn-control-large" type="submit" name="submit">Search</button>
                         </form>
@@ -146,85 +146,129 @@ if (!isset($admin_id)) {
                         </thead>
                         <tbody id="showTk">
                             <?php
+                            $customer_details = array();
                             if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
-                                
+
                                 // Retrieve start and end date from the form
                                 $start_date = $_POST['start_date'];
                                 $end_date = $_POST['end_date'];
                                 // Retrieve orders within the specified time range
-                                $select_orders = mysqli_query($conn, "SELECT * FROM orders WHERE placed_on BETWEEN '$start_date' AND '$end_date' ORDER BY total_price DESC LIMIT 0, 5") or die('query failed');
-                                if(mysqli_num_rows($select_orders) > 0)
-                                {
-                                    while($fetch_orders = mysqli_fetch_assoc($select_orders))
-                                    {
-                                        ?>
-                                            <td><?php echo $fetch_orders['name'] ?></td>
-                                            <td><?php echo $fetch_orders['placed_on'] ?></td>
-                                            <td><?php echo $fetch_orders['number'] ?></td>
-                                            <td>$<?php echo $fetch_orders['total_price'] ?></td>
-                                            <td class="control">
-                                                <form method="post">
-                                                    <a style="color:black" href="admin_stats_details.php?start_date= <?php echo $start_date?>&end_date=<?php echo $end_date ?>&order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i>Details</a>
-                                                </form>
-                                    </tr>
-                                        <?php
-                                    }
-                                }
-                                // Array to store customer total purchases
-                                // Process each order
-                                // while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
-                                //     // Calculate total purchase amount for each order
-                                //     $total_price = $fetch_orders['total_price'];
-                                //     $customer_id = $fetch_orders['user_id'];
-                                //     $customer_orders_query = mysqli_query($conn, "SELECT * FROM orders WHERE user_id = $customer_id AND placed_on BETWEEN '$start_date' AND '$end_date'");
-                                // }
-                                }
-                                elseif (isset($_GET['start_date']) && isset($_GET['end_date'])) {
-                                    $start_date = $_GET['start_date'];
-                                    $end_date = $_GET['end_date'];
-                                    $select_orders = mysqli_query($conn, "SELECT * FROM orders WHERE placed_on BETWEEN '$start_date' AND '$end_date' ORDER BY total_price DESC LIMIT 0, 5") or die('query failed');
-                                    if (mysqli_num_rows($select_orders) > 0) {
-                                        while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
-                                            ?>
-                                            <td><?php echo $fetch_orders['name'] ?></td>
-                                            <td><?php echo $fetch_orders['placed_on'] ?></td>
-                                            <td><?php echo $fetch_orders['number'] ?></td>
-                                            <td>$<?php echo $fetch_orders['total_price'] ?></td>
-                                            <td class="control">
-                                                <form method="post">
-                                                    <a style="color:black" href="admin_stats_details.php?start_date= <?php echo $start_date ?>&end_date=<?php echo $end_date ?>&order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Details</a>
-                                                </form>
-                                                </tr>
-                                            <?php
-                                        }
-                                    }
-                                 } else {
-                                $select_orders = mysqli_query($conn, "SELECT * FROM orders") or die('query failed');
+                                $select_orders = mysqli_query($conn, "SELECT * FROM orders WHERE payment_status = 'Completed' AND placed_on BETWEEN '$start_date' AND '$end_date' ORDER BY total_price DESC LIMIT 0, 5") or die('query failed');
                                 if (mysqli_num_rows($select_orders) > 0) {
                                     while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
-                            ?>
-                                        <tr>
-                                            <td><?php echo $fetch_orders['name'] ?></td>
-                                            <td><?php echo $fetch_orders['placed_on'] ?></td>
-                                            <td><?php echo $fetch_orders['number'] ?></td>
-                                            <td><?php echo $fetch_orders['total_price'] ?>$</td>
-                                            <td class="control">
-                                                <form method="post">
-                                                    <a style="color:black" href="admin_stats_details.php?order_id=<?php echo $fetch_orders['id']; ?>"><i class=" fa fa-asterisk"></i> Chi tiết</a>
-                                                </form>
-                                    </tr>
-                                    <?php
+                                        $customer_name = $fetch_orders['name'];
+                                        $total_price = $fetch_orders['total_price'];
+                                        $phone_number = $fetch_orders['number'];
+                                        $order_date = $fetch_orders['placed_on'];
+
+                                        // Kiểm tra xem khách hàng đã tồn tại trong mảng hay chưa
+                                        if (isset($customer_details[$customer_name])) {
+                                            // Nếu đã tồn tại, thêm thông tin mới vào mảng
+                                            $customer_details[$customer_name]['total_price'] += $total_price;
+                                        } else {
+                                            $customer_details[$customer_name] = array(
+                                                'total_price' => $total_price,
+                                                'phone_number' => $phone_number,
+                                                'order_date' => $order_date
+                                            );
+                                        }
+                                    }
+                                    foreach ($customer_details as $customer_name => $details) {
+                                        echo "<tr>";
+                                        echo "<td>$customer_name</td>";
+                                        echo "<td>{$details['order_date']}</td>";
+                                        echo "<td>{$details['phone_number']}</td>";
+                                        echo "<td>{$details['total_price']}$</td>";
+                                        echo "<td class='control'>";
+                                        echo "<form method='post'>";
+                                        echo "<button class='btn-detail'><a style='color:black' href='admin_stats_details.php?customer_name=$customer_name&start_date=$start_date&end_date=$end_date'><i class='fa fa-asterisk'></i>Details</a></button>";
+                                        echo "</form>";
+                                        echo "</td>";
+                                        echo "</tr>";
+                                    }
+                                }
+                            } elseif (isset($_GET['start_date']) && isset($_GET['end_date'])) {
+                                $start_date = $_GET['start_date'];
+                                $end_date = $_GET['end_date'];
+                                $select_orders = mysqli_query($conn, "SELECT * FROM orders WHERE placed_on BETWEEN '$start_date' AND '$end_date' ORDER BY total_price DESC LIMIT 0, 5") or die('query failed');
+                                if (mysqli_num_rows($select_orders) > 0) {
+                                    while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                                        $customer_name = $fetch_orders['name'];
+                                        $total_price = $fetch_orders['total_price'];
+                                        $phone_number = $fetch_orders['number'];
+                                        $order_date = $fetch_orders['placed_on'];
+
+                                        // Kiểm tra xem khách hàng đã tồn tại trong mảng hay chưa
+                                        if (isset($customer_details[$customer_name])) {
+                                            // Nếu đã tồn tại, thêm thông tin mới vào mảng
+                                            $customer_details[$customer_name]['total_price'] += $total_price;
+                                        } else {
+                                            $customer_details[$customer_name] = array(
+                                                'total_price' => $total_price,
+                                                'phone_number' => $phone_number,
+                                                'order_date' => $order_date
+                                            );
+                                        }
+                                    }
+                                    foreach ($customer_details as $customer_name => $details) {
+                                        echo "<tr>";
+                                        echo "<td>$customer_name</td>";
+                                        echo "<td>{$details['order_date']}</td>";
+                                        echo "<td>{$details['phone_number']}</td>";
+                                        echo "<td>{$details['total_price']}$</td>";
+                                        echo "<td class='control'>";
+                                        echo "<form method='post'>";
+                                        echo "<a style='color:black' href='admin_stats_details.php?customer_name=$customer_name'>More</a>";
+                                        echo "</form>";
+                                        echo "</td>";
+                                        echo "</tr>";
+                                    }
+                                }
+                            } else {
+                                $a = 0;
+                                $select_orders = mysqli_query($conn, "SELECT * FROM orders WHERE payment_status = 'Completed'") or die('query failed');
+                                if (mysqli_num_rows($select_orders) > 0) {
+                                    while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
+                                        $customer_name = $fetch_orders['name'];
+                                        $total_price = $fetch_orders['total_price'];
+                                        $phone_number = $fetch_orders['number'];
+                                        $order_date = $fetch_orders['placed_on'];
+
+                                        // Kiểm tra xem khách hàng đã tồn tại trong mảng hay chưa
+                                        if (isset($customer_details[$customer_name])) {
+                                            // Nếu đã tồn tại, thêm thông tin mới vào mảng
+                                            $customer_details[$customer_name]['total_price'] += $total_price;
+                                        } else {
+                                            $customer_details[$customer_name] = array(
+                                                'total_price' => $total_price,
+                                                'phone_number' => $phone_number,
+                                                'order_date' => $order_date
+                                            );
+                                        }
+                                    }
+                                    foreach ($customer_details as $customer_name => $details) {
+                                        echo "<tr>";
+                                        echo "<td>$customer_name</td>";
+                                        echo "<td>{$details['order_date']}</td>";
+                                        echo "<td>{$details['phone_number']}</td>";
+                                        echo "<td>{$details['total_price']}$</td>";
+                                        echo "<td class='control'>";
+                                        echo "<form method='post'>";
+                                        echo "<button class='btn-detail'><a style='color:black' href='admin_stats_details.php?customer_name=$customer_name'><i class='fa fa-asterisk'></i>More</a></button>";
+                                        echo "</form>";
+                                        echo "</td>";
+                                        echo "</tr>";
                                     }
                                 }
                             }
 
-                                    ?>
+                            ?>
                         </tbody>
                     </table>
                 </div>
             </div>
         </main>
-    </div>
+    </div>  
     </div>
     <div id="toast"></div>
     <script src="js/admin.js"></script>

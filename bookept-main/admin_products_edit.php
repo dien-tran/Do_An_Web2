@@ -88,7 +88,7 @@ if (isset($_POST['edit'])) {
         </button>
     </header>
     <div class="container">
-    <aside class="sidebar open">
+        <aside class="sidebar open">
             <div class="top-sidebar">
                 <a href="admin_main.php" class="channel-logo"><img src="image/homelogo.jpeg" alt="Channel Logo"></a>
                 <div class="hidden-sidebar your-channel"><img src="" style="height: 30px;" alt="">
@@ -147,23 +147,12 @@ if (isset($_POST['edit'])) {
         <main class="content">
             <div class="section product-all active">
                 <div class="admin-control">
-                    <div class="admin-control-left">
-                        <select name="CategoryId">
-                            <?php
-                            $sql_cate = "SELECT * FROM category";
-                            $result = mysqli_query($conn, $sql_cate);
-                            if (mysqli_num_rows($result) > 0) {
-                                while ($row = mysqli_fetch_assoc($result)) {
-                                    echo '<option value="' . $row['CateId'] . '">' . $row['CateName'] . '</option>';
-                                }
-                                echo '</select>';
-                            }
-                            ?>
-                    </div>
                     <div class="admin-control-center">
-                        <form action="" class="form-search">
+                        <form method="get" class="form-search">
+                            <input type="hidden" name="search" value="<?php echo isset($_GET['search']) ? $_GET['search'] : ''; ?>">
                             <span class="search-btn"><i class="fa fa-search"></i></span>
-                            <input id="form-search-product" type="text" class="form-search-input" placeholder="Search products..." oninput="showProduct()">
+                            <input id="form-search-product" type="text" name="search" class="form-search-input" placeholder="Search book name...">
+                            <button type="submit" name="submit_search" class="btn-control-large ">Search</button>
                         </form>
                     </div>
                     <div class="admin-control-right">
@@ -172,7 +161,7 @@ if (isset($_POST['edit'])) {
                 </div>
                 <div id="show-product">
                     <?php
-                    $products_per_page = 2;
+                    $products_per_page = 8;
 
                     // Tính số trang dựa trên tổng số sản phẩm và số sản phẩm mỗi trang
                     $total_products = mysqli_num_rows(mysqli_query($conn, "SELECT * FROM `products`"));
@@ -209,12 +198,20 @@ if (isset($_POST['edit'])) {
                                 </div>
                                 <div class="list-right">
                                     <div class="list-price">
-                                        <span class="list-current-price"><?php echo $fetch_products['Price'] ?></span>
+                                        <span class="list-current-price"><?php echo $fetch_products['Price'] ?>$</span>
                                     </div>
                                     <div class="list-control">
-                                        <div class="list-tool">
+                                    <div class="list-tool">
                                             <a href="admin_products_edit.php?edit_product=<?php echo $fetch_products['Id']; ?>" style="color:black;"><button id="edit-product" name="edit" class="btn-edit"><i class="fa fa-pencil"></i></button></a>
-                                            <a href="admin_products.php?delete=<?php echo $fetch_products['Id']; ?>"><button class="btn-delete" name="delete" onclick="return confirm('Delete this product?')"><i class="fa fa-trash"></i></button> </a>
+                                            <?php
+                                            if ($fetch_products['Status'] == 0) {
+                                            ?>
+
+                                                <a style="color:black" href="admin_products.php?display=<?php echo $fetch_products['Id'] ?>"><button name="display" class="btn-edit" onclick="return confirm('Do you want to continue selling this item?')"><i class="fa fa-eye" aria-hidden="true"></i></button></a>
+                                                <?php } elseif ($fetch_products['Status'] == 1) {
+                                                ?>
+                                                    <a href="admin_products.php?delete=<?php echo $fetch_products['Id']; ?>"><button class="btn-delete" name="delete" onclick="return confirm('Delete this product?')"><i class="fa fa-trash"></i></button> </a>
+                                                <?php } ?>
                                         </div>
                                     </div>
                                 </div>
@@ -270,11 +267,16 @@ if (isset($_POST['edit'])) {
                                 <label for="category" class="form-label">Choose category</label>
                                 <select name="CategoryId" id="chon-mon">
                                     <?php
+                                    $a = $fetch_products_edit['CategoryId'];
                                     $sql_cate = "SELECT * FROM category";
                                     $result = mysqli_query($conn, $sql_cate);
                                     if (mysqli_num_rows($result) > 0) {
                                         while ($row = mysqli_fetch_assoc($result)) {
-                                            echo '<option value="' . $row['CateId'] . '">' . $row['CateName'] . '</option>';
+                                            if ($a == $row['CateId']) {
+                                                echo '<option selected value="' . $row['CateId'] . '">' . $row['CateName'] . '</option>';
+                                            } else {
+                                                echo '<option value="' . $row['CateId'] . '">' . $row['CateName'] . '</option>';
+                                            }
                                         }
                                         echo '</select>';
                                     }
