@@ -168,8 +168,8 @@ if (isset($_GET['unblock'])) {
                <div class="admin-control-center">
                   <form action="#?" class="form-search" method="GET">
                      <span class="search-btn"><i class="fa fa-search"></i></span>
-                     <!-- <input id="form-search-user" type="text" class="form-search-input" placeholder="Tìm kiếm khách hàng..." oninput="showUser()"> -->
-                     <input id="form-search-user" type="text" name="text_search" class="form-search-input" placeholder="Search customer...">
+                     <!-- <input id="form-search-user" type="text" class="form-search-input" placeholder="search..."> -->
+                     <input id="form-search-user" type="text" name="text_search" class="form-search-input" placeholder="Search for username..."value="<?php echo isset($_GET['text_search']) ? $_GET['text_search'] : ''; ?>">
                      <button id="btn-search-user" class="btn-control-large" type="submit" name="submit_search"> Search </button>
                   </form>
                </div>
@@ -268,11 +268,13 @@ if (isset($_GET['unblock'])) {
                      <?php
                      
                      if(mysqli_num_rows($select_products)>0)
-                     while ($fetch_users = mysqli_fetch_assoc($select_products)) {
+                     {
+                        while ($fetch_users = mysqli_fetch_assoc($select_products)) 
+                        {
                         if ($fetch_users['user_type'] === "user") 
                         {
 
-                     ?>
+                        ?>
                            <tr>
 
                               <td><?php echo $stt ?></td>
@@ -299,12 +301,16 @@ if (isset($_GET['unblock'])) {
                                     ?>
                               </td>
                            </tr>
-                     <?php
+                        <?php
                         }
-                        else {
-                           echo '<div class="no-result"><div class="no-result-i"><i class="fa fa-home"></i></div><div class="no-result-h">Không có sản phẩm để hiển thị</div></div>';
+                        
                      }
                   }
+
+                  else {
+                     echo '<div class="no-result"><div class="no-result-i"><i class="fa fa-home"></i></div><div class="no-result-h">No user exists</div></div>';
+                 }
+                  
                      ?>
                   </tbody>
                </table>
@@ -312,7 +318,7 @@ if (isset($_GET['unblock'])) {
             <!-- </div> -->
 
             <div class="pagination">
-               <p>Page:</p>
+               
                <ul class="list_page">
                   <?php
                                     
