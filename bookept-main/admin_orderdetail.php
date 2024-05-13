@@ -277,7 +277,7 @@ if (!isset($admin_id)) {
                 } elseif($result_order['payment_status'] == "Completed") {
                 ?>
                     
-                    <button style="cursor: not-allowed;" name="payment" class="btn-daxuly modal-detail-btn"><?php echo $result_order['payment_status'] ?></button>
+                    <button style="cursor: not-allowed;" class="btn-daxuly modal-detail-btn"><?php echo $result_order['payment_status'] ?></button>
                     </form>
             <?php
                 }
