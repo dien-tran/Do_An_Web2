@@ -51,9 +51,9 @@ if (isset($_GET['block'])) {
    if (mysqli_num_rows($sql_block) > 0) {
       $query = "UPDATE users SET status = 0 WHERE id = $block_id";
       if (mysqli_query($conn, $query)) {
-         echo "<script>alert('Người dùng đã được chặn.');</script>";
+         echo "<script>alert('User has been blocked.');</script>";
       } else {
-         echo "Cập nhật trạng thái thất bại: " . mysqli_error($conn);
+         echo "Update failed: " . mysqli_error($conn);
       }
    }
 }
@@ -63,9 +63,9 @@ if (isset($_GET['unblock'])) {
    if (mysqli_num_rows($sql_unblock) > 0) {
       $query = "UPDATE users SET status = 1 WHERE id = $unblock_id";
       if (mysqli_query($conn, $query)) {
-         echo "<script>alert('Người dùng đã gỡ chặn.');</script>";
+         echo "<script>alert('User has been unblocked.');</script>";
       } else {
-         echo "Cập nhật trạng thái thất bại: " . mysqli_error($conn);
+         echo "Update failed: " . mysqli_error($conn);
       }
    }
 }
@@ -393,7 +393,7 @@ document.getElementById("btn-edit-user").addEventListener("click", function() {
         window.location.href = "edit_user.php?id=" + userId;
     } else {
         // Nếu không tồn tại, hiển thị thông báo hoặc xử lý phù hợp
-        console.log("Không tìm thấy ID của user.");
+        console.log("ID invalid.");
     }
 });
 </script>
