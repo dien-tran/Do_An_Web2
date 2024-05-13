@@ -141,7 +141,7 @@ if (isset($_GET['unblock'])) {
             <div class="bottom-sidebar">
                 <ul class="sidebar-list">
                     <li class="sidebar-list-item user-logout">
-                        <a href="#" class="sidebar-link" id="logout-acc">
+                        <a href="#" class="sidebar-link">
                             <div class="sidebar-icon"><i class="fa fa-arrow-right"></i></div>
                             <div class="hidden-sidebar" onclick="redirectToLogout()">Logout</div>
                             <script>
