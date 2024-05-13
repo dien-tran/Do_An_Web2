@@ -296,6 +296,8 @@ if (isset($_GET['unblock'])) {
                                     ?>
                                        <a id="btn-add-user" class="btn-control-large" type="submit" name="delete" href="admin_users.php?delete=<?php echo $fetch_users['id']; ?>" onclick="return confirm('delete this user?');" class="delete-btn">Delete</a>
                                        <a id="btn-add-user" class="btn-control-large" type="submit" name="unblock" href="admin_users.php?unblock=<?php echo $fetch_users['id']; ?>" onclick="return confirm('Unblock this user?');" class="delete-btn">Unblock</a>
+                                       <a id="btn-edit-user"class="btn-control-large" type="submit" name="edit" href="edit_user.php?id= <?php echo $fetch_users['id']; ?>">Edit</a>
+
                                     <?php
                                     }
                                     ?>

@@ -218,7 +218,7 @@ if (isset($message) && is_array($message)) {
         <td><label for="ward">Ward:</label></td>
         <td>
             <select class="form-select form-select-sm" name="ward" id="ward" aria-label=".form-select-sm">
-                <option value="" selected  >Choose ward</option>
+                <option value="" selected  disabled>Choose ward</option>
                 <?php
                 for ($i = 1; $i <= 12; $i++) {
                     $selected = ($_POST['ward'] == "Ward $i") ? 'selected' : '';
@@ -234,7 +234,7 @@ if (isset($message) && is_array($message)) {
         <td><label for="district">District:</label></td>
         <td>
             <select class="form-select form-select-sm mb-3" name="district" id="district" aria-label=".form-select-sm">
-                <option value="" selected  >Choose district</option>
+                <option value="" selected disabled >Choose district</option>
                 <?php
                 for ($i = 1; $i <= 12; $i++) {
                   $selected = ($_POST['district'] == "District $i") ? 'selected' : '';
@@ -251,7 +251,7 @@ if (isset($message) && is_array($message)) {
         <td><label for="city">City:</label></td>
         <td>
             <select class="form-select form-select-sm mb-3" name="city" id="city" aria-label=".form-select-sm">
-                <option value="" selected  >Choose city</option>
+                <option value="" selected  disabled>Choose city</option>
                 <option value="Hồ Chí Minh" selected>Ho Chi Minh city</option>
             </select>
         </td>
